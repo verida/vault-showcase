@@ -1,0 +1,48 @@
+.connection-statistics {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  word-break: break-all;
+}
+
+.connection-statistics__img {
+  display: block;
+  width: 40px;
+  height: 40px;
+  background-size: contain;
+
+  &:hover {
+    filter: brightness(0.8);
+  }
+}
+
+.connection-statistics__title {
+  font-weight: bold;
+}
+
+.connection-statistics__text {
+  max-width: 180px;
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  @media (max-width: 568px) {
+    max-width: 100%;
+    white-space: pre-line;
+  }
+}
+
+.connection-statistics__title,
+.connection-statistics__text {
+  cursor: default;
+}
+
+.connection-statistics__action-panel {
+  display: flex;
+  justify-content: flex-end;
+
+  .btn {
+    margin: 5px 0 10px 10px;
+  }
+}

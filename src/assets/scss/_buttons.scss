@@ -1,0 +1,10 @@
+button:focus {
+  outline: none;
+}
+
+a, input[type='button'] {
+  outline: none;
+}
+a, input[type='button']::-moz-focus-inner {
+  border: 0;
+}

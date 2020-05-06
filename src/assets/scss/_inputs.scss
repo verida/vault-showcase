@@ -1,0 +1,27 @@
+div[role=radiogroup] {
+  outline: none;
+}
+
+.invalid-feedback {
+  min-height: 25px;
+  display: block;
+}
+
+.recipient-area {
+  box-shadow: 0 0 5px 0 rgba(0,0,0,0.35);
+  background-color: rgba(40,167,69, 0.65);
+  color: white;
+  padding: 15px 18px 0 18px;
+  margin: -16px;
+  margin-bottom: 20px;
+}
+
+#create-modal {
+  font-size: 14px;
+
+  h5 {
+    background: linear-gradient(#2263c3, #2dfde6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+}

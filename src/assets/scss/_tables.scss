@@ -1,0 +1,14 @@
+.list-demo {
+  font-size: 12px;
+  cursor: default;
+  box-shadow: 0 0 5px 0 rgba(0,0,0,0.5);
+  border: 1px solid #2263c3;
+  border-radius: 5px;
+
+  thead {
+    background: #2263c3;
+    color: white;
+    white-space: nowrap;
+    border: none;
+  }
+}
