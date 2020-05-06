@@ -1,16 +1,14 @@
 <template>
-  <div class="home">
-    <navbar />
-  </div>
+  <did-card />
 </template>
 
 <script>
-import Navbar from '../components/Navbar'
+import DidCard from '../components/DidCard'
 
 export default {
   name: 'Home',
   components: {
-    Navbar
+    DidCard
   }
 }
 </script>

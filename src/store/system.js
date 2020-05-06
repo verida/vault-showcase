@@ -1,17 +1,10 @@
 const state = {
-  info: null,
-  category: null,
-  buttons: [],
-  sidebar: false,
-  mobile: false
+  schema: false
 }
 
 const mutations = {
-  init (state, payload) {
-    Object.assign(state, payload)
-  },
-  setActions (state, payload) {
-    state.buttons = payload
+  setSchema (state, payload) {
+    state.schema = payload
   }
 }
 
