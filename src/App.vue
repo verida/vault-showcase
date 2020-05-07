@@ -13,9 +13,13 @@
 
 <script>
 import Navbar from './components/Navbar'
+import ConnectionMixin from '@/mixins/connection'
 
 export default {
   name: 'App',
+  mixins: [
+    ConnectionMixin
+  ],
   components: {
     Navbar
   }

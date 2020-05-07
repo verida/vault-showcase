@@ -3,8 +3,11 @@
     <label>Type of data</label>
     <b-form-select
       v-model="selected"
-      :options="options"
-      @change="value => $emit('change', value)"/>
+      @change="obj => $emit('change', obj)">
+      <option v-for="(option, idx) in options" :key="idx" :value="option">
+        {{ option.text }}
+      </option>
+    </b-form-select>
   </div>
 </template>
 
@@ -31,10 +34,12 @@ export default {
       this.options = []
 
       for (const i in SCHEMAS) {
-        const schema = await Verida.getSchema(SCHEMAS[i], true)
+        const document = await Verida.getSchema(SCHEMAS[i], true)
         this.options.push({
-          text: schema.title,
-          value: SCHEMAS[i]
+          text: document.title,
+          path: SCHEMAS[i],
+          schema: document.name,
+          properties: document.properties
         })
       }
     }

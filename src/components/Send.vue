@@ -1,33 +1,52 @@
 <template>
-  <b-card>
-    <DataTypeSelect @change="change"/>
-    <b-form-radio-group>
-      <b-form-radio v-model="records" :value="false">
-        All data
-      </b-form-radio>
-      <b-form-radio v-model="records" :value="true">
-        User select data
-      </b-form-radio>
-    </b-form-radio-group>
-    <b-button variant="success">Request</b-button>
-  </b-card>
+  <div>
+    <b-card class="mt-4">
+      <DataTypeSelect @change="select"/>
+      <div v-if="entity" class="mt-4">
+        <hr />
+        <SchemaFields
+          ref="schema-fields"
+          :entity="entity"
+          :data="data"
+          :attributes="attributes" />
+      </div>
+    </b-card>
+  </div>
 </template>
 
 <script>
-// import Verida from '@verida/datastore/src/app'
+import { schemas } from '@/config/map'
 import DataTypeSelect from './DataTypeSelect'
+import SchemaFields from './SchemaFields'
 
 export default {
-  name: 'Send',
-  components: { DataTypeSelect },
+  name: 'Request',
+  components: {
+    SchemaFields,
+    DataTypeSelect
+  },
   data () {
     return {
-      records: null
+      entity: null,
+      processing: false,
+      data: {},
+      attributes: {}
     }
   },
   methods: {
-    change (path) {
-      // const schema = Verida.getSchema(path, true)
+    async select ({ text, path, schema, properties }) {
+      this.entity = { schema, title: text, path }
+
+      this.data = {}
+      this.attributes = {}
+
+      schemas[schema].forEach(key => {
+        this.$set(this.data, key)
+        this.$set(this.attributes, key, properties[key])
+      })
+
+      await this.$nextTick()
+      this.$refs['schema-fields'].$refs.validator.reset()
     }
   }
 }

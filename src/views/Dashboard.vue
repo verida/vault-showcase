@@ -23,9 +23,6 @@ export default {
       const { mode } = this.$route.params
       return mode
     }
-  },
-  beforeMount () {
-    console.log(this.mode, 'mode')
   }
 }
 </script>
