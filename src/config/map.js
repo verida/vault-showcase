@@ -7,7 +7,7 @@ export const schemas = {
     'value',
     'valueType'
   ],
-  'identity/kyc/AU/basic': [
+  'identity/kyc/AU': [
     'firstName',
     'middleName',
     'lastName',

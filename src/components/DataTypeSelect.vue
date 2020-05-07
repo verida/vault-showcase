@@ -38,7 +38,7 @@ export default {
         this.options.push({
           text: document.title,
           path: SCHEMAS[i],
-          schema: document.name,
+          schema: document.name.replace('/basic', ''),
           properties: document.properties
         })
       }

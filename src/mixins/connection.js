@@ -7,6 +7,7 @@ import {
 } from '@/helpers/VeridaTransmitter'
 
 import { createNamespacedHelpers } from 'vuex'
+import { DATA_SEND } from '../constants/inbox'
 const { mapMutations: mapSystemMutations } = createNamespacedHelpers('system')
 
 export default {
@@ -32,8 +33,11 @@ export default {
     connect () {
       bindInbox(this.handleInbox)
     },
-    handleInbox () {
-
+    async handleInbox (msg) {
+      const { data, type, sentBy } = msg
+      if (type === DATA_SEND) {
+        console.log(data, type, sentBy)
+      }
     }
   },
   async beforeMount () {
