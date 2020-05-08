@@ -71,14 +71,16 @@ export default {
   },
   methods: {
     async submit () {
-      const message = []
+      // const message = []
 
-      const store = await window.veridaApp.openDatastore(this.entity.path)
+      // const store = await window.veridaApp.openDatastore(this.entity.path)
       const payload = {
         name: extract(this.data, this.entity.schema),
         ...this.data
       }
 
+      console.log(payload)
+      /*
       message.push(payload)
       const saved = await store.save(payload)
 
@@ -87,7 +89,7 @@ export default {
         return false
       }
 
-      await this.sendInbox(message, payload.name)
+      await this.sendInbox(message, payload.name) */
     },
     async sendInbox (message, name) {
       const { outbox } = window.veridaApp

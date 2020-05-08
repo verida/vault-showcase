@@ -38,8 +38,10 @@ export default {
     async handleInbox (msg) {
       const { data, type } = msg
       if (type === DATA_SEND) {
+        const { data: records } = data
+        const response = _.isArray(records[0]) ? records[0] : records
         this.setProcessing(false)
-        this.setList(data.data[0])
+        this.setList(response)
       }
     }
   },
