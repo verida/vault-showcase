@@ -14,6 +14,14 @@
             </b-nav-item>
           </b-navbar-nav>
           <b-navbar-nav class="ml-auto">
+            <b-nav-item active>
+              <did-statistics v-if="user"
+                :img="true" :title="user.name"
+                :text="`did:ethr:${user.address}`" />
+              <div v-else>
+                <BarLoader class="loader" color="#fff" :width="100" :height="4" />
+              </div>
+            </b-nav-item>
             <b-nav-item>
               <b-button variant="primary" @click="disconnect">
                 Disconnect
@@ -25,6 +33,8 @@
 </template>
 
 <script>
+import { BarLoader } from '@saeris/vue-spinners'
+import DidStatistics from '../cards/DidStatistics'
 import { logout } from '@/helpers/VeridaTransmitter'
 import { createNamespacedHelpers } from 'vuex'
 const {
@@ -34,6 +44,10 @@ const {
 
 export default {
   name: 'Navbar',
+  components: {
+    DidStatistics,
+    BarLoader
+  },
   data () {
     return {
       buttons: [
@@ -58,7 +72,8 @@ export default {
   computed: {
     ...mapSystemState([
       'processing',
-      'recipient'
+      'recipient',
+      'user'
     ])
   },
   methods: {
