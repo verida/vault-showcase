@@ -55,7 +55,7 @@ export default {
       this.attributes = {}
 
       schemas[this.entity.schema].create.forEach(key => {
-        this.$set(this.data, key, null)
+        this.$set(this.data, key, '')
         this.$set(this.attributes, key, this.entity.properties[key])
       })
 
