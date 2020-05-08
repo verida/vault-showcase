@@ -34,11 +34,11 @@
 
 <script>
 import { schemas } from '@/config/map'
-import DataTypeSelect from './DataTypeSelect'
+import DataTypeSelect from '../cards/DataTypeSelect'
 import { CircleLoader } from '@saeris/vue-spinners'
 
 import { createNamespacedHelpers } from 'vuex'
-import { DATA_REQUEST } from '../constants/inbox'
+import { DATA_REQUEST } from '../../constants/inbox'
 const {
   mapState: mapSystemState,
   mapMutations: mapSystemMutations

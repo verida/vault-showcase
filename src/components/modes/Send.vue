@@ -19,8 +19,8 @@
 <script>
 import { CircleLoader } from '@saeris/vue-spinners'
 import { schemas } from '@/config/map'
-import DataTypeSelect from './DataTypeSelect'
-import SchemaFields from './SchemaFields'
+import DataTypeSelect from '../cards/DataTypeSelect'
+import SchemaFields from '../forms/SchemaFields'
 
 import { createNamespacedHelpers } from 'vuex'
 const { mapState: mapSystemState } = createNamespacedHelpers('system')

@@ -3,8 +3,8 @@
 </template>
 
 <script>
-import Send from '../components/Send'
-import Request from '../components/Request'
+import Send from '../components/modes/Send'
+import Request from '../components/modes/Request'
 
 export default {
   name: 'Dashboard',

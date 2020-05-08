@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import DidCard from '../components/DidCard'
+import DidCard from '../components/cards/DidCard'
 
 export default {
   name: 'Home',

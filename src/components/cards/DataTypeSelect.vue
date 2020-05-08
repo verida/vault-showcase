@@ -13,7 +13,7 @@
 
 <script>
 import Verida from '@verida/datastore/src/app'
-import { SCHEMAS } from '../config/schemas'
+import { SCHEMAS } from '../../config/schemas'
 
 export default {
   name: 'DataTypeSelect',

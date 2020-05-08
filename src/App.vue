@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import Navbar from './components/Navbar'
+import Navbar from './components/navigation/Navbar'
 import ConnectionMixin from '@/mixins/connection'
 
 export default {

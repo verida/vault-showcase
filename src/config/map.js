@@ -1,6 +1,7 @@
 export const schemas = {
   'shopping/coupon': {
     view: [
+      'name',
       'description',
       'value',
       'valueType',
@@ -8,6 +9,7 @@ export const schemas = {
       'barcode'
     ],
     create: [
+      'name',
       'description',
       'value',
       'valueType',

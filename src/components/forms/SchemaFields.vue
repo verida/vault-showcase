@@ -33,7 +33,9 @@
         <b-form-input
           v-else
           class="form-control"
-          v-model="data[key]" size="sm"
+          size="sm"
+          :type="attributes[key].type | typed"
+          :value="data[key]" @input="value => format(key, value)"
           :name="attributes[key].title"
           :state="!data[key] ? null : !errors[0]" />
         <b-form-invalid-feedback>
@@ -59,6 +61,13 @@ const {
 
 export default {
   name: 'SchemaFields',
+  filters: {
+    typed (str) {
+      if (str === 'string') return 'text'
+      if (str === 'number') return 'number'
+      return 'text'
+    }
+  },
   props: [
     'data',
     'attributes',
@@ -90,11 +99,14 @@ export default {
       const saved = await store.save(payload)
 
       if (!saved) {
-        console.error(store.errors)
+        this.setProcessing(false)
         return false
       }
 
       await this.sendInbox(message, payload.name)
+    },
+    format (key, value) {
+      this.data[key] = this.attributes[key].type === 'number' ? Number(value) : value
     },
     async sendInbox (message, name) {
       const { outbox } = window.veridaApp
