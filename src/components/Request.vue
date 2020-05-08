@@ -1,18 +1,24 @@
 <template>
   <div>
     <b-card class="mt-4">
-      <DataTypeSelect @change="select"/>
-      <b-form-radio-group class="mt-3" :disabled="processing">
-        <b-form-radio v-model="params.userSelect" :value="false">
-          All data
-        </b-form-radio>
-        <b-form-radio v-model="params.userSelect" :value="true">
-          User select data
-        </b-form-radio>
-      </b-form-radio-group>
-      <b-button variant="success" @click="request" class="mt-3">
-        Request
-      </b-button>
+      <ValidationObserver ref="validator" mode="eager" v-slot="{ invalid }">
+        <ValidationProvider rules="required">
+          <DataTypeSelect @change="select" v-model="entity"/>
+        </ValidationProvider>
+        <ValidationProvider rules="required">
+          <b-form-radio-group class="mt-3">
+            <b-form-radio v-model="params.userSelect" :value="false">
+              All data
+            </b-form-radio>
+            <b-form-radio v-model="params.userSelect" :value="true">
+              User select data
+            </b-form-radio>
+          </b-form-radio-group>
+        </ValidationProvider>
+        <b-button class="mt-3" variant="success" @click="request" :disabled="invalid">
+          Request
+        </b-button>
+      </ValidationObserver>
       <div v-if="processing" class="card-shadow">
         <CircleLoader color="#2263c3" :size="100" class="card-spinner"/>
         <b-button variant="light" @click="cancel">Cancel</b-button>

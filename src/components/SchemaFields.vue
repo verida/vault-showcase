@@ -1,5 +1,5 @@
 <template>
-  <ValidationObserver ref="validator" mode="eager">
+  <ValidationObserver ref="validator" mode="eager" v-slot="{ invalid }">
     <ValidationProvider
       v-slot="{ errors }"
       v-for="(item, key) in data"
@@ -40,7 +40,7 @@
           {{ errors[0] }}
         </b-form-invalid-feedback>
     </ValidationProvider>
-    <b-button @click="submit">
+    <b-button @click="submit" :disabled="invalid" variant="primary">
       Send
     </b-button>
   </ValidationObserver>

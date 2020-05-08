@@ -1,6 +1,6 @@
 <template>
   <div>
-    <label>Type of data</label>
+    <label>Type of data to {{mode}}</label>
     <b-form-select
       v-model="selected"
       @change="obj => $emit('change', obj)">
@@ -28,6 +28,11 @@ export default {
   },
   async beforeMount () {
     await this.init()
+  },
+  computed: {
+    mode () {
+      return this.$route.params.mode
+    }
   },
   methods: {
     async init () {
