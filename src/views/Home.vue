@@ -1,5 +1,5 @@
 <template>
-  <did-card />
+  <did-card class="mt-4" />
 </template>
 
 <script>

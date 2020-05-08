@@ -17,14 +17,26 @@
         Request
       </b-button>
     </b-card>
-    <b-card v-if="received"></b-card>
+    <b-table class="records mt-4"
+      responsive
+      striped
+      hover
+      :items="records" />
   </div>
 </template>
 
 <script>
 // import Verida from '@verida/datastore/src/app'
+import { schemas } from '@/config/map'
 import DataTypeSelect from './DataTypeSelect'
 import { CircleLoader } from '@saeris/vue-spinners'
+
+import { createNamespacedHelpers } from 'vuex'
+import { DATA_REQUEST } from '../constants/inbox'
+const {
+  mapState: mapSystemState,
+  mapMutations: mapSystemMutations
+} = createNamespacedHelpers('system')
 
 export default {
   name: 'Send',
@@ -35,23 +47,34 @@ export default {
   data () {
     return {
       entity: null,
+      properties: null,
+      records: null,
       params: {
-        schema: null,
+        requestSchema: null,
         userSelect: null
-      },
-      processing: false,
-      received: null
+      }
     }
   },
+  computed: {
+    ...mapSystemState([
+      'recipient',
+      'list',
+      'processing'
+    ])
+  },
   methods: {
-    select ({ schema, text }) {
+    ...mapSystemMutations([
+      'setProcessing'
+    ]),
+    select ({ schema, text, properties }) {
+      this.records = null
       this.entity = text
+      this.properties = properties
       this.params.requestSchema = schema
     },
     request () {
-      this.processing = true
+      this.setProcessing(true)
 
-      const did = 'did:ethr:0x33b92b41b775Ce6ebc0C8bcBdEf19B1e1d8bFd82'
       const { outbox } = window.veridaApp
       const message = `The ${this.entity} records have been requested by Generic Demo App`
       const data = {
@@ -59,7 +82,15 @@ export default {
         ...this.params
       }
 
-      outbox.send(did, 'inbox/type/dataRequest', data, message, {})
+      outbox.send(this.recipient, DATA_REQUEST, data, message, {})
+    }
+  },
+  watch: {
+    list () {
+      if (this.list) {
+        const keys = schemas[this.params.requestSchema].view
+        this.records = this.list.map(obj => _.pick(obj, keys))
+      }
     }
   }
 }

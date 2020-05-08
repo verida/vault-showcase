@@ -13,7 +13,9 @@ const { mapMutations: mapSystemMutations } = createNamespacedHelpers('system')
 export default {
   methods: {
     ...mapSystemMutations([
-      'initUser'
+      'initUser',
+      'setList',
+      'setProcessing'
     ]),
     async init () {
       await bind(this.connect, this.disconnect)
@@ -34,9 +36,10 @@ export default {
       bindInbox(this.handleInbox)
     },
     async handleInbox (msg) {
-      const { data, type, sentBy } = msg
+      const { data, type } = msg
       if (type === DATA_SEND) {
-        console.log(data, type, sentBy)
+        this.setProcessing(false)
+        this.setList(data.data[0])
       }
     }
   },

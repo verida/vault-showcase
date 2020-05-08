@@ -1,20 +1,40 @@
 export const schemas = {
-  'shopping/coupon': [
-    'name',
-    'barcode',
-    'currency',
-    'description',
-    'value',
-    'valueType'
-  ],
-  'identity/kyc/AU': [
-    'firstName',
-    'middleName',
-    'lastName',
-    'gender',
-    'dateOfBirth',
-    'streetAddress1',
-    'streetAddress2',
-    'state'
-  ]
+  'shopping/coupon': {
+    view: [
+      'description',
+      'value',
+      'valueType',
+      'currency',
+      'barcode'
+    ],
+    create: [
+      'description',
+      'value',
+      'valueType',
+      'currency',
+      'barcode'
+    ]
+  },
+  'identity/kyc/AU': {
+    view: [
+      'firstName',
+      'lastName',
+      'gender',
+      'dateOfBirth',
+      'streetAddress1',
+      'suburb',
+      'state',
+      'postcode'
+    ],
+    create: [
+      'firstName',
+      'lastName',
+      'gender',
+      'dateOfBirth',
+      'streetAddress1',
+      'suburb',
+      'state',
+      'postcode'
+    ]
+  }
 }

@@ -2,10 +2,10 @@
   <div id="app" class="main-layout">
     <navbar />
     <b-container>
-      <b-row>
-        <b-col sm="12" md="8">
+      <b-row align-h="center">
+        <div class="dashboard-card">
           <router-view/>
-        </b-col>
+        </div>
       </b-row>
     </b-container>
   </div>

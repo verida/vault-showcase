@@ -1,11 +1,5 @@
 <template>
-  <b-container>
-    <b-row>
-      <b-col sm="12" md="8">
-        <component :is="mode" />
-      </b-col>
-    </b-row>
-  </b-container>
+  <component :is="mode" />
 </template>
 
 <script>

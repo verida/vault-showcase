@@ -1,17 +1,15 @@
 <template>
-  <div>
-    <b-card class="mt-4">
-      <DataTypeSelect @change="select"/>
-      <div v-if="entity" class="mt-4">
-        <hr />
-        <SchemaFields
-          ref="schema-fields"
-          :entity="entity"
-          :data="data"
-          :attributes="attributes" />
-      </div>
-    </b-card>
-  </div>
+  <b-card class="mt-4">
+    <DataTypeSelect @change="select"/>
+    <div v-if="entity" class="mt-4">
+      <hr />
+      <SchemaFields
+        ref="schema-fields"
+        :entity="entity"
+        :data="data"
+        :attributes="attributes" />
+    </div>
+  </b-card>
 </template>
 
 <script>
@@ -40,7 +38,7 @@ export default {
       this.data = {}
       this.attributes = {}
 
-      schemas[schema].forEach(key => {
+      schemas[schema].create.forEach(key => {
         this.$set(this.data, key)
         this.$set(this.attributes, key, properties[key])
       })

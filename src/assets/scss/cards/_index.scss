@@ -1,3 +1,28 @@
 @import 'connection-statistics';
 @import 'did-cards';
 @import 'response';
+
+.dashboard-card {
+  @media (min-width: 600px) {
+    width: 500px;
+  }
+}
+
+.records {
+  font-size: 14px;
+  cursor: default;
+
+  thead {
+    background-color: #007bff;
+  }
+
+  th {
+    font-weight: 500;
+    color: #fff;
+    white-space: nowrap;
+  }
+
+  td {
+    font-size: 13px;
+  }
+}
