@@ -10,6 +10,15 @@
   left: 0;
   top: 0;
   background: linear-gradient(to bottom, rgba(255,255,255,1) 0%, rgba(235,235,235,0.2) 100%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  button {
+    position: absolute;
+    width: 150px;
+    border: 1px solid darkgray;
+  }
 }
 
 .card-spinner {

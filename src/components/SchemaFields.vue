@@ -9,9 +9,9 @@
         <label>{{attributes[key].title}}</label>
         <b-form-group v-if="attributes[key].enum">
           <b-form-radio-group v-model="data[key]">
-            <b-form-radio v-for="(item, index) in attributes[key].enum"
+            <b-form-radio v-for="item in attributes[key].enum"
               :key="item"
-              :value="index + 1">
+              :value="item">
               {{ item }}
             </b-form-radio>
           </b-form-radio-group>
@@ -52,7 +52,10 @@ import { DATA_SEND } from '@/constants/inbox'
 import { extract } from '@/helpers/NameModifier'
 
 import { createNamespacedHelpers } from 'vuex'
-const { mapState: mapSystemState } = createNamespacedHelpers('system')
+const {
+  mapState: mapSystemState,
+  mapMutations: mapSystemMutations
+} = createNamespacedHelpers('system')
 
 export default {
   name: 'SchemaFields',
@@ -70,17 +73,19 @@ export default {
     ])
   },
   methods: {
+    ...mapSystemMutations([
+      'setProcessing'
+    ]),
     async submit () {
-      // const message = []
+      this.setProcessing(true)
+      const message = []
 
-      // const store = await window.veridaApp.openDatastore(this.entity.path)
+      const store = await window.veridaApp.openDatastore(this.entity.path)
       const payload = {
         name: extract(this.data, this.entity.schema),
         ...this.data
       }
 
-      console.log(payload)
-      /*
       message.push(payload)
       const saved = await store.save(payload)
 
@@ -89,19 +94,21 @@ export default {
         return false
       }
 
-      await this.sendInbox(message, payload.name) */
+      await this.sendInbox(message, payload.name)
     },
     async sendInbox (message, name) {
       const { outbox } = window.veridaApp
 
       const inboxType = DATA_SEND
       const outboxItem = { data: message }
-      const text = `Sending you "${name}"`
+      const text = `Sending you ${this.entity.title} called "${name}"`
 
       try {
-        const did = 'did:ethr:0x33b92b41b775Ce6ebc0C8bcBdEf19B1e1d8bFd82'
-        await outbox.send(did, inboxType, outboxItem, text, {})
+        await outbox.send(this.recipient, inboxType, outboxItem, text, {})
+        this.$emit('reset')
+        this.setProcessing(false)
       } catch (e) {
+        this.setProcessing(false)
         console.info(e)
       }
     }

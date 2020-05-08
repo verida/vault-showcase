@@ -5,8 +5,10 @@
         </b-navbar-brand>
         <b-navbar-toggle target="nav-collapse" />
         <b-collapse id='nav-collapse' is-nav>
-          <b-navbar-nav>
-            <b-nav-item v-for="item in buttons"
+          <b-navbar-nav v-if="recipient">
+            <b-nav-item
+              v-for="item in buttons"
+              :disabled="processing"
               :key="item.title" @click="item.click">
               {{ item.title }}
             </b-nav-item>
@@ -24,12 +26,24 @@
 
 <script>
 import { logout } from '@/helpers/VeridaTransmitter'
+import { createNamespacedHelpers } from 'vuex'
+const {
+  mapState: mapSystemState,
+  mapMutations: mapSystemMutation
+} = createNamespacedHelpers('system')
 
 export default {
   name: 'Navbar',
   data () {
     return {
       buttons: [
+        {
+          title: 'User DID',
+          click: () => {
+            this.initRecipient(null)
+            this.$router.push('/')
+          }
+        },
         {
           title: 'Request Data',
           click: () => this.go('request')
@@ -41,7 +55,16 @@ export default {
       ]
     }
   },
+  computed: {
+    ...mapSystemState([
+      'processing',
+      'recipient'
+    ])
+  },
   methods: {
+    ...mapSystemMutation([
+      'initRecipient'
+    ]),
     go (mode) {
       this.$router.push({
         name: 'dashboard',

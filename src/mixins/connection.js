@@ -8,9 +8,17 @@ import {
 
 import { createNamespacedHelpers } from 'vuex'
 import { DATA_SEND } from '../constants/inbox'
-const { mapMutations: mapSystemMutations } = createNamespacedHelpers('system')
+const {
+  mapState: mapSystemState,
+  mapMutations: mapSystemMutations
+} = createNamespacedHelpers('system')
 
 export default {
+  computed: {
+    ...mapSystemState([
+      'processing'
+    ])
+  },
   methods: {
     ...mapSystemMutations([
       'initUser',
@@ -37,7 +45,7 @@ export default {
     },
     async handleInbox (msg) {
       const { data, type } = msg
-      if (type === DATA_SEND) {
+      if (type === DATA_SEND && this.processing) {
         const { data: records } = data
         const response = _.isArray(records[0]) ? records[0] : records
         this.setProcessing(false)

@@ -1,9 +1,6 @@
 <template>
   <div>
     <b-card class="mt-4">
-      <div v-if="processing" class="card-shadow">
-        <CircleLoader color="#2263c3" :size="100" class="card-spinner"/>
-      </div>
       <DataTypeSelect @change="select"/>
       <b-form-radio-group class="mt-3" :disabled="processing">
         <b-form-radio v-model="params.userSelect" :value="false">
@@ -16,6 +13,10 @@
       <b-button variant="success" @click="request" class="mt-3">
         Request
       </b-button>
+      <div v-if="processing" class="card-shadow">
+        <CircleLoader color="#2263c3" :size="100" class="card-spinner"/>
+        <b-button variant="light" @click="cancel">Cancel</b-button>
+      </div>
     </b-card>
     <b-table class="records mt-4"
       responsive
@@ -26,7 +27,6 @@
 </template>
 
 <script>
-// import Verida from '@verida/datastore/src/app'
 import { schemas } from '@/config/map'
 import DataTypeSelect from './DataTypeSelect'
 import { CircleLoader } from '@saeris/vue-spinners'
@@ -83,6 +83,9 @@ export default {
       }
 
       outbox.send(this.recipient, DATA_REQUEST, data, message, {})
+    },
+    cancel () {
+      this.setProcessing(false)
     }
   },
   watch: {

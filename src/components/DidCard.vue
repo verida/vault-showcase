@@ -13,15 +13,18 @@
             {{ errors[0] }}
           </b-form-invalid-feedback>
         </ValidationProvider>
-        <b-row align-h="around" class="mt-3">
-          <b-button variant="primary" :disabled="invalid"
-            @click="() => click('send')">
-            Send Data
-          </b-button>
-          <b-button variant="success" :disabled="invalid"
-            @click="() => click('request')">
-            Request Data
-          </b-button>
+        <b-row align-h="center">
+          <b-col sm="auto">
+            <b-button variant="primary" :disabled="invalid"
+              class="mr-3"
+              @click="() => click('send')">
+              Send Data
+            </b-button>
+            <b-button variant="success" :disabled="invalid"
+              @click="() => click('request')">
+              Request Data
+            </b-button>
+          </b-col>
         </b-row>
       </ValidationObserver>
     </b-card-text>
@@ -38,10 +41,6 @@ export default {
     return {
       did: null
     }
-  },
-  beforeMount () {
-    this.did = 'did:ethr:0xBFC6D08958617B25fD8a49a83721674744334091'
-    this.initRecipient(this.did)
   },
   methods: {
     ...mapSystemMutations([
