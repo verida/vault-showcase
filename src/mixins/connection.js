@@ -23,7 +23,8 @@ export default {
     ...mapSystemMutations([
       'initUser',
       'setList',
-      'setProcessing'
+      'setProcessing',
+      'initRecipient'
     ]),
     async init () {
       await bind(this.connect, this.disconnect)
@@ -31,6 +32,7 @@ export default {
       await this.loadUser()
     },
     async disconnect () {
+      this.initRecipient(null)
       await logout()
       await this.$router.push({ name: 'connect' })
     },

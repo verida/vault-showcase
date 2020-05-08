@@ -1,5 +1,4 @@
 const state = {
-  schema: false,
   user: null,
   recipient: null,
   list: null,
@@ -7,9 +6,6 @@ const state = {
 }
 
 const mutations = {
-  setSchema (state, payload) {
-    state.schema = payload
-  },
   initUser (state, payload) {
     state.user = payload
   },

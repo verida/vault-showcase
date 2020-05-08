@@ -72,6 +72,7 @@ export default {
       })
     },
     async disconnect () {
+      this.initRecipient(null)
       await logout()
       await this.$router.push({ name: 'connect' })
     }

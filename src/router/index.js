@@ -5,7 +5,7 @@ import Home from '@/views/Home'
 import Landing from '@/views/Landing'
 import Dashboard from '@/views/Dashboard'
 
-// import { RouteGuard } from '@/helpers/RouteGuard'
+import { RouteGuard } from '@/helpers/RouteGuard'
 
 Vue.use(VueRouter)
 
@@ -36,6 +36,6 @@ const router = new VueRouter({
   routes
 })
 
-// router.beforeResolve(RouteGuard)
+router.beforeResolve(RouteGuard)
 
 export default router
