@@ -1,26 +1,31 @@
 <template>
     <b-navbar toggleable="lg" type="dark" class="navbar-demo">
-        <b-navbar-brand href='/'>
-          <img src="@/assets/img/verida-logo-title.svg" />
-        </b-navbar-brand>
-        <b-navbar-toggle target="nav-collapse" />
-        <b-collapse id='nav-collapse' is-nav>
-          <b-navbar-nav class="ml-auto">
-            <b-nav-item active>
-              <did-statistics v-if="user"
-                :img="true" :title="user.name"
-                :text="`did:ethr:${user.address}`" />
-              <div v-else>
-                <BarLoader class="loader" color="#fff" :width="100" :height="4" />
-              </div>
-            </b-nav-item>
-            <b-nav-item>
-              <b-button variant="primary" @click="disconnect">
-                Disconnect
-              </b-button>
-            </b-nav-item>
-          </b-navbar-nav>
-        </b-collapse>
+      <div class="button--back-navigation"
+        v-if="user && $route.name !== 'home'"
+        @click="() => $router.push('/')">
+        <b-icon icon="chevron-left" variant="light" />
+      </div>
+      <b-navbar-brand href='/'>
+        <img src="@/assets/img/verida-logo-title.svg" />
+      </b-navbar-brand>
+      <b-navbar-toggle target="nav-collapse" />
+      <b-collapse id='nav-collapse' is-nav>
+        <b-navbar-nav class="ml-auto">
+          <b-nav-item active>
+            <did-statistics v-if="user"
+              :img="true" :title="user.name"
+              :text="`did:ethr:${user.address}`" />
+            <div v-else>
+              <BarLoader class="loader" color="#fff" :width="100" :height="4" />
+            </div>
+          </b-nav-item>
+          <b-nav-item>
+            <b-button variant="primary" @click="disconnect">
+              Disconnect
+            </b-button>
+          </b-nav-item>
+        </b-navbar-nav>
+      </b-collapse>
     </b-navbar>
 </template>
 
