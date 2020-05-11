@@ -5,14 +5,6 @@
         </b-navbar-brand>
         <b-navbar-toggle target="nav-collapse" />
         <b-collapse id='nav-collapse' is-nav>
-          <b-navbar-nav v-if="recipient">
-            <b-nav-item
-              v-for="item in buttons"
-              :disabled="processing"
-              :key="item.title" @click="item.click">
-              {{ item.title }}
-            </b-nav-item>
-          </b-navbar-nav>
           <b-navbar-nav class="ml-auto">
             <b-nav-item active>
               <did-statistics v-if="user"
@@ -48,28 +40,9 @@ export default {
     DidStatistics,
     BarLoader
   },
-  data () {
-    return {
-      buttons: [
-        {
-          title: 'User DID',
-          click: () => this.$router.push('/')
-        },
-        {
-          title: 'Request Data',
-          click: () => this.go('request')
-        },
-        {
-          title: 'Send Data',
-          click: () => this.go('send')
-        }
-      ]
-    }
-  },
   computed: {
     ...mapSystemState([
       'processing',
-      'recipient',
       'user'
     ])
   },
