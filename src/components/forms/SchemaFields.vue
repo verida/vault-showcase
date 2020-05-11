@@ -119,9 +119,20 @@ export default {
         await outbox.send(this.recipient, inboxType, outboxItem, text, {})
         this.$emit('reset')
         this.setProcessing(false)
+
+        this.$bvToast.toast(`Created ${this.entity.title} is sent to ${this.recipient}`, {
+          title: 'Inbox sent',
+          autoHideDelay: 3000,
+          variant: 'success'
+        })
       } catch (e) {
         this.setProcessing(false)
         console.info(e)
+        this.$bvToast.toast(`An error occurred, when sending ${this.entity.title}`, {
+          title: 'Inbox hasn\'t been sent',
+          autoHideDelay: 3000,
+          variant: 'danger'
+        })
       }
     }
   }
