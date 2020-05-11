@@ -53,10 +53,7 @@ export default {
       buttons: [
         {
           title: 'User DID',
-          click: () => {
-            this.initRecipient(null)
-            this.$router.push('/')
-          }
+          click: () => this.$router.push('/')
         },
         {
           title: 'Request Data',

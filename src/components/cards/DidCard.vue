@@ -33,7 +33,10 @@
 
 <script>
 import { createNamespacedHelpers } from 'vuex'
-const { mapMutations: mapSystemMutations } = createNamespacedHelpers('system')
+const {
+  mapState: mapSystemState,
+  mapMutations: mapSystemMutations
+} = createNamespacedHelpers('system')
 
 export default {
   name: 'DidCard',
@@ -41,6 +44,14 @@ export default {
     return {
       did: null
     }
+  },
+  computed: {
+    ...mapSystemState([
+      'recipient'
+    ])
+  },
+  beforeMount () {
+    this.did = this.recipient
   },
   methods: {
     ...mapSystemMutations([
