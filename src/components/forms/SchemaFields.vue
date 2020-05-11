@@ -52,6 +52,7 @@
 import DateFormatMixin from '@/mixins/date-format'
 import { DATA_SEND } from '@/constants/inbox'
 import { extract } from '@/helpers/NameModifier'
+import Verida from '@verida/datastore'
 
 import { createNamespacedHelpers } from 'vuex'
 const {
@@ -88,6 +89,10 @@ export default {
     async submit () {
       this.setProcessing(true)
       const message = []
+
+      if (this.entity.properties.didJwtVc) {
+        await this.createCredential()
+      }
 
       const store = await window.veridaApp.openDatastore(this.entity.path)
       const payload = {
@@ -134,6 +139,26 @@ export default {
           variant: 'danger'
         })
       }
+    },
+    async createCredential () {
+      const now = new Date()
+      const credential = {
+        "@context": [
+            "https://www.w3.org/2018/credentials/v1",
+            "https://www.w3.org/2018/credentials/examples/v1"
+        ],
+        "id": this.entity.path,
+        "type": ["VerifiableCredential"],
+        "issuer": window.veridaApp.user.did,
+        "issuanceDate": now.toISOString(),
+        "credentialSubject": {
+            "id": this.recipient,
+            ...this.data
+        }
+      };
+
+      const issuer = await Verida.Helpers.credentials.createIssuer(window.veridaApp.user)
+      this.data.didJwtVc = await Verida.Helpers.credentials.createVerifiableCredential(credential, issuer)
     }
   }
 }
