@@ -1,5 +1,8 @@
 <template>
-  <component :is="mode" />
+  <div>
+    <router-link to="/" class="small"> &#60; Back </router-link>
+    <component :is="mode" />
+  </div>
 </template>
 
 <script>

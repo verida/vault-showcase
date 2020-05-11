@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-card class="mt-4">
+    <b-card class="mt-3">
       <ValidationObserver ref="validator" mode="eager" v-slot="{ invalid }">
         <ValidationProvider rules="required">
           <DataTypeSelect @change="select" v-model="entity"/>

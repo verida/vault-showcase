@@ -1,6 +1,7 @@
 export const schemas = {
   'health/pathology/tests/covid19-pcr': {
     view: [
+      'name',
       'fullName',
       'dateOfBirth',
       'healthNumber',
@@ -9,6 +10,7 @@ export const schemas = {
       'testResult'
     ],
     create: [
+      'name',
       'fullName',
       'dateOfBirth',
       'healthNumber',

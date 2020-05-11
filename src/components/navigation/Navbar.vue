@@ -1,10 +1,5 @@
 <template>
     <b-navbar toggleable="lg" type="dark" class="navbar-demo">
-      <div class="button--back-navigation"
-        v-if="user && $route.name !== 'home'"
-        @click="() => $router.push('/')">
-        <b-icon icon="chevron-left" variant="light" />
-      </div>
       <b-navbar-brand href='/'>
         <img src="@/assets/img/verida-logo-title.svg" />
       </b-navbar-brand>
