@@ -1,5 +1,5 @@
 <template>
-  <b-card class="mt-4">
+  <b-card class="mt-3">
     <DataTypeSelect @change="select"/>
     <div v-if="entity" class="mt-4">
       <hr />
