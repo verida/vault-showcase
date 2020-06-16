@@ -1,5 +1,5 @@
 export const schemas = {
-  'health/pathology/tests/covid19-pcr': {
+  'https://schemas.verida.io/health/pathology/tests/covid19-pcr/schema.json': {
     view: [
       'name',
       'fullName',
@@ -15,7 +15,7 @@ export const schemas = {
       'testResult'
     ]
   },
-  'shopping/coupon': {
+  'https://schemas.verida.io/shopping/coupon/schema.json': {
     view: [
       'name',
       'description',
@@ -33,7 +33,7 @@ export const schemas = {
       'barcode'
     ]
   },
-  'identity/kyc/AU': {
+  'https://schemas.verida.io/identity/kyc/AU/schema.json': {
     view: [
       'firstName',
       'lastName',
