@@ -1,4 +1,4 @@
-import Verida from '@verida/datastore/src/app'
+import Verida from '@verida/datastore'
 import ProfileManager from './ProfileManager'
 import InboxManager from './InboxManager'
 

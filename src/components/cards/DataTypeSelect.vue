@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import Verida from '@verida/datastore/src/app'
+import Verida from '@verida/datastore'
 import { SCHEMAS } from '../../config/schemas'
 
 export default {

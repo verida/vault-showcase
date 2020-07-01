@@ -1,5 +1,5 @@
 import { getAccounts } from '@/helpers/VeridaTransmitter'
-import Verida from '@verida/datastore/src/app'
+import Verida from '@verida/datastore'
 
 const { VUE_APP_VERIDA_APP_NAME } = process.env
 
