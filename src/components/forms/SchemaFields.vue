@@ -122,6 +122,7 @@ export default {
 
       try {
         await outbox.send(this.recipient, inboxType, outboxItem, text, {})
+
         this.$emit('reset')
         this.setProcessing(false)
 
@@ -143,19 +144,19 @@ export default {
     async createCredential () {
       const now = new Date()
       const credential = {
-        "@context": [
-            "https://www.w3.org/2018/credentials/v1",
-            "https://www.w3.org/2018/credentials/examples/v1"
+        '@context': [
+          'https://www.w3.org/2018/credentials/v1',
+          'https://www.w3.org/2018/credentials/examples/v1'
         ],
-        "id": this.entity.path,
-        "type": ["VerifiableCredential"],
-        "issuer": window.veridaApp.user.did,
-        "issuanceDate": now.toISOString(),
-        "credentialSubject": {
-            "id": this.recipient,
-            ...this.data
+        id: this.entity.path,
+        type: ['VerifiableCredential'],
+        issuer: window.veridaApp.user.did,
+        issuanceDate: now.toISOString(),
+        credentialSubject: {
+          id: this.recipient,
+          ...this.data
         }
-      };
+      }
 
       const issuer = await Verida.Helpers.credentials.createIssuer(window.veridaApp.user)
       this.data.didJwtVc = await Verida.Helpers.credentials.createVerifiableCredential(credential, issuer)

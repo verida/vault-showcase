@@ -1,5 +1,7 @@
+const { VUE_APP_SCHEMA_PATHS } = process.env
+
 export const SCHEMAS = [
-  'https://schemas.verida.io/identity/kyc/AU/schema.json',
-  'https://schemas.verida.io/shopping/coupon/schema.json',
-  'https://schemas.verida.io/health/pathology/tests/covid19-pcr/schema.json'
+  `${VUE_APP_SCHEMA_PATHS}identity/kyc/AU/schema.json`,
+  `${VUE_APP_SCHEMA_PATHS}shopping/coupon/schema.json`,
+  `${VUE_APP_SCHEMA_PATHS}health/pathology/tests/covid19-pcr/schema.json`
 ]

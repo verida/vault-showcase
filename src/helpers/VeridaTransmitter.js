@@ -5,7 +5,7 @@ import InboxManager from './InboxManager'
 const {
   VUE_APP_VERIDA_APP_NAME,
   VUE_APP_VERIDA_ENVIRONMENT,
-  VUE_APP_VERIDA_SCHEMAS_BASE_PATH
+  VUE_APP_SCHEMA_PATHS
 } = process.env
 
 const CHAIN = 'ethr'
@@ -25,7 +25,13 @@ export async function connectVerida (force, canceled = () => {}) {
   Verida.setConfig({
     appName: VUE_APP_VERIDA_APP_NAME,
     environment: VUE_APP_VERIDA_ENVIRONMENT,
-    baseSchemasPath: VUE_APP_VERIDA_SCHEMAS_BASE_PATH
+    servers: {
+      testnet: {
+        schemaPaths: {
+          'https://schemas.testnet.verida.io/': VUE_APP_SCHEMA_PATHS
+        }
+      }
+    }
   })
 
   if (!window.veridaApp) {
