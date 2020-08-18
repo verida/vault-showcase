@@ -17,9 +17,9 @@
           </b-form-radio-group>
         </b-form-group>
         <datetime
-          v-else-if="attributes[key].format && attributes[key].format.includes('date')"
+          v-else-if="attributes[key].format && (attributes[key].format.includes('date') || attributes[key].format.includes('date-date'))"
           :auto="true"
-          :format="format(attributes[key].format)"
+          :format="formatDatetime(attributes[key].format)"
           :type="attributes[key].format.replace('-', '')"
           input-class="form-control"
           v-model="data[key]" />
@@ -53,6 +53,7 @@ import DateFormatMixin from '@/mixins/date-format'
 import { DATA_SEND } from '@/constants/inbox'
 import { extract } from '@/helpers/NameModifier'
 import Verida from '@verida/datastore'
+import { DateTime } from 'luxon'
 
 import { createNamespacedHelpers } from 'vuex'
 const {
@@ -95,16 +96,26 @@ export default {
       }
 
       const store = await window.veridaApp.openDatastore(this.entity.path)
+      const data = this.formatData(this.data)
+
       const payload = {
-        name: extract(this.data, this.entity.schema),
-        ...this.data
+        name: extract(data, this.entity.schema),
+        ...data
       }
+
+      console.log(payload)
 
       message.push(payload)
       const saved = await store.save(payload)
 
       if (!saved) {
         this.setProcessing(false)
+        console.error(store.errors)
+        this.$bvToast.toast(`An error occurred, when generating credential`, {
+          title: 'Unable to generate',
+          autoHideDelay: 3000,
+          variant: 'danger'
+        })
         return false
       }
 
@@ -112,6 +123,16 @@ export default {
     },
     format (key, value) {
       this.data[key] = this.attributes[key].type === 'number' ? Number(value) : value
+    },
+    formatData(data) {
+      for (var key in data) {
+        // convert date-time to proper format for JSON schema
+        if (this.attributes[key] && this.attributes[key].type == 'string' && this.attributes[key].format == 'date') {
+          data[key] = DateTime.fromISO(data[key]).toFormat('yyyy-LL-dd')
+        }
+      }
+
+      return data
     },
     async sendInbox (message, name) {
       const { outbox } = window.veridaApp
