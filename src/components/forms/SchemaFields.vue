@@ -90,9 +90,10 @@ export default {
     async submit () {
       this.setProcessing(true)
       const message = []
+      const schemaId = this.entity['$id']
 
       // Populate metadata fields
-      switch (this.entity.schema) {
+      switch (schemaId) {
         case 'https://schemas.verida.io/identity/kyc/AU/schema.json':
           await this.createCredential()
           this.data.name = `${this.data.firstName} ${this.data.lastName} - KYC`
@@ -100,11 +101,11 @@ export default {
           break;
       }
 
-      const store = await window.veridaApp.openDatastore(this.entity.path)
+      const store = await window.veridaApp.openDatastore(schemaId)
       const data = this.formatData(this.data)
 
       const payload = {
-        name: extract(data, this.entity.schema),
+        name: extract(data, schemaId),
         ...data
       }
 
@@ -144,7 +145,7 @@ export default {
 
       const inboxType = DATA_SEND
       const outboxItem = { data: message }
-      const text = `Sending you ${this.entity.title} called "${name}"`
+      const text = `You have a new ${this.entity.title}: "${name}"`
 
       try {
         await outbox.send(this.recipient, inboxType, outboxItem, text, {})
@@ -173,7 +174,7 @@ export default {
             "https://www.w3.org/2018/credentials/v1",
             "https://www.w3.org/2018/credentials/examples/v1"
         ],
-        "id": this.entity.path,
+        "id": this.entity['id'],
         "type": ["VerifiableCredential"],
         "issuer": window.veridaApp.user.did,
         "issuanceDate": now.toISOString(),

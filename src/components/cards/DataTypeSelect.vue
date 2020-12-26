@@ -5,7 +5,7 @@
       v-model="selected"
       @change="obj => $emit('change', obj)">
       <option v-for="(option, idx) in options" :key="idx" :value="option">
-        {{ option.text }}
+        {{ option.schema.title }}
       </option>
     </b-form-select>
   </div>
@@ -41,12 +41,8 @@ export default {
 
       for (const i in SCHEMAS) {
         const document = await verida.getSchema(SCHEMAS[i], true)
-        console.log(i, document)
         this.options.push({
-          text: document.title,
-          path: SCHEMAS[i],
-          schema: document['$id'],
-          properties: document.properties
+          schema: document
         })
       }
     }

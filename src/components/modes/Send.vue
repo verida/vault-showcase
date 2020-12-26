@@ -18,7 +18,6 @@
 
 <script>
 import { CircleLoader } from '@saeris/vue-spinners'
-import { schemas } from '@/config/map'
 import DataTypeSelect from '../cards/DataTypeSelect'
 import SchemaFields from '../forms/SchemaFields'
 
@@ -45,8 +44,8 @@ export default {
     ])
   },
   methods: {
-    async select ({ text, path, schema, properties }) {
-      this.entity = { schema, title: text, path, properties }
+    async select ({ schema }) {
+      this.entity = schema
       await this.$nextTick()
       this.init()
     },
@@ -54,7 +53,7 @@ export default {
       this.data = {}
       this.attributes = {}
 
-      schemas[this.entity.schema].create.forEach(key => {
+      this.entity.layouts.create.forEach(key => {
         this.$set(this.data, key, '')
         this.$set(this.attributes, key, this.entity.properties[key])
       })
