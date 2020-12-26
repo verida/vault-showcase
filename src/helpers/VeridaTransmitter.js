@@ -12,6 +12,20 @@ const CHAIN = 'ethr'
 
 const callbacks = {}
 
+Verida.setConfig({
+  appName: VUE_APP_VERIDA_APP_NAME,
+  environment: VUE_APP_VERIDA_ENVIRONMENT,
+  baseSchemasPath: VUE_APP_VERIDA_SCHEMAS_BASE_PATH,
+  servers: {
+    testnet: {
+      schemaPaths: {
+        'https://schemas.verida.io/': 'http://localhost:5010/',
+        'https://schemas.testnet.verida.io/': 'http://localhost:5010/'
+      }
+    }
+  }
+})
+
 /**
  * Connect the user to their Verida Datastore Application
  *
@@ -22,12 +36,6 @@ export async function connectVerida (force, canceled = () => {}) {
   const web3Provider = await Verida.Helpers.wallet.connectWeb3(CHAIN)
   const address = await Verida.Helpers.wallet.getAddress(CHAIN)
 
-  Verida.setConfig({
-    appName: VUE_APP_VERIDA_APP_NAME,
-    environment: VUE_APP_VERIDA_ENVIRONMENT,
-    baseSchemasPath: VUE_APP_VERIDA_SCHEMAS_BASE_PATH
-  })
-
   if (!window.veridaApp) {
     window.veridaApp = new Verida({
       address: address,
@@ -36,6 +44,7 @@ export async function connectVerida (force, canceled = () => {}) {
     })
     window.profileManager = new ProfileManager(window.veridaApp)
     window.inboxManager = new InboxManager(window.veridaApp)
+    window.Verida = Verida
 
     await window.profileManager.init()
   }
@@ -107,4 +116,8 @@ export async function fetchInbox (filter = {}) {
 
 export async function getAddress () {
   return Verida.Helpers.wallet.getAddress(CHAIN)
+}
+
+export function getVerida() {
+  return Verida
 }

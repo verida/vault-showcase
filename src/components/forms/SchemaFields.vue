@@ -91,8 +91,13 @@ export default {
       this.setProcessing(true)
       const message = []
 
-      if (this.entity.properties.didJwtVc) {
-        await this.createCredential()
+      // Populate metadata fields
+      switch (this.entity.schema) {
+        case 'https://schemas.verida.io/identity/kyc/AU/schema.json':
+          await this.createCredential()
+          this.data.name = `${this.data.firstName} ${this.data.lastName} - KYC`
+          this.data.summary = `Issued ${this.data.insertedAt} in ${this.data.state}`
+          break;
       }
 
       const store = await window.veridaApp.openDatastore(this.entity.path)

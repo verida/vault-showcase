@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import Verida from '@verida/datastore'
+import { getVerida } from '../../helpers/VeridaTransmitter'
 import { SCHEMAS } from '../../config/schemas'
 
 export default {
@@ -37,9 +37,11 @@ export default {
   methods: {
     async init () {
       this.options = []
+      const verida = getVerida()
 
       for (const i in SCHEMAS) {
-        const document = await Verida.getSchema(SCHEMAS[i], true)
+        const document = await verida.getSchema(SCHEMAS[i], true)
+        console.log(i, document)
         this.options.push({
           text: document.title,
           path: SCHEMAS[i],
