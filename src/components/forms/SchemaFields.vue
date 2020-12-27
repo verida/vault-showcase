@@ -99,6 +99,11 @@ export default {
           this.data.name = `${this.data.firstName} ${this.data.lastName} - KYC`
           this.data.summary = `Issued ${this.data.insertedAt} in ${this.data.state}`
           break;
+        case 'https://schemas.verida.io/health/pathology/tests/covid19/pcr/schema.json':
+          this.data.name = `${this.data.fullName}: COVID-19 PCR`
+          this.data.summary = `Result: ${this.data.result}`
+          this.data.testTimestamp = (new Date()).toISOString()
+          break;
       }
 
       const store = await window.veridaApp.openDatastore(schemaId)
