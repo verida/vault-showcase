@@ -77,15 +77,14 @@ export default {
       this.records = null
       this.entity = schema.title
       this.properties = schema.properties
-      this.params.requestSchema = schema
+      this.params.requestSchema = schema['$id']
     },
     request () {
       this.setProcessing(true)
 
       const { outbox } = window.veridaApp
-      const message = `The ${this.entity} records have been requested by Generic Demo App`
+      const message = `Verida: Generic Demo is requesting access to "${this.entity}" records`
       const data = {
-        subject: 'Generic Demo Request',
         ...this.params
       }
 
