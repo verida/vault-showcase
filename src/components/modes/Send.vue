@@ -56,6 +56,7 @@ export default {
       this.entity.layouts.create.forEach(key => {
         this.$set(this.data, key, '')
         this.$set(this.attributes, key, this.entity.properties[key])
+        this.$set(this.attributes[key], 'required', this.entity.required.indexOf(key) !== -1)
       })
 
       this.$refs['schema-fields'].$refs.validator.reset()
