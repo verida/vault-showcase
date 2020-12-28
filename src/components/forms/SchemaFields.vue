@@ -114,7 +114,8 @@ export default {
         ...data
       }
 
-      console.log(payload)
+      // Delete any key avlues that are empty strings
+      Object.keys(payload).forEach((key) => (payload[key] == '') && delete payload[key]);
 
       message.push(payload)
       const saved = await store.save(payload)
