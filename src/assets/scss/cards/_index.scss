@@ -3,8 +3,10 @@
 .dashboard-card {
   margin: 15px;
   max-width: calc(100% - 30px);
-  @media (min-width: 600px) {
-    width: 500px;
+
+  .card.mt-3 {
+    max-width: 500px;
+    margin: 0 auto;
   }
 }
 

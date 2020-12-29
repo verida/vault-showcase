@@ -96,8 +96,9 @@ export default {
       switch (schemaId) {
         case 'https://schemas.verida.io/identity/kyc/AU/schema.json':
           await this.createCredential()
+          const now = DateTime.local().toFormat('d MMM yyyy')
           this.data.name = `${this.data.firstName} ${this.data.lastName} - KYC`
-          this.data.summary = `Issued ${this.data.insertedAt} in ${this.data.state}`
+          this.data.summary = `Issued on ${now} in ${this.data.state}`
           break;
         case 'https://schemas.verida.io/health/pathology/tests/covid19/pcr/schema.json':
           this.data.name = `${this.data.fullName}: COVID-19 PCR`
@@ -155,7 +156,7 @@ export default {
 
       try {
         await outbox.send(this.recipient, inboxType, outboxItem, text, {})
-        this.$emit('reset')
+        //this.$emit('reset')
         this.setProcessing(false)
 
         this.$bvToast.toast(`Created ${this.entity.title} is sent to ${this.recipient}`, {
