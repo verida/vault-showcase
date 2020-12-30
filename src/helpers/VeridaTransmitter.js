@@ -16,14 +16,14 @@ Verida.setConfig({
   appName: VUE_APP_VERIDA_APP_NAME,
   environment: VUE_APP_VERIDA_ENVIRONMENT,
   baseSchemasPath: VUE_APP_VERIDA_SCHEMAS_BASE_PATH,
-  servers: {
+  /*servers: {
     testnet: {
       schemaPaths: {
         'https://schemas.verida.io/': 'http://localhost:5010/',
         'https://schemas.testnet.verida.io/': 'http://localhost:5010/'
       }
     }
-  }
+  }*/
 })
 
 /**
