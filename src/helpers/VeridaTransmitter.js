@@ -33,8 +33,9 @@ Verida.setConfig({
  * @param {function} canceled if sign up is cancelled by user
  */
 export async function connectVerida (force, canceled = () => {}) {
-  const web3Provider = await Verida.Helpers.wallet.connectWeb3(CHAIN)
-  const address = await Verida.Helpers.wallet.getAddress(CHAIN)
+  let web3Provider = await Verida.Helpers.wallet.connectWeb3(CHAIN)
+  window.web3Provider = web3Provider
+  const address = await window.web3Provider.getAddress()
 
   if (!window.veridaApp) {
     window.veridaApp = new Verida({
@@ -115,7 +116,7 @@ export async function fetchInbox (filter = {}) {
 }
 
 export async function getAddress () {
-  return Verida.Helpers.wallet.getAddress(CHAIN)
+  return window.web3Provider.getAddress(CHAIN)
 }
 
 export function getVerida() {
