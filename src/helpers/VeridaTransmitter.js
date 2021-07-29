@@ -4,12 +4,10 @@ import InboxManager from './InboxManager'
 
 const {
   VUE_APP_VERIDA_APP_NAME,
-  VUE_APP_VERIDA_ENVIRONMENT,
-  VUE_APP_SCHEMA_PATHS
+  VUE_APP_VERIDA_ENVIRONMENT
 } = process.env
 
 const CHAIN = 'ethr'
-
 const callbacks = {}
 
 /**
@@ -19,19 +17,22 @@ const callbacks = {}
  * @param {function} canceled if sign up is cancelled by user
  */
 export async function connectVerida (force, canceled = () => {}) {
-  const web3Provider = await Verida.Helpers.wallet.connectWeb3(CHAIN)
-  const address = await Verida.Helpers.wallet.getAddress(CHAIN)
+  const web3Provider = await Verida.Helpers.wallet.connectWeb3(CHAIN, {})
+  window.web3Provider = web3Provider
+  const address = await window.web3Provider.getAddress()
 
   Verida.setConfig({
     appName: VUE_APP_VERIDA_APP_NAME,
-    environment: VUE_APP_VERIDA_ENVIRONMENT,
-    servers: {
+    environment: VUE_APP_VERIDA_ENVIRONMENT
+    /*
+  servers: {
       testnet: {
         schemaPaths: {
           'https://schemas.testnet.verida.io/': VUE_APP_SCHEMA_PATHS
         }
       }
     }
+  */
   })
 
   if (!window.veridaApp) {
@@ -112,5 +113,7 @@ export async function fetchInbox (filter = {}) {
 }
 
 export async function getAddress () {
-  return Verida.Helpers.wallet.getAddress(CHAIN)
+  if (window.web3Provider) {
+    return window.web3Provider.getAddress()
+  }
 }
