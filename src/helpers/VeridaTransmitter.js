@@ -57,11 +57,14 @@ export async function connectVerida (force, canceled = () => {}) {
   }
 }
 
+// this needs cleaning up
 export async function getAccounts () {
-  return new Promise((resolve, reject) => {
-    const handler = (err, accounts) => err ? reject(err) : resolve(accounts)
-    window.web3.eth.getAccounts(handler)
-  })
+  const address = await getAddress()
+  if (address) {
+    return [address]
+  }
+
+  return []
 }
 
 /**
