@@ -19,7 +19,6 @@
         <datetime
           v-else-if="attributes[key].format && attributes[key].format.includes('date')"
           :auto="true"
-          :format="format(attributes[key].format)"
           :type="attributes[key].format.replace('-', '')"
           input-class="form-control"
           v-model="data[key]" />
@@ -100,13 +99,38 @@ export default {
         ...this.data
       }
 
-      message.push(payload)
+      // quick hack to format dates as expected for JSON validation
+      for (const key in this.attributes) {
+        if (this.attributes[key].format === 'date') {
+          payload[key] = payload[key].substr(0, 10)
+        }
+      }
+
+      // quick hack to set meaningful names
+      switch (this.entity.schema) {
+        case 'https://schemas.verida.io/identity/kyc/AU/schema.json':
+          payload.name = `${payload.firstName} ${payload.lastName} KYC`
+          break
+        case 'https://schemas.verida.io/health/pathology/tests/covid19/pcr/schema.json':
+          payload.name = `${payload.fullName} COVID Result`
+      }
+
       const saved = await store.save(payload)
 
       if (!saved) {
+        console.error(store.errors)
+        this.$bvToast.toast(`An error occurred, when saving ${this.entity.title}. See console.`, {
+          title: 'Error',
+          autoHideDelay: 3000,
+          variant: 'danger'
+        })
+
         this.setProcessing(false)
         return false
       }
+
+      const result = await store.get(saved.id)
+      message.push(result)
 
       await this.sendInbox(message, payload.name)
     },
@@ -121,7 +145,8 @@ export default {
       const text = `Sending you ${this.entity.title} called "${name}"`
 
       try {
-        await outbox.send(this.recipient, inboxType, outboxItem, text, {})
+        const response = await outbox.send(this.recipient, inboxType, outboxItem, text, {})
+        console.log('outbox.send() response', response)
 
         this.$emit('reset')
         this.setProcessing(false)

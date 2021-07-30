@@ -1,18 +1,20 @@
+// @todo: This should use the layouts in the schema
+
 export const schemas = {
-  'https://schemas.verida.io/health/pathology/tests/covid19-pcr/schema.json': {
+  'https://schemas.verida.io/health/pathology/tests/covid19/pcr/schema.json': {
     view: [
-      'name',
       'fullName',
-      'healthNumber',
-      'testType',
-      'testResult'
+      'dateOfBirth',
+      'patientId',
+      'testTimestamp',
+      'result'
     ],
     create: [
-      'name',
       'fullName',
-      'healthNumber',
-      'testType',
-      'testResult'
+      'dateOfBirth',
+      'patientId',
+      'testTimestamp',
+      'result'
     ]
   },
   'https://schemas.verida.io/shopping/coupon/schema.json': {
