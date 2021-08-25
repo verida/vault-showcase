@@ -20,6 +20,12 @@ export default {
       const { mode } = this.$route.params
       return mode
     }
+  },
+  beforeMount () {
+    const { mode } = this.$route.params
+    if (mode !== 'request' || mode !== 'send') {
+      // this.$router.push({ name: 'home' })
+    }
   }
 }
 </script>

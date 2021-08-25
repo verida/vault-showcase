@@ -9,13 +9,13 @@
           <b-nav-item active>
             <did-statistics v-if="user"
               :img="true" :title="user.name"
-              :text="`did:ethr:${user.address}`" />
+              :text="`${user.address}`" />
             <div v-else>
               <BarLoader class="loader" color="#fff" :width="100" :height="4" />
             </div>
           </b-nav-item>
           <b-nav-item>
-            <b-button variant="primary" @click="disconnect">
+            <b-button v-if="user" variant="primary" @click="disconnect">
               Disconnect
             </b-button>
           </b-nav-item>
@@ -48,7 +48,8 @@ export default {
   },
   methods: {
     ...mapSystemMutation([
-      'initRecipient'
+      'initRecipient',
+      'initUser'
     ]),
     go (mode) {
       this.$router.push({
@@ -58,8 +59,11 @@ export default {
     },
     async disconnect () {
       this.initRecipient(null)
-      await logout()
-      await this.$router.push({ name: 'connect' })
+      this.initUser(null)
+      const redirect = () => {
+        this.$router.push({ name: 'connect' })
+      }
+      await logout(redirect)
     }
   }
 }

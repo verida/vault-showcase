@@ -24,12 +24,13 @@ export default {
       'initUser',
       'setList',
       'setProcessing',
-      'initRecipient'
+      'initRecipient',
+      'setReconnecting'
     ]),
     async init () {
+      this.setReconnecting(true)
       await bind(this.connect, this.disconnect)
-      await connectVerida()
-      await this.loadUser()
+      await connectVerida(this.loadUser)
     },
     async disconnect () {
       this.initRecipient(null)
@@ -39,8 +40,8 @@ export default {
     async loadUser () {
       const address = await getAddress()
       const name = await window.profileManager.get('name')
-
       this.initUser({ address, name })
+      this.setReconnecting(false)
     },
     connect () {
       bindInbox(this.handleInbox)
@@ -56,6 +57,6 @@ export default {
     }
   },
   async beforeMount () {
-    await this.init()
+    // await this.init()
   }
 }
