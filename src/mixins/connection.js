@@ -68,6 +68,7 @@ export default {
       if (userLoginSession) {
         await this.init()
       } else {
+        this.initUser({ address: '', name: '' })
         store.remove(VUE_APP_VERIDA_USER_SESSION)
       }
     }
