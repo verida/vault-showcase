@@ -2,7 +2,8 @@ const state = {
   user: null,
   recipient: null,
   list: null,
-  processing: false
+  processing: false,
+  reconnecting: false
 }
 
 const mutations = {
@@ -17,6 +18,9 @@ const mutations = {
   },
   setProcessing (state, payload) {
     state.processing = payload
+  },
+  setReconnecting (state, payload) {
+    state.reconnecting = payload
   }
 }
 

@@ -8,6 +8,12 @@ import {
 
 import { createNamespacedHelpers } from 'vuex'
 import { DATA_SEND } from '../constants/inbox'
+import store from 'store'
+
+const {
+  VUE_APP_VERIDA_USER_SESSION
+} = process.env
+
 const {
   mapState: mapSystemState,
   mapMutations: mapSystemMutations
@@ -24,23 +30,23 @@ export default {
       'initUser',
       'setList',
       'setProcessing',
-      'initRecipient'
+      'initRecipient',
+      'setReconnecting'
     ]),
     async init () {
+      this.setReconnecting(true)
       await bind(this.connect, this.disconnect)
-      await connectVerida()
-      await this.loadUser()
+      await connectVerida(this.loadUser)
     },
     async disconnect () {
       this.initRecipient(null)
-      await logout()
-      await this.$router.push({ name: 'connect' })
+      logout(() => this.$router.push({ name: 'connect' }))
     },
     async loadUser () {
       const address = await getAddress()
       const name = await window.profileManager.get('name')
-
       this.initUser({ address, name })
+      this.setReconnecting(false)
     },
     connect () {
       bindInbox(this.handleInbox)
@@ -56,6 +62,15 @@ export default {
     }
   },
   async beforeMount () {
-    await this.init()
+    const activePath = this.$router.currentRoute.path
+    const userLoginSession = store.get('_verida_auth_user_signature')
+    if (activePath !== '/connect') {
+      if (userLoginSession) {
+        await this.init()
+      } else {
+        this.initUser({ address: '', name: '' })
+        store.remove(VUE_APP_VERIDA_USER_SESSION)
+      }
+    }
   }
 }
