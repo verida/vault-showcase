@@ -1,11 +1,11 @@
 export default {
   methods: {
-    format (str) {
+    formatDatetime (str) {
       switch (str) {
         case 'date-time':
-          return 'dd-LL-yyyy HH:mm'
+          return 'yyyy-LL-dd HH:mm'
         case 'date':
-          return 'dd-LL-yyyy'
+          return 'yyyy-LL-dd'
         default:
           return ''
       }

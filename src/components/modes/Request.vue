@@ -33,7 +33,6 @@
 </template>
 
 <script>
-import { schemas } from '@/config/map'
 import DataTypeSelect from '../cards/DataTypeSelect'
 import { CircleLoader } from '@saeris/vue-spinners'
 
@@ -55,6 +54,7 @@ export default {
       entity: null,
       properties: null,
       records: null,
+      schema: null,
       params: {
         requestSchema: null,
         userSelect: null
@@ -72,19 +72,19 @@ export default {
     ...mapSystemMutations([
       'setProcessing'
     ]),
-    select ({ schema, text, properties }) {
+    select ({ schema }) {
+      this.schema = schema
       this.records = null
-      this.entity = text
-      this.properties = properties
-      this.params.requestSchema = schema
+      this.entity = schema.title
+      this.properties = schema.properties
+      this.params.requestSchema = schema['$id']
     },
     request () {
       this.setProcessing(true)
 
       const { outbox } = window.veridaApp
-      const message = `The ${this.entity} records have been requested by Generic Demo App`
+      const message = `Verida: Generic Demo is requesting access to "${this.entity}" records`
       const data = {
-        subject: 'Generic Demo Request',
         ...this.params
       }
 
@@ -97,7 +97,7 @@ export default {
   watch: {
     list () {
       if (this.list) {
-        const keys = schemas[this.params.requestSchema].view
+        const keys = this.schema.layouts.view
         this.records = this.list.map(obj => _.pick(obj, keys))
       }
     }
