@@ -17,9 +17,8 @@
           </b-form-radio-group>
         </b-form-group>
         <datetime
-          v-else-if="attributes[key].format && (attributes[key].format.includes('date') || attributes[key].format.includes('date-date'))"
+          v-else-if="attributes[key].format && attributes[key].format.includes('date')"
           :auto="true"
-          :format="formatDatetime(attributes[key].format)"
           :type="attributes[key].format.replace('-', '')"
           input-class="form-control"
           v-model="data[key]" />
@@ -53,7 +52,6 @@ import DateFormatMixin from '@/mixins/date-format'
 import { DATA_SEND } from '@/constants/inbox'
 import { extract } from '@/helpers/NameModifier'
 import Verida from '@verida/datastore'
-import { DateTime } from 'luxon'
 
 import { createNamespacedHelpers } from 'vuex'
 const {
@@ -90,73 +88,67 @@ export default {
     async submit () {
       this.setProcessing(true)
       const message = []
-      const schemaId = this.entity['$id']
 
-      // Populate metadata fields
-      switch (schemaId) {
-        case 'https://schemas.verida.io/identity/kyc/AU/schema.json':
-          await this.createCredential()
-          const now = DateTime.local().toFormat('d MMM yyyy')
-          this.data.name = `${this.data.firstName} ${this.data.lastName} - KYC`
-          this.data.summary = `Issued on ${now} in ${this.data.state}`
-          break;
-        case 'https://schemas.verida.io/health/pathology/tests/covid19/pcr/schema.json':
-          this.data.name = `${this.data.fullName}: COVID-19 PCR`
-          this.data.summary = `Result: ${this.data.result}`
-          this.data.testTimestamp = (new Date()).toISOString()
-          break;
+      if (this.entity.properties.didJwtVc) {
+        await this.createCredential()
       }
 
-      const store = await window.veridaApp.openDatastore(schemaId)
-      const data = this.formatData(this.data)
-
+      const store = await window.veridaApp.openDatastore(this.entity.path)
       const payload = {
-        name: extract(data, schemaId),
-        ...data
+        name: extract(this.data, this.entity.schema),
+        ...this.data
       }
 
-      // Delete any key avlues that are empty strings
-      Object.keys(payload).forEach((key) => (payload[key] == '') && delete payload[key]);
+      // quick hack to format dates as expected for JSON validation
+      for (const key in this.attributes) {
+        if (this.attributes[key].format === 'date') {
+          payload[key] = payload[key].substr(0, 10)
+        }
+      }
 
-      message.push(payload)
+      // quick hack to set meaningful names
+      switch (this.entity.schema) {
+        case 'https://schemas.verida.io/identity/kyc/AU/schema.json':
+          payload.name = `${payload.firstName} ${payload.lastName} KYC`
+          break
+        case 'https://schemas.verida.io/health/pathology/tests/covid19/pcr/schema.json':
+          payload.name = `${payload.fullName} COVID Result`
+      }
+
       const saved = await store.save(payload)
 
       if (!saved) {
-        this.setProcessing(false)
         console.error(store.errors)
-        this.$bvToast.toast(`An error occurred, when generating credential`, {
-          title: 'Unable to generate',
+        this.$bvToast.toast(`An error occurred, when saving ${this.entity.title}. See console.`, {
+          title: 'Error',
           autoHideDelay: 3000,
           variant: 'danger'
         })
+
+        this.setProcessing(false)
         return false
       }
+
+      const result = await store.get(saved.id)
+      message.push(result)
 
       await this.sendInbox(message, payload.name)
     },
     format (key, value) {
       this.data[key] = this.attributes[key].type === 'number' ? Number(value) : value
     },
-    formatData(data) {
-      for (var key in data) {
-        // convert date-time to proper format for JSON schema
-        if (this.attributes[key] && this.attributes[key].type == 'string' && this.attributes[key].format == 'date') {
-          data[key] = DateTime.fromISO(data[key]).toFormat('yyyy-LL-dd')
-        }
-      }
-
-      return data
-    },
     async sendInbox (message, name) {
       const { outbox } = window.veridaApp
 
       const inboxType = DATA_SEND
       const outboxItem = { data: message }
-      const text = `You have a new ${this.entity.title}: "${name}"`
+      const text = `Sending you ${this.entity.title} called "${name}"`
 
       try {
-        await outbox.send(this.recipient, inboxType, outboxItem, text, {})
-        //this.$emit('reset')
+        const response = await outbox.send(this.recipient, inboxType, outboxItem, text, {})
+        console.log('outbox.send() response', response)
+
+        this.$emit('reset')
         this.setProcessing(false)
 
         this.$bvToast.toast(`Created ${this.entity.title} is sent to ${this.recipient}`, {
@@ -177,19 +169,19 @@ export default {
     async createCredential () {
       const now = new Date()
       const credential = {
-        "@context": [
-            "https://www.w3.org/2018/credentials/v1",
-            "https://www.w3.org/2018/credentials/examples/v1"
+        '@context': [
+          'https://www.w3.org/2018/credentials/v1',
+          'https://www.w3.org/2018/credentials/examples/v1'
         ],
-        "id": this.entity['id'],
-        "type": ["VerifiableCredential"],
-        "issuer": window.veridaApp.user.did,
-        "issuanceDate": now.toISOString(),
-        "credentialSubject": {
-            "id": this.recipient,
-            ...this.data
+        id: this.entity.path,
+        type: ['VerifiableCredential'],
+        issuer: window.veridaApp.user.did,
+        issuanceDate: now.toISOString(),
+        credentialSubject: {
+          id: this.recipient,
+          ...this.data
         }
-      };
+      }
 
       const issuer = await Verida.Helpers.credentials.createIssuer(window.veridaApp.user)
       this.data.didJwtVc = await Verida.Helpers.credentials.createVerifiableCredential(credential, issuer)

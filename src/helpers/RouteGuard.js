@@ -1,13 +1,12 @@
-import { getAccounts } from '@/helpers/VeridaTransmitter'
-import Verida from '@verida/datastore'
+import store from 'store'
 
-const { VUE_APP_VERIDA_APP_NAME } = process.env
+const {
+  VUE_APP_VERIDA_USER_SESSION
+} = process.env
 
 const redirect = async (to, next) => {
-  const accounts = await getAccounts()
   const { guest, authorized } = to.meta
-  const webSessionExists = await Verida.webSessionExists('did:ethr:' + accounts[0], VUE_APP_VERIDA_APP_NAME)
-  const connected = accounts.length && webSessionExists
+  const connected = store.get(VUE_APP_VERIDA_USER_SESSION)
 
   switch (true) {
     case connected && guest:

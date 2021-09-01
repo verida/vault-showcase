@@ -5,14 +5,14 @@
       v-model="selected"
       @change="obj => $emit('change', obj)">
       <option v-for="(option, idx) in options" :key="idx" :value="option">
-        {{ option.schema.title }}
+        {{ option.text }}
       </option>
     </b-form-select>
   </div>
 </template>
 
 <script>
-import { getVerida } from '../../helpers/VeridaTransmitter'
+import Verida from '@verida/datastore'
 import { SCHEMAS } from '../../config/schemas'
 
 export default {
@@ -37,12 +37,14 @@ export default {
   methods: {
     async init () {
       this.options = []
-      const verida = getVerida()
 
       for (const i in SCHEMAS) {
-        const document = await verida.getSchema(SCHEMAS[i], true)
+        const document = await Verida.getSchema(SCHEMAS[i], true)
         this.options.push({
-          schema: document
+          text: document.title,
+          path: SCHEMAS[i],
+          schema: document.$id,
+          properties: document.properties
         })
       }
     }

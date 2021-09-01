@@ -1,3 +1,4 @@
+
 button:focus {
   outline: none;
 }
@@ -8,6 +9,8 @@ a, input[type='button'] {
 a, input[type='button']::-moz-focus-inner {
   border: 0;
 }
+
+
 
 .button--back-navigation{
   cursor: pointer;

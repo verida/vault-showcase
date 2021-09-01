@@ -1,70 +1,72 @@
+import { veridaVaultLogin } from '@verida/vault-auth-client'
 import Verida from '@verida/datastore'
+import store from 'store'
 import ProfileManager from './ProfileManager'
 import InboxManager from './InboxManager'
 
 const {
+  VUE_APP_LOGO_URL,
+  VUE_APP_LOGIN_URI,
+  VUE_APP_SERVER_URI,
   VUE_APP_VERIDA_APP_NAME,
   VUE_APP_VERIDA_ENVIRONMENT,
-  VUE_APP_VERIDA_SCHEMAS_BASE_PATH
+  VUE_APP_VERIDA_USER_SESSION
 } = process.env
 
 const CHAIN = 'ethr'
-
 const callbacks = {}
-
-Verida.setConfig({
-  appName: VUE_APP_VERIDA_APP_NAME,
-  environment: VUE_APP_VERIDA_ENVIRONMENT,
-  baseSchemasPath: VUE_APP_VERIDA_SCHEMAS_BASE_PATH,
-  /*servers: {
-    testnet: {
-      schemaPaths: {
-        'https://schemas.verida.io/': 'http://localhost:5010/',
-        'https://schemas.testnet.verida.io/': 'http://localhost:5010/'
-      }
-    }
-  }*/
-})
 
 /**
  * Connect the user to their Verida Datastore Application
  *
- * @param {boolean} force True if the connection should be forced (open a Metamask dialog to login to their app)
- * @param {function} canceled if sign up is cancelled by user
+ *
+ * @param {function} callback function to completed user connect action
  */
-export async function connectVerida (force, canceled = () => {}) {
-  let web3Provider = await Verida.Helpers.wallet.connectWeb3(CHAIN)
-  window.web3Provider = web3Provider
-  const address = await window.web3Provider.getAddress()
+export function connectVerida (cb = () => {}) {
+  Verida.setConfig({
+    appName: VUE_APP_VERIDA_APP_NAME,
+    environment: VUE_APP_VERIDA_ENVIRONMENT
+  })
 
-  if (!window.veridaApp) {
-    window.veridaApp = new Verida({
-      address: address,
-      chain: CHAIN,
-      web3Provider: web3Provider
-    })
-    window.profileManager = new ProfileManager(window.veridaApp)
-    window.inboxManager = new InboxManager(window.veridaApp)
-    window.Verida = Verida
+  veridaVaultLogin({
+    loginUri: VUE_APP_LOGIN_URI,
+    serverUri: VUE_APP_SERVER_URI,
+    appName: VUE_APP_VERIDA_APP_NAME,
+    logoUrl: VUE_APP_LOGO_URL,
+    callback: async (response) => {
+      try {
+        const veridaApp = new Verida({
+          did: response.did,
+          signature: response.signature,
+          appName: VUE_APP_VERIDA_APP_NAME
+        })
+        window.veridaApp = veridaApp
+        const connected = await veridaApp.connect(true)
 
-    await window.profileManager.init()
-  }
+        window.profileManager = new ProfileManager(window.veridaApp)
+        window.inboxManager = new InboxManager(window.veridaApp)
 
-  try {
-    const connected = await window.veridaApp.connect(force)
-    if (connected) {
-      callbacks.auth()
+        await window.profileManager.init()
+
+        if (connected) {
+          store.set(VUE_APP_VERIDA_USER_SESSION, true)
+          cb()
+        }
+      } catch (error) {
+        cb()
+      }
     }
-  } catch (e) {
-    canceled()
-  }
+  })
 }
 
+// this needs cleaning up
 export async function getAccounts () {
-  return new Promise((resolve, reject) => {
-    const handler = (err, accounts) => err ? reject(err) : resolve(accounts)
-    window.web3.eth.getAccounts(handler)
-  })
+  const address = await getAddress()
+  if (address) {
+    return [address]
+  }
+
+  return []
 }
 
 /**
@@ -98,10 +100,15 @@ export async function bindInbox (cb) {
   }
 }
 
-export async function logout () {
+export async function logout (cb) {
   if (window.veridaApp) {
-    window.veridaApp.disconnect()
+    await window.veridaApp.disconnect()
     window.veridaApp = null
+    store.remove(VUE_APP_VERIDA_USER_SESSION)
+    store.remove('_verida_auth_user_signature')
+    if (cb) {
+      cb()
+    }
   }
 }
 
@@ -116,9 +123,10 @@ export async function fetchInbox (filter = {}) {
 }
 
 export async function getAddress () {
-  return window.web3Provider.getAddress(CHAIN)
-}
+  if (window.veridaApp) {
+    const address = await window.veridaApp.user.did
+    return address
+  }
 
-export function getVerida() {
-  return Verida
+  return null
 }
