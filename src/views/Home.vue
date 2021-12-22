@@ -2,12 +2,12 @@
   <did-card class="mt-4" />
 </template>
 <script>
-import DidCard from '../components/cards/DidCard'
+import DidCard from "../components/cards/DidCard";
 
 export default {
-  name: 'Home',
+  name: "Home",
   components: {
-    DidCard
-  }
-}
+    DidCard,
+  },
+};
 </script>
