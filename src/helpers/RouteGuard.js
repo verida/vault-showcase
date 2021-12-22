@@ -1,12 +1,9 @@
-import store from 'store'
+import veridaHelper from './VeridaHelper'
 
-const {
-  VUE_APP_VERIDA_USER_SESSION
-} = process.env
 
 const redirect = async (to, next) => {
   const { guest, authorized } = to.meta
-  const connected = store.get(VUE_APP_VERIDA_USER_SESSION)
+  const connected = veridaHelper.hasSession()
 
   switch (true) {
     case connected && guest:

@@ -1,4 +1,4 @@
-import { veridaVaultLogin } from '@verida/vault-auth-client'
+// import { veridaVaultLogin } from '@verida/vault-auth-client'
 import Verida from '@verida/datastore'
 import store from 'store'
 import ProfileManager from './ProfileManager'
@@ -22,45 +22,45 @@ const callbacks = {}
  *
  * @param {function} callback function to completed user connect action
  */
-export function connectVerida (cb = () => {}) {
+export function connectVerida(cb = () => { }) {
   Verida.setConfig({
     appName: VUE_APP_VERIDA_APP_NAME,
     environment: VUE_APP_VERIDA_ENVIRONMENT
   })
 
-  veridaVaultLogin({
-    loginUri: VUE_APP_LOGIN_URI,
-    serverUri: VUE_APP_SERVER_URI,
-    appName: VUE_APP_VERIDA_APP_NAME,
-    logoUrl: VUE_APP_LOGO_URL,
-    callback: async (response) => {
-      try {
-        const veridaApp = new Verida({
-          did: response.did,
-          signature: response.signature,
-          appName: VUE_APP_VERIDA_APP_NAME
-        })
-        window.veridaApp = veridaApp
-        const connected = await veridaApp.connect(true)
+  // veridaVaultLogin({
+  //   loginUri: VUE_APP_LOGIN_URI,
+  //   serverUri: VUE_APP_SERVER_URI,
+  //   appName: VUE_APP_VERIDA_APP_NAME,
+  //   logoUrl: VUE_APP_LOGO_URL,
+  //   callback: async (response) => {
+  //     try {
+  //       const veridaApp = new Verida({
+  //         did: response.did,
+  //         signature: response.signature,
+  //         appName: VUE_APP_VERIDA_APP_NAME
+  //       })
+  //       window.veridaApp = veridaApp
+  //       const connected = await veridaApp.connect(true)
 
-        window.profileManager = new ProfileManager(window.veridaApp)
-        window.inboxManager = new InboxManager(window.veridaApp)
+  //       window.profileManager = new ProfileManager(window.veridaApp)
+  //       window.inboxManager = new InboxManager(window.veridaApp)
 
-        await window.profileManager.init()
+  //       await window.profileManager.init()
 
-        if (connected) {
-          store.set(VUE_APP_VERIDA_USER_SESSION, true)
-          cb()
-        }
-      } catch (error) {
-        cb()
-      }
-    }
-  })
+  //       if (connected) {
+  //         store.set(VUE_APP_VERIDA_USER_SESSION, true)
+  //         cb()
+  //       }
+  //     } catch (error) {
+  //       cb()
+  //     }
+  //   }
+  // })
 }
 
 // this needs cleaning up
-export async function getAccounts () {
+export async function getAccounts() {
   const address = await getAddress()
   if (address) {
     return [address]
@@ -75,7 +75,7 @@ export async function getAccounts () {
  * @param {*} auth Callback to fire when the user is authenticated
  * @param {*} unauth Callback to fire when the user is unauthenticated
  */
-export async function bind (auth = () => {}, unauth = () => {}) {
+export async function bind(auth = () => { }, unauth = () => { }) {
   callbacks.auth = auth
   callbacks.unauth = unauth
 
@@ -94,13 +94,13 @@ export async function bind (auth = () => {}, unauth = () => {}) {
   })
 }
 
-export async function bindInbox (cb) {
+export async function bindInbox(cb) {
   if (window.veridaApp) {
     window.veridaApp.inbox.on('newMessage', cb)
   }
 }
 
-export async function logout (cb) {
+export async function logout(cb) {
   if (window.veridaApp) {
     await window.veridaApp.disconnect()
     window.veridaApp = null
@@ -112,7 +112,7 @@ export async function logout (cb) {
   }
 }
 
-export async function fetchInbox (filter = {}) {
+export async function fetchInbox(filter = {}) {
   if (!window.veridaApp) {
     return []
   }
@@ -122,7 +122,7 @@ export async function fetchInbox (filter = {}) {
   })
 }
 
-export async function getAddress () {
+export async function getAddress() {
   if (window.veridaApp) {
     const address = await window.veridaApp.user.did
     return address
