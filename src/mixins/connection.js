@@ -58,12 +58,11 @@ export default {
   async beforeMount() {
     const activePath = this.$router.currentRoute.path
     const userLoginSession = VeridaHelper.hasSession();
+
+    console.log(userLoginSession);
     if (activePath !== '/connect') {
       if (userLoginSession) {
         await this.init()
-      } else {
-        this.initUser({ address: '', name: '' })
-        store.remove(VUE_APP_CONTEXT_NAME)
       }
     }
   }

@@ -5,41 +5,52 @@
       v-for="(item, key) in data"
       :key="key"
       :rules="{ required: attributes[key].required }"
-      :name="attributes[key].title">
-        <label>{{attributes[key].title}}</label>
-        <b-form-group v-if="attributes[key].enum">
-          <b-form-radio-group v-model="data[key]">
-            <b-form-radio v-for="item in attributes[key].enum"
-              :key="item"
-              :value="item">
-              {{ item }}
-            </b-form-radio>
-          </b-form-radio-group>
-        </b-form-group>
-        <datetime
-          v-else-if="attributes[key].format && attributes[key].format.includes('date')"
-          :auto="true"
-          :type="attributes[key].format.replace('-', '')"
-          input-class="form-control"
-          v-model="data[key]" />
-        <b-form-textarea
-          v-else-if="attributes[key].inputType === 'textarea'"
-          class="form-control word-break" spellcheck="false"
-          v-model="data[key]"
-          :name="attributes[key].title"
-          :state="!data[key] ? null : !errors[0]"
-          size="sm" rows="3" />
-        <b-form-input
-          v-else
-          class="form-control"
-          size="sm"
-          :type="attributes[key].type | typed"
-          :value="data[key]" @input="value => format(key, value)"
-          :name="attributes[key].title"
-          :state="!data[key] ? null : !errors[0]" />
-        <b-form-invalid-feedback>
-          {{ errors[0] }}
-        </b-form-invalid-feedback>
+      :name="attributes[key].title"
+    >
+      <label>{{ attributes[key].title }}</label>
+      <b-form-group v-if="attributes[key].enum">
+        <b-form-radio-group v-model="data[key]">
+          <b-form-radio
+            v-for="item in attributes[key].enum"
+            :key="item"
+            :value="item"
+          >
+            {{ item }}
+          </b-form-radio>
+        </b-form-radio-group>
+      </b-form-group>
+      <datetime
+        v-else-if="
+          attributes[key].format && attributes[key].format.includes('date')
+        "
+        :auto="true"
+        :type="attributes[key].format.replace('-', '')"
+        input-class="form-control"
+        v-model="data[key]"
+      />
+      <b-form-textarea
+        v-else-if="attributes[key].inputType === 'textarea'"
+        class="form-control word-break"
+        spellcheck="false"
+        v-model="data[key]"
+        :name="attributes[key].title"
+        :state="!data[key] ? null : !errors[0]"
+        size="sm"
+        rows="3"
+      />
+      <b-form-input
+        v-else
+        class="form-control"
+        size="sm"
+        :type="attributes[key].type | typed"
+        :value="data[key]"
+        @input="(value) => format(key, value)"
+        :name="attributes[key].title"
+        :state="!data[key] ? null : !errors[0]"
+      />
+      <b-form-invalid-feedback>
+        {{ errors[0] }}
+      </b-form-invalid-feedback>
     </ValidationProvider>
     <b-button @click="submit" :disabled="invalid" variant="primary">
       Send
@@ -48,144 +59,174 @@
 </template>
 
 <script>
-import DateFormatMixin from '@/mixins/date-format'
-import { DATA_SEND } from '@/constants/inbox'
-import { extract } from '@/helpers/NameModifier'
-import Verida from '@verida/datastore'
+import DateFormatMixin from "@/mixins/date-format";
+import { DATA_SEND } from "@/constants/inbox";
+import { extract } from "@/helpers/NameModifier";
+import Verida from "@verida/datastore";
 
-import { createNamespacedHelpers } from 'vuex'
-const {
-  mapState: mapSystemState,
-  mapMutations: mapSystemMutations
-} = createNamespacedHelpers('system')
+import { createNamespacedHelpers } from "vuex";
+import veridaHelper from "../../helpers/VeridaHelper";
+const { mapState: mapSystemState, mapMutations: mapSystemMutations } =
+  createNamespacedHelpers("system");
 
 export default {
-  name: 'SchemaFields',
+  name: "SchemaFields",
   filters: {
-    typed (str) {
-      if (str === 'string') return 'text'
-      if (str === 'number') return 'number'
-      return 'text'
-    }
+    typed(str) {
+      if (str === "string") return "text";
+      if (str === "number") return "number";
+      return "text";
+    },
   },
-  props: [
-    'data',
-    'attributes',
-    'entity'
-  ],
-  mixins: [
-    DateFormatMixin
-  ],
+  props: ["data", "attributes", "entity"],
+  mixins: [DateFormatMixin],
   computed: {
-    ...mapSystemState([
-      'recipient'
-    ])
+    ...mapSystemState(["recipient"]),
   },
   methods: {
-    ...mapSystemMutations([
-      'setProcessing'
-    ]),
-    async submit () {
-      this.setProcessing(true)
-      const message = []
+    ...mapSystemMutations(["setProcessing"]),
+    async submit() {
+      try {
+        const message = [];
 
-      if (this.entity.properties.didJwtVc) {
-        await this.createCredential()
+        // if (this.entity.properties.didJwtVc) {
+        //   await this.createCredential();
+        // }
+
+        const store = await veridaHelper.context.openDatastore(
+          "https://common.schemas.verida.io/health/pathology/tests/covid19/pcr/v0.1.0/schema.json"
+        );
+
+        // const payload = {
+        //   name: "title",
+        //   // name: extract(this.data, this.entity.schema),
+        //   ...this.data,
+        // };
+        // console.log(store);
+
+        // console.log(payload);
+
+        const test = {
+          fullName: "Smith",
+          // email: "john@smith.com",
+          result: "Positive",
+
+          // name: "Mike Mike KYC",
+          // firstName: "Mike",
+          // lastName: "Mike",
+          // email: "mike@gmail.com",
+          // mobile: "32823020380293",
+          // did: "did:vda:0x68fCc963f0B6057Bd48b2714F14B3305B81621b1",
+          // schema:
+          //   "https://common.schemas.verida.io/social/contact/v0.1.0/schema.json",
+        };
+
+        const dt = {
+          ...test,
+          didJwtVc: this.createCredential(test),
+        };
+        const saved = await store.save(dt);
+
+        console.log(saved);
+      } catch (error) {
+        console.log({ error });
       }
+      // this.setProcessing(true);
 
-      const store = await window.veridaApp.openDatastore(this.entity.path)
-      const payload = {
-        name: extract(this.data, this.entity.schema),
-        ...this.data
-      }
+      // const error = await veridaHelper.xvalidateSchema(
+      //   test,
+      //   "https://common.schemas.verida.io/social/contact/v0.1.0/schema.json"
+      // );
 
-      // quick hack to format dates as expected for JSON validation
-      for (const key in this.attributes) {
-        if (this.attributes[key].format === 'date') {
-          payload[key] = payload[key].substr(0, 10)
-        }
-      }
+      // console.log(error);
 
-      // quick hack to set meaningful names
-      switch (this.entity.schema) {
-        case 'https://schemas.verida.io/identity/kyc/AU/schema.json':
-          payload.name = `${payload.firstName} ${payload.lastName} KYC`
-          break
-        case 'https://schemas.verida.io/health/pathology/tests/covid19/pcr/schema.json':
-          payload.name = `${payload.fullName} COVID Result`
-      }
+      // // quick hack to format dates as expected for JSON validation
+      // for (const key in this.attributes) {
+      //   if (this.attributes[key].format === "date") {
+      //     payload[key] = payload[key].substr(0, 10);
+      //   }
+      // }
 
-      const saved = await store.save(payload)
+      // // quick hack to set meaningful names
+      // switch (this.entity.$id) {
+      //   case "https://common.schemas.verida.io/social/contact/v0.1.0/schema.json":
+      //     payload.name = `${payload.firstName} ${payload.lastName} KYC`;
+      //     break;
+      //   case "https://schemas.verida.io/health/pathology/tests/covid19/pcr/schema.json":
+      //     payload.name = `${payload.fullName} COVID Result`;
+      // }
 
-      if (!saved) {
-        console.error(store.errors)
-        this.$bvToast.toast(`An error occurred, when saving ${this.entity.title}. See console.`, {
-          title: 'Error',
-          autoHideDelay: 3000,
-          variant: 'danger'
-        })
+      // const saved = await store.save(test);
 
-        this.setProcessing(false)
-        return false
-      }
+      // console.log(saved);
 
-      const result = await store.get(saved.id)
-      message.push(result)
+      // console.log(saved);
 
-      await this.sendInbox(message, payload.name)
+      // if (!saved) {
+      //   console.error(store.errors);
+      //   this.$bvToast.toast(
+      //     `An error occurred, when saving ${this.entity.title}. See console.`,
+      //     {
+      //       title: "Error",
+      //       autoHideDelay: 3000,
+      //       variant: "danger",
+      //     }
+      //   );
+
+      //   this.setProcessing(false);
+      //   return false;
+      // }
+
+      // const result = await store.get(saved.id);
+      // message.push(result);
+
+      // console.log(message, result);
+
+      // await this.sendInbox(message, payload.name);
     },
-    format (key, value) {
-      this.data[key] = this.attributes[key].type === 'number' ? Number(value) : value
+    format(key, value) {
+      this.data[key] =
+        this.attributes[key].type === "number" ? Number(value) : value;
     },
-    async sendInbox (message, name) {
-      const { outbox } = window.veridaApp
-
-      const inboxType = DATA_SEND
-      const outboxItem = { data: message }
-      const text = `Sending you ${this.entity.title} called "${name}"`
+    async sendInbox(message, name) {
+      const text = `Sending you ${this.entity.title} called "${name}"`;
 
       try {
-        const response = await outbox.send(this.recipient, inboxType, outboxItem, text, {})
-        console.log('outbox.send() response', response)
+        const response = veridaHelper.sendInbox({
+          message: message,
+          did: this.recipient,
+          subject: text,
+        });
 
-        this.$emit('reset')
-        this.setProcessing(false)
+        console.log("outbox.send() response", response);
 
-        this.$bvToast.toast(`Created ${this.entity.title} is sent to ${this.recipient}`, {
-          title: 'Inbox sent',
-          autoHideDelay: 3000,
-          variant: 'success'
-        })
+        this.$emit("reset");
+        this.setProcessing(false);
+
+        this.$bvToast.toast(
+          `Created ${this.entity.title} is sent to ${this.recipient}`,
+          {
+            title: "Inbox sent",
+            autoHideDelay: 3000,
+            variant: "success",
+          }
+        );
       } catch (e) {
-        this.setProcessing(false)
-        console.info(e)
-        this.$bvToast.toast(`An error occurred, when sending ${this.entity.title}`, {
-          title: 'Inbox hasn\'t been sent',
-          autoHideDelay: 3000,
-          variant: 'danger'
-        })
+        this.setProcessing(false);
+        console.info(e);
+        this.$bvToast.toast(
+          `An error occurred, when sending ${this.entity.title}`,
+          {
+            title: "Inbox hasn't been sent",
+            autoHideDelay: 3000,
+            variant: "danger",
+          }
+        );
       }
     },
-    async createCredential () {
-      const now = new Date()
-      const credential = {
-        '@context': [
-          'https://www.w3.org/2018/credentials/v1',
-          'https://www.w3.org/2018/credentials/examples/v1'
-        ],
-        id: this.entity.path,
-        type: ['VerifiableCredential'],
-        issuer: window.veridaApp.user.did,
-        issuanceDate: now.toISOString(),
-        credentialSubject: {
-          id: this.recipient,
-          ...this.data
-        }
-      }
-
-      const issuer = await Verida.Helpers.credentials.createIssuer(window.veridaApp.user)
-      this.data.didJwtVc = await Verida.Helpers.credentials.createVerifiableCredential(credential, issuer)
-    }
-  }
-}
+    async createCredential(data) {
+      this.data.didJwtVc = await veridaHelper.createDIDJWT(data);
+    },
+  },
+};
 </script>

@@ -3,10 +3,18 @@
     <video autoplay muted class="landing" loop>
       <source src="@/assets/video/landing.mp4" type="video/mp4" />
     </video>
-    <button class="landing__btn" @click="connect" :disabled="processing">
-      <img src="@/assets/img/verida-logo.svg" v-if="!processing" />
-      <CircleLoader color="#fff" :size="100" v-else />
-    </button>
+    <div class="mt-5 landing__connect p-5">
+      <img src="@/assets/img/verida_logo.svg" alt="verida-logo" />
+      <h3>Connect Now</h3>
+      <p>Use the button below to connect with Verida Vault</p>
+      <button class="landing__btn" @click="connect" :disabled="processing">
+        <img
+          src="@/assets/img/connect_with_verida_dark.png"
+          v-if="!processing"
+        />
+        <CircleLoader color="#fff" :size="100" v-else />
+      </button>
+    </div>
   </div>
 </template>
 
@@ -35,8 +43,10 @@ export default {
       try {
         await VeridaHelper.connectVault();
         const profile = VeridaHelper.profile;
-        this.initUser({ address: profile.did, name: profile.name });
-        this.$router.push({ name: "home" });
+        if (VeridaHelper.connected) {
+          this.initUser({ address: profile.did, name: profile.name });
+          this.$router.push({ name: "home" });
+        }
       } catch (error) {
         this.error = error;
       } finally {

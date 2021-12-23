@@ -1,7 +1,8 @@
-import { EnvironmentType, Network } from "@verida/client-ts";
+import { EnvironmentType, Network, Client } from "@verida/client-ts";
 import { VaultAccount, hasSession } from "@verida/account-web-vault";
 
 import { EventEmitter } from "events";
+import { DATA_REQUEST, DATA_SEND } from "../constants/inbox";
 
 const {
   VUE_APP_LOGO_URL,
@@ -17,6 +18,7 @@ class VeridaHelper extends EventEmitter {
   did = '';
   profile = {}
   connected = false
+
 
   async initApp() {
     if (!this.context) {
@@ -53,11 +55,77 @@ class VeridaHelper extends EventEmitter {
       },
     });
 
+    if (this.context) {
+      this.connected = true
+    }
+
     this.did = await this.account.did();
     await this.initProfile();
 
     this.emit("initialized");
   }
+
+
+  async createDIDJWT(data) {
+    const contextName = VUE_APP_CONTEXT_NAME;
+    const jwtDID = await this.context
+      .getAccount()
+      .createDidJwt(contextName, data);
+
+    return jwtDID;
+  }
+
+  async validateSchema(
+    data,
+    schemaUrl
+  ) {
+    console.log(data, schemaUrl);
+    const schemas = await this.context.getClient().getSchema(schemaUrl);
+    const isValid = await schemas.validate(data);
+    const errors = schemas.errors;
+
+    if (!isValid) {
+      return {
+        isValid,
+        errors,
+      };
+    }
+
+    return {
+      isValid,
+      errors: [],
+    };
+  }
+
+  async sendInbox({ message, did, subject }) {
+    const type = DATA_SEND;
+
+    const data = {
+      data: [message],
+    };
+    const config = {
+      recipientContextName: "Verida: Vault",
+    };
+
+    const messaging = await this.context.getMessaging();
+    await messaging.send(did, type, data, subject, config);
+    return true;
+  }
+
+  async requestData({ message, did, requestSchema, data }) {
+    const type = DATA_REQUEST
+    const dataObj = {
+      requestSchema,
+      filter: {},
+      userSelect
+    }
+    const config = {
+      recipientContextName: 'Verida: Vault'
+    }
+    const messaging = await this.context.getMessaging();
+    return await messaging.send(did, type, dataObj, message, config)
+  }
+
 
   async initProfile() {
     try {
@@ -77,6 +145,17 @@ class VeridaHelper extends EventEmitter {
     } catch (error) {
       console.log("User", { error });
     }
+  }
+
+  async retrieveSchema(url) {
+    try {
+      const schemas = await this.context.getClient().getSchema(url);
+      const json = await schemas.getSchemaJson()
+      return json
+    } catch (error) {
+      console.log({ error });
+    }
+
   }
 
   async logout() {
