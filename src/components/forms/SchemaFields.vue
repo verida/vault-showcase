@@ -86,103 +86,68 @@ export default {
   methods: {
     ...mapSystemMutations(["setProcessing"]),
     async submit() {
-      try {
-        const message = [];
+      const message = [];
 
-        // if (this.entity.properties.didJwtVc) {
-        //   await this.createCredential();
-        // }
+      if (this.entity.properties.didJwtVc) {
+        await this.createCredential();
+      }
 
-        const store = await veridaHelper.context.openDatastore(
-          "https://common.schemas.verida.io/health/pathology/tests/covid19/pcr/v0.1.0/schema.json"
+      const store = await veridaHelper.context.openDatastore(this.entity.$id);
+
+      const payload = {
+        name: "title",
+        // name: extract(this.data, this.entity.schema),
+        ...this.data,
+      };
+
+      this.setProcessing(true);
+
+      const { isValid } = await veridaHelper.validateSchema(
+        test,
+        this.entity.$id
+      );
+
+      if (!isValid) {
+        this.setProcessing(false);
+        return;
+      }
+
+      // quick hack to format dates as expected for JSON validation
+      for (const key in this.attributes) {
+        if (this.attributes[key].format === "date") {
+          payload[key] = payload[key].substr(0, 10);
+        }
+      }
+
+      // quick hack to set meaningful names
+      switch (this.entity.$id) {
+        case "https://common.schemas.verida.io/social/contact/v0.1.0/schema.json":
+          payload.name = `${payload.firstName} ${payload.lastName} KYC`;
+          break;
+        case "https://schemas.verida.io/health/pathology/tests/covid19/pcr/schema.json":
+          payload.name = `${payload.fullName} COVID Result`;
+      }
+
+      const saved = await store.save(test);
+
+      if (!saved) {
+        console.error(store.errors);
+        this.$bvToast.toast(
+          `An error occurred, when saving ${this.entity.title}. See console.`,
+          {
+            title: "Error",
+            autoHideDelay: 3000,
+            variant: "danger",
+          }
         );
 
-        // const payload = {
-        //   name: "title",
-        //   // name: extract(this.data, this.entity.schema),
-        //   ...this.data,
-        // };
-        // console.log(store);
-
-        // console.log(payload);
-
-        const test = {
-          fullName: "Smith",
-          // email: "john@smith.com",
-          result: "Positive",
-
-          // name: "Mike Mike KYC",
-          // firstName: "Mike",
-          // lastName: "Mike",
-          // email: "mike@gmail.com",
-          // mobile: "32823020380293",
-          // did: "did:vda:0x68fCc963f0B6057Bd48b2714F14B3305B81621b1",
-          // schema:
-          //   "https://common.schemas.verida.io/social/contact/v0.1.0/schema.json",
-        };
-
-        const dt = {
-          ...test,
-          didJwtVc: this.createCredential(test),
-        };
-        const saved = await store.save(dt);
-
-        console.log(saved);
-      } catch (error) {
-        console.log({ error });
+        this.setProcessing(false);
+        return false;
       }
-      // this.setProcessing(true);
 
-      // const error = await veridaHelper.xvalidateSchema(
-      //   test,
-      //   "https://common.schemas.verida.io/social/contact/v0.1.0/schema.json"
-      // );
-
-      // console.log(error);
-
-      // // quick hack to format dates as expected for JSON validation
-      // for (const key in this.attributes) {
-      //   if (this.attributes[key].format === "date") {
-      //     payload[key] = payload[key].substr(0, 10);
-      //   }
-      // }
-
-      // // quick hack to set meaningful names
-      // switch (this.entity.$id) {
-      //   case "https://common.schemas.verida.io/social/contact/v0.1.0/schema.json":
-      //     payload.name = `${payload.firstName} ${payload.lastName} KYC`;
-      //     break;
-      //   case "https://schemas.verida.io/health/pathology/tests/covid19/pcr/schema.json":
-      //     payload.name = `${payload.fullName} COVID Result`;
-      // }
-
-      // const saved = await store.save(test);
-
-      // console.log(saved);
-
-      // console.log(saved);
-
-      // if (!saved) {
-      //   console.error(store.errors);
-      //   this.$bvToast.toast(
-      //     `An error occurred, when saving ${this.entity.title}. See console.`,
-      //     {
-      //       title: "Error",
-      //       autoHideDelay: 3000,
-      //       variant: "danger",
-      //     }
-      //   );
-
-      //   this.setProcessing(false);
-      //   return false;
-      // }
-
-      // const result = await store.get(saved.id);
-      // message.push(result);
-
-      // console.log(message, result);
-
-      // await this.sendInbox(message, payload.name);
+      const result = await store.get(saved.id);
+      message.push(result);
+      await this.sendInbox(message, payload.name);
     },
     format(key, value) {
       this.data[key] =

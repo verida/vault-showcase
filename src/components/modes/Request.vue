@@ -93,8 +93,6 @@ export default {
           autoHideDelay: 3000,
           variant: "success",
         });
-
-        console.log(res);
       } catch (error) {
         this.$bvToast.toast(
           `An error occurred, when requesting ${this.entity}`,

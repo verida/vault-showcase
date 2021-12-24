@@ -112,49 +112,39 @@ class VeridaHelper extends EventEmitter {
     return true;
   }
 
-  async requestData({ message, did, requestSchema, data }) {
+  async requestData({ message, did, data }) {
     const type = DATA_REQUEST
-    const dataObj = {
-      requestSchema,
-      filter: {},
-      userSelect
-    }
+
     const config = {
       recipientContextName: 'Verida: Vault'
     }
+
     const messaging = await this.context.getMessaging();
-    return await messaging.send(did, type, dataObj, message, config)
+    return await messaging.send(did, type, data, message, config)
   }
 
 
   async initProfile() {
-    try {
-      const client = await this.context.getClient();
-      const profile = await client.openPublicProfile(this.did, "Verida: Vault");
-      const cb = async () => {
-        const data = await profile.getMany();
-        this.profile = {
-          name: data.name,
-          country: data.country,
-          avatar: data?.avatar?.uri,
-        };
-        this.emit("profileChanged", this.profile);
+    const client = await this.context.getClient();
+    const profile = await client.openPublicProfile(this.did, "Verida: Vault");
+    const cb = async () => {
+      const data = await profile.getMany();
+      this.profile = {
+        name: data.name,
+        country: data.country,
+        avatar: data?.avatar?.uri,
       };
-      profile.listen(cb);
-      await cb();
-    } catch (error) {
-      console.log("User", { error });
-    }
+      this.emit("profileChanged", this.profile);
+    };
+    profile.listen(cb);
+    await cb();
+
   }
 
   async retrieveSchema(url) {
-    try {
-      const schemas = await this.context.getClient().getSchema(url);
-      const json = await schemas.getSchemaJson()
-      return json
-    } catch (error) {
-      console.log({ error });
-    }
+    const schemas = await this.context.getClient().getSchema(url);
+    const json = await schemas.getSchemaJson()
+    return json
 
   }
 
