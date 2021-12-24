@@ -24,7 +24,7 @@ import SchemaFields from "../forms/SchemaFields";
 
 import { createNamespacedHelpers } from "vuex";
 import VeridaHelper from "../../helpers/VeridaHelper";
-import { getSchemaProperties } from "../../helpers/NameModifier";
+
 const { mapState: mapSystemState } = createNamespacedHelpers("system");
 
 export default {
@@ -50,21 +50,20 @@ export default {
       await this.$nextTick();
       this.init();
     },
+    setFields(key, requiredFields, getProps) {
+      this.$set(this.data, key, "");
+      this.$set(this.attributes, key, getProps[key]);
+      this.$set(
+        this.attributes[key],
+        "required",
+        requiredFields.indexOf(key) !== -1
+      );
+    },
     init() {
       this.data = {};
       this.attributes = {};
-      const requiredFields =
-        this.entity.allOf.find((item) => item["properties"])?.required || [];
-      const getProps = getSchemaProperties(this.entity);
-
       this.entity.layouts.create.forEach((key) => {
-        this.$set(this.data, key, "");
-        this.$set(this.attributes, key, getProps[key]);
-        this.$set(
-          this.attributes[key],
-          "required",
-          requiredFields.indexOf(key) !== -1
-        );
+        this.setFields(key, this.entity.required, this.entity.properties);
       });
       this.$refs["schema-fields"].$refs.validator.reset();
     },

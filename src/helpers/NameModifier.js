@@ -1,16 +1,13 @@
 export function extract(data, collection) {
   switch (collection) {
-    case 'shopping/coupon':
-    case 'health/pathology/tests/covid19-pcr':
+    case 'https://common.schemas.verida.io/shopping/coupon/v0.1.0/schema.json':
+      return data.title
+    case 'https://common.schemas.verida.io/health/pathology/tests/covid19/pcr/v0.1.0/schema.json':
       return data.name
-    case 'identity/kyc/AU': {
-      const { firstName, middleName, lastName } = data
-      return `${firstName} ${middleName} ${lastName}`
+    case 'https://common.schemas.verida.io/social/contact/v0.1.0/schema.json': {
+      const { firstName, lastName } = data
+      return `${firstName} ${lastName}`
     }
   }
 }
 
-
-export function getSchemaProperties(data) {
-  return data.allOf.find((item) => item["properties"]).properties;
-}

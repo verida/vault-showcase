@@ -70,7 +70,7 @@ export default {
       this.schema = await veridaHelper.retrieveSchema(schema);
       this.records = null;
       this.entity = this.schema.title;
-      this.properties = getSchemaProperties(this.schema);
+      this.properties = this.schema.properties;
       this.params.requestSchema = this.schema["$id"];
     },
     async request() {
@@ -82,7 +82,7 @@ export default {
           filter: {},
         };
 
-        const res = await veridaHelper.requestData({
+        await veridaHelper.requestData({
           did: this.recipient,
           message,
           data,

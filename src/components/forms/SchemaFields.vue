@@ -60,7 +60,6 @@
 
 <script>
 import DateFormatMixin from "@/mixins/date-format";
-import { DATA_SEND } from "@/constants/inbox";
 import { extract } from "@/helpers/NameModifier";
 import Verida from "@verida/datastore";
 
@@ -86,31 +85,19 @@ export default {
   methods: {
     ...mapSystemMutations(["setProcessing"]),
     async submit() {
-      const message = [];
+      const payload = {
+        name: extract(this.data, this.entity.$id),
+        ...this.data,
+      };
 
       if (this.entity.properties.didJwtVc) {
-        await this.createCredential();
+        payload.didJwtVc = await this.createCredential(payload);
+        payload.testTimestamp = new Date().toISOString();
       }
 
       const store = await veridaHelper.context.openDatastore(this.entity.$id);
 
-      const payload = {
-        name: "title",
-        // name: extract(this.data, this.entity.schema),
-        ...this.data,
-      };
-
       this.setProcessing(true);
-
-      const { isValid } = await veridaHelper.validateSchema(
-        test,
-        this.entity.$id
-      );
-
-      if (!isValid) {
-        this.setProcessing(false);
-        return;
-      }
 
       // quick hack to format dates as expected for JSON validation
       for (const key in this.attributes) {
@@ -124,11 +111,11 @@ export default {
         case "https://common.schemas.verida.io/social/contact/v0.1.0/schema.json":
           payload.name = `${payload.firstName} ${payload.lastName} KYC`;
           break;
-        case "https://schemas.verida.io/health/pathology/tests/covid19/pcr/schema.json":
+        case "https://common.schemas.verida.io/health/pathology/tests/covid19/pcr/v0.1.0/schema.json":
           payload.name = `${payload.fullName} COVID Result`;
       }
 
-      const saved = await store.save(test);
+      const saved = await store.save(payload);
 
       if (!saved) {
         console.error(store.errors);
@@ -146,8 +133,8 @@ export default {
       }
 
       const result = await store.get(saved.id);
-      message.push(result);
-      await this.sendInbox(message, payload.name);
+
+      await this.sendInbox(result, payload.name);
     },
     format(key, value) {
       this.data[key] =
@@ -157,13 +144,11 @@ export default {
       const text = `Sending you ${this.entity.title} called "${name}"`;
 
       try {
-        const response = veridaHelper.sendInbox({
+        const response = await veridaHelper.sendInbox({
           message: message,
           did: this.recipient,
           subject: text,
         });
-
-        console.log("outbox.send() response", response);
 
         this.$emit("reset");
         this.setProcessing(false);
@@ -190,7 +175,7 @@ export default {
       }
     },
     async createCredential(data) {
-      this.data.didJwtVc = await veridaHelper.createDIDJWT(data);
+      return await veridaHelper.createDIDJWT(data);
     },
   },
 };

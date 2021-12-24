@@ -12,7 +12,6 @@
 <script>
 import { SCHEMAS } from "../../config/schemas";
 import veridaHelper from "../../helpers/VeridaHelper";
-import { getSchemaProperties } from "../../helpers/NameModifier";
 
 export default {
   name: "DataTypeSelect",
@@ -41,7 +40,7 @@ export default {
           text: document.title,
           path: SCHEMAS[i],
           schema: document.$id,
-          properties: getSchemaProperties(document),
+          properties: document.properties,
         });
       }
     },

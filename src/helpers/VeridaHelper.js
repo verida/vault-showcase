@@ -17,7 +17,8 @@ class VeridaHelper extends EventEmitter {
   account = '';
   did = '';
   profile = {}
-  connected = false
+  connected = false;
+  msgInstance = {}
 
 
   async initApp() {
@@ -60,11 +61,11 @@ class VeridaHelper extends EventEmitter {
     }
 
     this.did = await this.account.did();
+    this.msgInstance = await this.context.getMessaging()
     await this.initProfile();
 
     this.emit("initialized");
   }
-
 
   async createDIDJWT(data) {
     const contextName = VUE_APP_CONTEXT_NAME;
@@ -79,7 +80,6 @@ class VeridaHelper extends EventEmitter {
     data,
     schemaUrl
   ) {
-    console.log(data, schemaUrl);
     const schemas = await this.context.getClient().getSchema(schemaUrl);
     const isValid = await schemas.validate(data);
     const errors = schemas.errors;
@@ -110,6 +110,28 @@ class VeridaHelper extends EventEmitter {
     const messaging = await this.context.getMessaging();
     await messaging.send(did, type, data, subject, config);
     return true;
+  }
+
+  async messageListener() {
+    this.msgInstance = await this.context.getMessaging()
+    const cb = async (inboxEntry) => {
+      this.emit("messageNotification", inboxEntry);
+    };
+    await this.msgInstance.onMessage(cb);
+  }
+
+  async getMessages() {
+    const filter = {
+      type: DATA_REQUEST,
+    };
+    const options = {
+      limit: 20,
+      skip: 0,
+      sort: [{ sentAt: "desc" }],
+    };
+    const messages = await this.msgInstance.getMessages(filter, options);
+    this.emit("messageNotification", messages);
+    return this.messages;
   }
 
   async requestData({ message, did, data }) {
@@ -143,7 +165,7 @@ class VeridaHelper extends EventEmitter {
 
   async retrieveSchema(url) {
     const schemas = await this.context.getClient().getSchema(url);
-    const json = await schemas.getSchemaJson()
+    const json = await schemas.getSpecification();
     return json
 
   }
