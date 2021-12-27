@@ -8,7 +8,7 @@
       :name="attributes[key].title"
     >
       <label>{{ attributes[key].title }}</label>
-      <b-form-group v-if="attributes[key].enum">
+      <div class="my-1" v-if="attributes[key].enum">
         <b-form-radio-group v-model="data[key]">
           <b-form-radio
             v-for="item in attributes[key].enum"
@@ -18,7 +18,7 @@
             {{ item }}
           </b-form-radio>
         </b-form-radio-group>
-      </b-form-group>
+      </div>
       <datetime
         v-else-if="
           attributes[key].format && attributes[key].format.includes('date')
@@ -143,7 +143,7 @@ export default {
       const text = `Sending you ${this.entity.title} called "${name}"`;
 
       try {
-        const response = await veridaHelper.sendInbox({
+        await veridaHelper.sendInbox({
           message: message,
           did: this.recipient,
           subject: text,

@@ -61,8 +61,8 @@ class VeridaHelper extends EventEmitter {
     }
 
     this.did = await this.account.did();
-    this.msgInstance = await this.context.getMessaging()
     await this.initProfile();
+    await this.messageListener();
 
     this.emit("initialized");
   }
