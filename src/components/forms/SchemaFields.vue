@@ -61,7 +61,6 @@
 <script>
 import DateFormatMixin from "@/mixins/date-format";
 import { extract } from "@/helpers/NameModifier";
-import Verida from "@verida/datastore";
 
 import { createNamespacedHelpers } from "vuex";
 import veridaHelper from "../../helpers/VeridaHelper";

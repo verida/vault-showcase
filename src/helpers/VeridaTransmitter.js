@@ -1,5 +1,4 @@
 // import { veridaVaultLogin } from '@verida/vault-auth-client'
-import Verida from '@verida/datastore'
 import store from 'store'
 import ProfileManager from './ProfileManager'
 import InboxManager from './InboxManager'
@@ -17,7 +16,7 @@ const CHAIN = 'ethr'
 const callbacks = {}
 
 /**
- * Connect the user to their Verida Datastore Application
+ * Connect the user to their Verida Application
  *
  *
  * @param {function} callback function to completed user connect action
