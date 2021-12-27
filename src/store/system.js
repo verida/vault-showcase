@@ -8,7 +8,6 @@ const state = {
 
 const mutations = {
   initUser(state, payload) {
-    console.log(payload);
     state.user = payload
   },
   initRecipient(state, payload) {

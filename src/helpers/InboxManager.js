@@ -1,7 +1,7 @@
 import { DATA_SEND, DATA_REQUEST } from '@/constants/inbox'
 
 class InboxManager {
-  constructor (app) {
+  constructor(app) {
     this._app = app
   }
 
@@ -11,7 +11,7 @@ class InboxManager {
    *
    * @param {*} inboxEntry
    */
-  getActions (inboxEntry) {
+  getActions(inboxEntry) {
     const acceptOptions = [
       {
         name: 'accept',
@@ -39,7 +39,7 @@ class InboxManager {
    * @param {*} action
    * @param payload
    */
-  async handleAction (inboxEntry, action, payload = []) {
+  async handleAction(inboxEntry, action, payload = []) {
     const inbox = await this._app.inbox.getInbox()
 
     if (inboxEntry.data.status) {

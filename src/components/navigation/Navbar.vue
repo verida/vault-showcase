@@ -13,7 +13,7 @@
             :title="user.name"
             :text="`${user.address}`"
           />
-          <div v-else>
+          <div v-else-if="processing">
             <BarLoader class="loader" color="#fff" :width="100" :height="4" />
           </div>
         </b-nav-item>

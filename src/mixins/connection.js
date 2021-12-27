@@ -5,6 +5,7 @@ import { createNamespacedHelpers } from 'vuex'
 import { DATA_SEND } from '../constants/inbox'
 import store from 'store'
 import VeridaHelper from '../helpers/VeridaHelper'
+import veridaHelper from '../helpers/VeridaHelper'
 
 const {
   mapState: mapSystemState,
@@ -30,6 +31,7 @@ export default {
       try {
         await VeridaHelper.connectVault();
         const profile = VeridaHelper.profile;
+        await VeridaHelper.messageListener()
         this.initUser({ address: VeridaHelper.did, name: profile.name });
       } catch (error) {
         this.error = error;
@@ -47,7 +49,7 @@ export default {
     },
     async handleInbox(msg) {
       const { data, type } = msg
-      if (type === DATA_SEND && this.processing) {
+      if (type === DATA_SEND) {
         const { data: records } = data
         const response = _.isArray(records[0]) ? records[0] : records
         this.setProcessing(false)
@@ -61,10 +63,23 @@ export default {
     if (activePath !== '/connect') {
       if (userLoginSession) {
         await this.init()
-      } else {
-        this.initUser({ address: '', name: '' })
-        store.remove(VUE_APP_CONTEXT_NAME)
       }
     }
-  }
+  },
+  created() {
+    veridaHelper.on("messageNotification", (inbox) => {
+      const { data, type } = inbox
+      if (type === DATA_SEND) {
+        const { data: records } = data
+        const response = _.isArray(records[0]) ? records[0] : records
+        this.setProcessing(false)
+        this.setList(response)
+      }
+      this.$bvToast.toast(`New message`, {
+        title: "Inbox sent",
+        autoHideDelay: 3000,
+        variant: "success",
+      });
+    });
+  },
 }

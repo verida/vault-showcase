@@ -1,5 +1,4 @@
 // import { veridaVaultLogin } from '@verida/vault-auth-client'
-import Verida from '@verida/datastore'
 import store from 'store'
 import ProfileManager from './ProfileManager'
 import InboxManager from './InboxManager'
@@ -17,7 +16,7 @@ const CHAIN = 'ethr'
 const callbacks = {}
 
 /**
- * Connect the user to their Verida Datastore Application
+ * Connect the user to their Verida Application
  *
  *
  * @param {function} callback function to completed user connect action
@@ -28,35 +27,35 @@ export function connectVerida(cb = () => { }) {
     environment: VUE_APP_VERIDA_ENVIRONMENT
   })
 
-  // veridaVaultLogin({
-  //   loginUri: VUE_APP_LOGIN_URI,
-  //   serverUri: VUE_APP_SERVER_URI,
-  //   appName: VUE_APP_VERIDA_APP_NAME,
-  //   logoUrl: VUE_APP_LOGO_URL,
-  //   callback: async (response) => {
-  //     try {
-  //       const veridaApp = new Verida({
-  //         did: response.did,
-  //         signature: response.signature,
-  //         appName: VUE_APP_VERIDA_APP_NAME
-  //       })
-  //       window.veridaApp = veridaApp
-  //       const connected = await veridaApp.connect(true)
+  veridaVaultLogin({
+    loginUri: VUE_APP_LOGIN_URI,
+    serverUri: VUE_APP_SERVER_URI,
+    appName: VUE_APP_VERIDA_APP_NAME,
+    logoUrl: VUE_APP_LOGO_URL,
+    callback: async (response) => {
+      try {
+        const veridaApp = new Verida({
+          did: response.did,
+          signature: response.signature,
+          appName: VUE_APP_VERIDA_APP_NAME
+        })
+        window.veridaApp = veridaApp
+        const connected = await veridaApp.connect(true)
 
-  //       window.profileManager = new ProfileManager(window.veridaApp)
-  //       window.inboxManager = new InboxManager(window.veridaApp)
+        window.profileManager = new ProfileManager(window.veridaApp)
+        window.inboxManager = new InboxManager(window.veridaApp)
 
-  //       await window.profileManager.init()
+        await window.profileManager.init()
 
-  //       if (connected) {
-  //         store.set(VUE_APP_VERIDA_USER_SESSION, true)
-  //         cb()
-  //       }
-  //     } catch (error) {
-  //       cb()
-  //     }
-  //   }
-  // })
+        if (connected) {
+          store.set(VUE_APP_VERIDA_USER_SESSION, true)
+          cb()
+        }
+      } catch (error) {
+        cb()
+      }
+    }
+  })
 }
 
 // this needs cleaning up

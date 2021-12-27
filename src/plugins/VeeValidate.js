@@ -9,7 +9,7 @@ Vue.component('ValidationProvider', ValidationProvider)
 Vue.component('ValidationObserver', ValidationObserver)
 
 extend('did', value => {
-  if (/^did:(ethr|near):[a-zA-Z0-9]*$/.test(value)) {
+  if (/^did:(vda):[a-zA-Z0-9]*$/.test(value)) {
     return true
   }
 

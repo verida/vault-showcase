@@ -23,6 +23,8 @@ import DataTypeSelect from "../cards/DataTypeSelect";
 import SchemaFields from "../forms/SchemaFields";
 
 import { createNamespacedHelpers } from "vuex";
+import VeridaHelper from "../../helpers/VeridaHelper";
+
 const { mapState: mapSystemState } = createNamespacedHelpers("system");
 
 export default {
@@ -44,24 +46,25 @@ export default {
   },
   methods: {
     async select({ schema }) {
-      this.entity = schema;
+      this.entity = await VeridaHelper.retrieveSchema(schema);
       await this.$nextTick();
       this.init();
+    },
+    setFields(key, requiredFields, getProps) {
+      this.$set(this.data, key, "");
+      this.$set(this.attributes, key, getProps[key]);
+      this.$set(
+        this.attributes[key],
+        "required",
+        requiredFields.indexOf(key) !== -1
+      );
     },
     init() {
       this.data = {};
       this.attributes = {};
-
       this.entity.layouts.create.forEach((key) => {
-        this.$set(this.data, key, "");
-        this.$set(this.attributes, key, this.entity.properties[key]);
-        this.$set(
-          this.attributes[key],
-          "required",
-          this.entity.required.indexOf(key) !== -1
-        );
+        this.setFields(key, this.entity.required, this.entity.properties);
       });
-
       this.$refs["schema-fields"].$refs.validator.reset();
     },
   },
