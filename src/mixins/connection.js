@@ -31,7 +31,6 @@ export default {
       try {
         await VeridaHelper.connectVault();
         const profile = VeridaHelper.profile;
-        await VeridaHelper.messageListener()
         this.initUser({ address: VeridaHelper.did, name: profile.name });
       } catch (error) {
         this.error = error;

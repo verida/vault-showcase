@@ -42,9 +42,9 @@ export default {
       this.processing = true;
       try {
         await VeridaHelper.connectVault();
-        await VeridaHelper.messageListener();
         const profile = VeridaHelper.profile;
         if (VeridaHelper.connected) {
+          console.log(VeridaHelper.connected);
           this.initUser({ address: VeridaHelper.did, name: profile.name });
           this.$router.push({ name: "home" });
         }
