@@ -20,5 +20,7 @@ npm run build
 npm run lint
 ```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+### Deployment
+
+This app will automtically be deployed to https://vault-examples.demos.verida.io on a merge to the main branch.
+See https://us-east-2.console.aws.amazon.com/amplify/home?region=us-east-2
