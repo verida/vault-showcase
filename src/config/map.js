@@ -1,7 +1,7 @@
 // @todo: This should use the layouts in the schema
 
 export const schemas = {
-  'https://schemas.verida.io/health/pathology/tests/covid19/pcr/schema.json': {
+  'https://common.schemas.verida.io/health/pathology/tests/covid19/pcr/v0.1.0/schema.json': {
     view: [
       'fullName',
       'dateOfBirth',
@@ -17,7 +17,7 @@ export const schemas = {
       'result'
     ]
   },
-  'https://schemas.verida.io/shopping/coupon/schema.json': {
+  'https://common.schemas.verida.io/shopping/coupon/v0.1.0/schema.json': {
     view: [
       'name',
       'description',
@@ -35,7 +35,7 @@ export const schemas = {
       'barcode'
     ]
   },
-  'https://schemas.verida.io/identity/kyc/AU/schema.json': {
+  'https://common.schemas.verida.io/social/contact/v0.1.0/schema.json': {
     view: [
       'firstName',
       'lastName',

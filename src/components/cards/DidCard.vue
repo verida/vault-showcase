@@ -2,26 +2,39 @@
   <b-card>
     <b-card-text>
       <ValidationObserver ref="validator" mode="eager" v-slot="{ invalid }">
-        <ValidationProvider v-slot="{ errors }" rules="required|did" name="User DID">
+        <ValidationProvider
+          v-slot="{ errors }"
+          rules="required|did"
+          name="User DID"
+        >
           <b-form-textarea
             v-model="did"
             placeholder="Please, Enter the User DID"
             spellcheck="false"
-            size="sm" rows="1" no-resize
-            aria-describedby="did-error" />
+            size="sm"
+            rows="1"
+            no-resize
+            aria-describedby="did-error"
+          />
           <b-form-invalid-feedback id="did-error">
             {{ errors[0] }}
           </b-form-invalid-feedback>
         </ValidationProvider>
         <b-row align-h="center">
           <b-col sm="auto">
-            <b-button variant="primary" :disabled="invalid"
+            <b-button
+              variant="primary"
+              :disabled="invalid"
               class="mr-3"
-              @click="() => click('send')">
+              @click="() => click('send')"
+            >
               Send Data
             </b-button>
-            <b-button variant="success" :disabled="invalid"
-              @click="() => click('request')">
+            <b-button
+              variant="success"
+              :disabled="invalid"
+              @click="() => click('request')"
+            >
               Request Data
             </b-button>
           </b-col>
@@ -32,38 +45,33 @@
 </template>
 
 <script>
-import { createNamespacedHelpers } from 'vuex'
-const {
-  mapState: mapSystemState,
-  mapMutations: mapSystemMutations
-} = createNamespacedHelpers('system')
+import { createNamespacedHelpers } from "vuex";
+import veridaHelper from "../../helpers/VeridaHelper";
+const { mapState: mapSystemState, mapMutations: mapSystemMutations } =
+  createNamespacedHelpers("system");
 
 export default {
-  name: 'DidCard',
-  data () {
+  name: "DidCard",
+  data() {
     return {
-      did: null
-    }
+      did: null,
+    };
   },
   computed: {
-    ...mapSystemState([
-      'recipient'
-    ])
+    ...mapSystemState(["recipient"]),
   },
-  beforeMount () {
-    this.did = this.recipient
+  beforeMount() {
+    this.did = veridaHelper.did;
   },
   methods: {
-    ...mapSystemMutations([
-      'initRecipient'
-    ]),
-    click (mode) {
-      this.initRecipient(this.did)
+    ...mapSystemMutations(["initRecipient"]),
+    click(mode) {
+      this.initRecipient(this.did);
       this.$router.push({
-        name: 'dashboard',
-        params: { mode }
-      })
-    }
-  }
-}
+        name: "dashboard",
+        params: { mode },
+      });
+    },
+  },
+};
 </script>

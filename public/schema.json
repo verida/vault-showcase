@@ -1,0 +1,57 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "https://common.schemas.verida.io/social/contact/v0.1.0/schema.json",
+	"title": "Contact",
+	"titlePlural": "Contacts",
+	"description": "A record of a contact",
+	"type": "object",
+	"appearance": {
+		"style": {
+			"color": "#FD4F64",
+			"icon": "./icon.svg"
+		}
+	},
+	"database": {
+		"name": "social_contact",
+		"indexes": {
+			"email": ["email"],
+			"did": ["did"],
+			"name": ["lastName", "firstName"]
+		}
+	},
+	"layouts": {
+		"create": ["firstName", "lastName", "email", "mobile", "did"],
+		"view": ["firstName", "lastName", "email", "mobile", "did"]
+	},
+	"allOf": [
+		{
+			"$ref": "https://core.schemas.verida.io/base/v0.1.0/schema.json"
+		},
+		{
+			"properties": {
+				"firstName": {
+					"title": "First Name",
+					"type": "string"
+				},
+				"lastName": {
+					"title": "Last Name",
+					"type": "string"
+				},
+				"email": {
+					"title": "Email",
+					"type": "string",
+					"format": "email"
+				},
+				"mobile": {
+					"title": "Mobile",
+					"type": "string"
+				},
+				"did": {
+					"title": "DID",
+					"type": "string"
+				}
+			},
+			"required": ["firstName", "lastName"]
+		}
+	]
+}

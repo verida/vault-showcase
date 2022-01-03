@@ -6,32 +6,26 @@
   min-width: 100%;
   min-height: 100%;
 }
-.landing__btn {
-  width: 200px;
-  height: 200px;
-  background-color: rgba(242, 243, 243, 0.4);
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  cursor: pointer;
+
+.landing__connect {
   display: flex;
   justify-content: center;
   align-items: center;
-  outline: none;
+  flex-flow: column;
+  font-weight: 400;
+  font-size: 1.2rem;
+  background-color: #fff;
+  border-radius: $border-radius;
 
-  &:hover {
-    filter: brightness(0.9);
+
+  p{
+    font-size: 0.9rem;
   }
 
-  &:disabled {
-    opacity: 0.8;
-    cursor: not-allowed;
-    border-radius: 50%;
+  & > * {
+    margin: 0.5rem 0 0.7rem 0;
   }
-
-  img {
-    width: 100px;
-    animation: heartbeat 2.5s ease-in-out infinite both;
-  }
+} 
+.landing__btn {
+  border: none;
 }

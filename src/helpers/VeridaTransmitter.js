@@ -1,5 +1,4 @@
-import { veridaVaultLogin } from '@verida/vault-auth-client'
-import Verida from '@verida/datastore'
+// import { veridaVaultLogin } from '@verida/vault-auth-client'
 import store from 'store'
 import ProfileManager from './ProfileManager'
 import InboxManager from './InboxManager'
@@ -17,12 +16,12 @@ const CHAIN = 'ethr'
 const callbacks = {}
 
 /**
- * Connect the user to their Verida Datastore Application
+ * Connect the user to their Verida Application
  *
  *
  * @param {function} callback function to completed user connect action
  */
-export function connectVerida (cb = () => {}) {
+export function connectVerida(cb = () => { }) {
   Verida.setConfig({
     appName: VUE_APP_VERIDA_APP_NAME,
     environment: VUE_APP_VERIDA_ENVIRONMENT
@@ -60,7 +59,7 @@ export function connectVerida (cb = () => {}) {
 }
 
 // this needs cleaning up
-export async function getAccounts () {
+export async function getAccounts() {
   const address = await getAddress()
   if (address) {
     return [address]
@@ -75,7 +74,7 @@ export async function getAccounts () {
  * @param {*} auth Callback to fire when the user is authenticated
  * @param {*} unauth Callback to fire when the user is unauthenticated
  */
-export async function bind (auth = () => {}, unauth = () => {}) {
+export async function bind(auth = () => { }, unauth = () => { }) {
   callbacks.auth = auth
   callbacks.unauth = unauth
 
@@ -94,13 +93,13 @@ export async function bind (auth = () => {}, unauth = () => {}) {
   })
 }
 
-export async function bindInbox (cb) {
+export async function bindInbox(cb) {
   if (window.veridaApp) {
     window.veridaApp.inbox.on('newMessage', cb)
   }
 }
 
-export async function logout (cb) {
+export async function logout(cb) {
   if (window.veridaApp) {
     await window.veridaApp.disconnect()
     window.veridaApp = null
@@ -112,7 +111,7 @@ export async function logout (cb) {
   }
 }
 
-export async function fetchInbox (filter = {}) {
+export async function fetchInbox(filter = {}) {
   if (!window.veridaApp) {
     return []
   }
@@ -122,7 +121,7 @@ export async function fetchInbox (filter = {}) {
   })
 }
 
-export async function getAddress () {
+export async function getAddress() {
   if (window.veridaApp) {
     const address = await window.veridaApp.user.did
     return address
