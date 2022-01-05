@@ -3,14 +3,19 @@
     <b-navbar-brand href="/">
       <img src="@/assets/img/verida-logo-title.svg" />
     </b-navbar-brand>
-    <div class="user-menu-widget">
-      <span class="mx-2">{{ name }}</span>
-      <div v-show="address" class="m-dropdown">
+    <div v-if="connected" class="user-menu-widget">
+      <span class="mx-2">{{ user.name }}</span>
+      <div class="m-dropdown">
         <div
           @click="toggleDropdown"
           :class="['m-dropdown-top', isOpened && 'show']"
         >
-          <img height="40" v-if="avatar" alt="user-avatar" :src="avatar" />
+          <img
+            height="40"
+            v-if="user.avatar"
+            alt="user-avatar"
+            :src="user.avatar"
+          />
           <img v-else height="40" src="@/assets/img/avatar.svg" alt="i" />
         </div>
         <div v-show="isOpened" class="m-dropdown-logout">
@@ -41,17 +46,14 @@ export default {
   data() {
     return {
       isOpened: false,
-      connected: false,
-      name: "",
-      avatar: "",
-      address: "",
+      // connected: false,
     };
   },
   computed: {
-    ...mapSystemState(["processing", "user"]),
+    ...mapSystemState(["processing", "user", "connected"]),
   },
   methods: {
-    ...mapSystemMutation(["initRecipient", "initUser"]),
+    ...mapSystemMutation(["initRecipient", "initUser", "setConnection"]),
     go(mode) {
       this.$router.push({
         name: "dashboard",
@@ -64,17 +66,13 @@ export default {
     async disconnect() {
       this.initUser(null);
       this.initRecipient(null);
+      this.setConnection(false);
       await VeridaHelper.logout();
       this.$router.push({ name: "connect" });
     },
   },
-  beforeMount() {
+  mounted() {
     this.connected = VeridaHelper.connected;
-    if (this.user !== null) {
-      this.name = this.user.name;
-      this.address = this.user.address;
-      this.avatar = this.user.avatar;
-    }
   },
 };
 </script>

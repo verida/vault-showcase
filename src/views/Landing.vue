@@ -37,13 +37,14 @@ export default {
     };
   },
   methods: {
-    ...mapSystemMutations(["initUser"]),
+    ...mapSystemMutations(["initUser", "setConnection"]),
     async connect() {
       this.processing = true;
       try {
         await VeridaHelper.connectVault();
         const profile = VeridaHelper.profile;
         if (VeridaHelper.connected) {
+          this.setConnection(true);
           this.initUser({
             address: VeridaHelper.did,
             name: profile.name,

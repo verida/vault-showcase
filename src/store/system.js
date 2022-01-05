@@ -3,19 +3,23 @@ const state = {
   recipient: null,
   list: null,
   processing: false,
-  reconnecting: false
+  reconnecting: false,
+  connected: false
 }
 
 const mutations = {
   initUser(state, payload) {
-    console.log(payload);
     state.user = payload
+
   },
   initRecipient(state, payload) {
     state.recipient = payload
   },
   setList(state, payload) {
     state.list = payload
+  },
+  setConnection(state, payload) {
+    state.connected = payload
   },
   setProcessing(state, payload) {
     state.processing = payload
