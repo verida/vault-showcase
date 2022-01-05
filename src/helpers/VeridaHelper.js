@@ -42,7 +42,10 @@ class VeridaHelper extends EventEmitter {
         endpointUri: VUE_APP_VERIDA_TESTNET_DEFAULT_SERVER,
       },
       vaultConfig: {
-        loginUri: VUE_APP_LOGO_URL,
+        request: {
+          logoUrl: VUE_APP_LOGO_URL,
+        }
+
       },
     });
 
@@ -62,7 +65,7 @@ class VeridaHelper extends EventEmitter {
 
     this.did = await this.account.did();
     await this.initProfile();
-    await this.messageListener();
+    // await this.messageListener();
 
     this.emit("initialized");
   }

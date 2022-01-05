@@ -24,6 +24,7 @@ import SchemaFields from "../forms/SchemaFields";
 
 import { createNamespacedHelpers } from "vuex";
 import VeridaHelper from "../../helpers/VeridaHelper";
+import { SCHEMAS } from "../../config/schemas";
 
 const { mapState: mapSystemState } = createNamespacedHelpers("system");
 
@@ -47,6 +48,14 @@ export default {
   methods: {
     async select({ schema }) {
       this.entity = await VeridaHelper.retrieveSchema(schema);
+      if (this.entity.$id == SCHEMAS[3]) {
+        this.entity = {
+          ...this.entity,
+          layouts: {
+            create: ["message", "subject"],
+          },
+        };
+      }
       await this.$nextTick();
       this.init();
     },
@@ -65,6 +74,7 @@ export default {
       this.entity.layouts.create.forEach((key) => {
         this.setFields(key, this.entity.required, this.entity.properties);
       });
+      console.log(this.attributes);
       this.$refs["schema-fields"].$refs.validator.reset();
     },
   },

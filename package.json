@@ -9,8 +9,8 @@
   },
   "dependencies": {
     "@saeris/vue-spinners": "^1.0.8",
-    "@verida/account-web-vault": "^1.1.6",
-    "@verida/client-ts": "^1.1.9",
+    "@verida/account-web-vault": "^1.1.7",
+    "@verida/client-ts": "^1.1.10",
     "bootstrap": "^4.4.1",
     "bootstrap-vue": "^2.13.1",
     "core-js": "^3.6.4",

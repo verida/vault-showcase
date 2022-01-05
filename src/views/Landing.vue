@@ -44,8 +44,11 @@ export default {
         await VeridaHelper.connectVault();
         const profile = VeridaHelper.profile;
         if (VeridaHelper.connected) {
-          console.log(VeridaHelper.connected);
-          this.initUser({ address: VeridaHelper.did, name: profile.name });
+          this.initUser({
+            address: VeridaHelper.did,
+            name: profile.name,
+            avatar: profile.avatar,
+          });
           this.$router.push({ name: "home" });
         }
       } catch (error) {

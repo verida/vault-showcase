@@ -36,6 +36,7 @@ export default {
 
       for (const i in SCHEMAS) {
         const document = await veridaHelper.retrieveSchema(SCHEMAS[i]);
+        console.log(document);
         this.options.push({
           text: document.title,
           path: SCHEMAS[i],
