@@ -98,7 +98,7 @@ export default {
 
       const store = await veridaHelper.context.openDatastore(this.entity.$id);
 
-      // this.setProcessing(true);
+      this.setProcessing(true);
 
       // quick hack to format dates as expected for JSON validation
       for (const key in this.attributes) {
@@ -131,13 +131,8 @@ export default {
         this.setProcessing(false);
         return false;
       }
+      const result = await store.get(saved.id);
 
-      // const result = await store.get(saved.id);
-      const result = {
-        ...this.payload,
-        schema:
-          "https://core.schemas.verida.io/inbox/type/message/v0.1.0/schema.json",
-      };
       await this.sendInbox(result, payload.name);
     },
     format(key, value) {
