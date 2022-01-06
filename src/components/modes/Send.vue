@@ -74,7 +74,6 @@ export default {
       this.entity.layouts.create.forEach((key) => {
         this.setFields(key, this.entity.required, this.entity.properties);
       });
-      console.log(this.attributes);
       this.$refs["schema-fields"].$refs.validator.reset();
     },
   },

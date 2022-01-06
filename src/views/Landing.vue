@@ -44,6 +44,7 @@ export default {
         await VeridaHelper.connectVault();
         const profile = VeridaHelper.profile;
         if (VeridaHelper.connected) {
+          console.log("login in");
           this.setConnection(true);
           this.initUser({
             address: VeridaHelper.did,

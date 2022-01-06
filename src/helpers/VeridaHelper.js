@@ -2,7 +2,7 @@ import { EnvironmentType, Network, Client } from "@verida/client-ts";
 import { VaultAccount, hasSession } from "@verida/account-web-vault";
 
 import { EventEmitter } from "events";
-import { DATA_REQUEST, DATA_SEND } from "../constants/inbox";
+import { DATA_REQUEST, DATA_SEND, MESSAGING } from "../constants/inbox";
 
 const {
   VUE_APP_LOGO_URL,
@@ -99,12 +99,13 @@ class VeridaHelper extends EventEmitter {
     };
   }
 
-  async sendInbox({ message, did, subject }) {
-    const type = DATA_SEND;
+  async sendInboxMessage({ message, did, subject }) {
+    const type = MESSAGING;
 
     const data = {
       data: [message],
     };
+
     const config = {
       recipientContextName: "Verida: Vault",
     };
@@ -113,6 +114,25 @@ class VeridaHelper extends EventEmitter {
     await messaging.send(did, type, data, subject, config);
     return true;
   }
+
+  async sendInbox({ message, did, subject }) {
+    const type = DATA_SEND;
+
+    const data = {
+      data: [message],
+    };
+
+    const config = {
+      recipientContextName: "Verida: Vault",
+    };
+
+    const messaging = await this.context.getMessaging();
+    await messaging.send(did, type, data, subject, config);
+    return true;
+  }
+
+
+
 
   async messageListener() {
     this.msgInstance = await this.context.getMessaging()

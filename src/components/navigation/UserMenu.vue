@@ -75,8 +75,5 @@ export default {
       return did.slice(0, 14);
     },
   },
-  mounted() {
-    this.connected = VeridaHelper.connected;
-  },
 };
 </script>
