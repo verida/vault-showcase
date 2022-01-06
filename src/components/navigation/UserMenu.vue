@@ -19,6 +19,7 @@
           <img v-else height="40" src="@/assets/img/avatar.svg" alt="i" />
         </div>
         <div v-show="isOpened" class="m-dropdown-logout">
+          <p>{{ truncateDID(user.address) }}</p>
           <button @click="disconnect">
             <img height="20" src="@/assets/img/logout.svg" alt="icon" />
             <span> Log out</span>
@@ -69,6 +70,9 @@ export default {
       this.setConnection(false);
       await VeridaHelper.logout();
       this.$router.push({ name: "connect" });
+    },
+    truncateDID(did) {
+      return did.slice(0, 14);
     },
   },
   mounted() {

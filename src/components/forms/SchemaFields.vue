@@ -87,53 +87,64 @@ export default {
   methods: {
     ...mapSystemMutations(["setProcessing"]),
     async submit() {
-      const payload = {
-        name: extract(this.data, this.entity.$id),
-        ...this.data,
-      };
-      if (this.entity.properties.didJwtVc) {
-        payload.didJwtVc = await this.createCredential(payload);
-        payload.testTimestamp = new Date().toISOString();
-      }
-
-      const store = await veridaHelper.context.openDatastore(this.entity.$id);
-
-      this.setProcessing(true);
-
-      // quick hack to format dates as expected for JSON validation
-      for (const key in this.attributes) {
-        if (this.attributes[key].format === "date") {
-          payload[key] = payload[key].substr(0, 10);
+      try {
+        const payload = {
+          name: extract(this.data, this.entity.$id),
+          ...this.data,
+        };
+        if (this.entity.properties.didJwtVc) {
+          payload.didJwtVc = await this.createCredential(payload);
+          payload.testTimestamp = new Date().toISOString();
         }
-      }
 
-      // quick hack to set meaningful names
-      switch (this.entity.$id) {
-        case "https://common.schemas.verida.io/social/contact/v0.1.0/schema.json":
-          payload.name = `${payload.firstName} ${payload.lastName} KYC`;
-          break;
-        case "https://common.schemas.verida.io/health/pathology/tests/covid19/pcr/v0.1.0/schema.json":
-          payload.name = `${payload.fullName} COVID Result`;
-      }
-      const saved = await store.save(payload);
+        const store = await veridaHelper.context.openDatastore(this.entity.$id);
 
-      if (!saved) {
-        console.error(store.errors);
-        this.$bvToast.toast(
-          `An error occurred, when saving ${this.entity.title}. See console.`,
-          {
-            title: "Error",
-            autoHideDelay: 3000,
-            variant: "danger",
-          }
+        // validate schema
+
+        const { isValid, errors } = await veridaHelper.validateSchema(
+          payload,
+          this.entity.$id
         );
+        console.log(isValid, errors);
+        this.setProcessing(true);
 
-        this.setProcessing(false);
-        return false;
+        // quick hack to format dates as expected for JSON validation
+        for (const key in this.attributes) {
+          if (this.attributes[key].format === "date") {
+            payload[key] = payload[key].substr(0, 10);
+          }
+        }
+
+        // quick hack to set meaningful names
+        switch (this.entity.$id) {
+          case "https://common.schemas.verida.io/social/contact/v0.1.0/schema.json":
+            payload.name = `${payload.firstName} ${payload.lastName} KYC`;
+            break;
+          case "https://common.schemas.verida.io/health/pathology/tests/covid19/pcr/v0.1.0/schema.json":
+            payload.name = `${payload.fullName} COVID Result`;
+        }
+        const saved = await store.save(payload);
+
+        if (!saved) {
+          console.error(store.errors);
+          this.$bvToast.toast(
+            `An error occurred, when saving ${this.entity.title}. See console.`,
+            {
+              title: "Error",
+              autoHideDelay: 3000,
+              variant: "danger",
+            }
+          );
+
+          this.setProcessing(false);
+          return false;
+        }
+        const result = await store.get(saved.id);
+
+        await this.sendInbox(result, payload.name);
+      } catch (error) {
+        console.log({ error });
       }
-      const result = await store.get(saved.id);
-
-      await this.sendInbox(result, payload.name);
     },
     format(key, value) {
       this.data[key] =
