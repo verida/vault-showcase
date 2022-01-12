@@ -7,6 +7,11 @@ import * as _ from 'underscore'
 import '@/plugins'
 import '@/assets/scss/index.scss'
 
+// import Vue from 'vue'
+import Clipboard from 'v-clipboard'
+
+Vue.use(Clipboard)
+
 Vue.config.productionTip = false
 
 window._ = _

@@ -29,7 +29,10 @@
         v-model="data[key]"
       />
       <b-form-textarea
-        v-else-if="attributes[key].inputType === 'textarea'"
+        v-else-if="
+          attributes[key].inputType === 'textarea' ||
+          attributes[key].title === 'Message'
+        "
         class="form-control word-break"
         spellcheck="false"
         v-model="data[key]"
@@ -88,7 +91,6 @@ export default {
         name: extract(this.data, this.entity.$id),
         ...this.data,
       };
-
       if (this.entity.properties.didJwtVc) {
         payload.didJwtVc = await this.createCredential(payload);
         payload.testTimestamp = new Date().toISOString();
@@ -96,6 +98,13 @@ export default {
 
       const store = await veridaHelper.context.openDatastore(this.entity.$id);
 
+      // validate schema
+
+      const { isValid, errors } = await veridaHelper.validateSchema(
+        payload,
+        this.entity.$id
+      );
+      console.log(isValid, errors);
       this.setProcessing(true);
 
       // quick hack to format dates as expected for JSON validation
@@ -113,7 +122,6 @@ export default {
         case "https://common.schemas.verida.io/health/pathology/tests/covid19/pcr/v0.1.0/schema.json":
           payload.name = `${payload.fullName} COVID Result`;
       }
-
       const saved = await store.save(payload);
 
       if (!saved) {

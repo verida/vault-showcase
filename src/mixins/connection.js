@@ -24,14 +24,16 @@ export default {
       'setList',
       'setProcessing',
       'initRecipient',
-      'setReconnecting'
+      'setReconnecting',
+      'setConnection'
     ]),
     async init() {
       this.setReconnecting(true)
       try {
         await VeridaHelper.connectVault();
         const profile = VeridaHelper.profile;
-        this.initUser({ address: VeridaHelper.did, name: profile.name });
+        this.setConnection(true);
+        this.initUser({ address: VeridaHelper.did, name: profile.name, avatar: profile.avatar });
       } catch (error) {
         this.error = error;
       } finally {

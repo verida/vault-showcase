@@ -8,6 +8,9 @@ export function extract(data, collection) {
       const { firstName, lastName } = data
       return `${firstName} ${lastName}`
     }
+    case 'https://core.schemas.verida.io/inbox/type/message/v0.1.0/schema.json': {
+      return data.subject
+    }
   }
 }
 
