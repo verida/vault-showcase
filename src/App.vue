@@ -1,6 +1,6 @@
 <template>
   <div id="app" class="main-layout">
-    <navbar />
+    <user-menu />
     <b-container>
       <b-row align-h="center">
         <div class="dashboard-card">
@@ -18,6 +18,7 @@
 
 <script>
 import Navbar from "./components/navigation/Navbar";
+import UserMenu from "./components/navigation/UserMenu.vue";
 import { CircleLoader } from "@saeris/vue-spinners";
 import ConnectionMixin from "@/mixins/connection";
 import { createNamespacedHelpers } from "vuex";
@@ -32,6 +33,7 @@ export default {
   },
   components: {
     Navbar,
+    UserMenu,
     CircleLoader,
   },
 };

@@ -31,6 +31,14 @@
               Send Data
             </b-button>
             <b-button
+              variant="secondary"
+              :disabled="invalid"
+              class="mr-3"
+              @click="() => click('message')"
+            >
+              Send Message
+            </b-button>
+            <b-button
               variant="success"
               :disabled="invalid"
               @click="() => click('request')"

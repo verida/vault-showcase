@@ -33,7 +33,6 @@ export default {
   methods: {
     async init() {
       this.options = [];
-
       for (const i in SCHEMAS) {
         const document = await veridaHelper.retrieveSchema(SCHEMAS[i]);
         this.options.push({
