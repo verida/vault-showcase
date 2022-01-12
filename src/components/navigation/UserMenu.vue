@@ -19,7 +19,15 @@
           <img v-else height="40" src="@/assets/img/avatar.svg" alt="i" />
         </div>
         <div v-show="isOpened" class="m-dropdown-logout">
-          <p>{{ truncateDID(user.address) }}</p>
+          <p>
+            {{ truncateDID(user.address) }}
+            <img
+              height="20"
+              @click="onCopy"
+              src="@/assets/img/copy.png"
+              alt="icon"
+            />
+          </p>
           <button @click="disconnect">
             <img height="20" src="@/assets/img/logout.svg" alt="icon" />
             <span> Log out</span>
@@ -55,6 +63,14 @@ export default {
   },
   methods: {
     ...mapSystemMutation(["initRecipient", "initUser", "setConnection"]),
+    onCopy() {
+      this.$clipboard(this.user.address);
+      this.$bvToast.toast(`DID copied to clip board`, {
+        title: this.user.address,
+        autoHideDelay: 2000,
+        variant: "success",
+      });
+    },
     go(mode) {
       this.$router.push({
         name: "dashboard",
@@ -72,7 +88,7 @@ export default {
       this.$router.push({ name: "connect" });
     },
     truncateDID(did) {
-      return did.slice(0, 14);
+      return did.slice(0, 13);
     },
   },
 };
