@@ -65,7 +65,7 @@ export default {
     ...mapSystemMutation(["initRecipient", "initUser", "setConnection"]),
     onCopy() {
       this.$clipboard(this.user.address);
-      this.$bvToast.toast(`DID copied to clip board`, {
+      this.$bvToast.toast(`Copied`, {
         title: this.user.address,
         autoHideDelay: 2000,
         variant: "success",
