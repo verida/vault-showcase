@@ -10,26 +10,40 @@ This demo showcases how you can perform the following actions :
 
 ## Project setup
 
+## Install
+
+```
+yarn install
+```
+
+or
+
 ```
 npm install
 ```
 
-### Compiles and hot-reloads for development
+## Build
 
 ```
-npm run serve
+yarn build
 ```
 
-### Compiles and minifies for production
+or
 
 ```
 npm run build
 ```
 
-### Lints and fixes files
+## Run
 
 ```
-npm run lint
+yarn serve
+```
+
+or
+
+```
+npm run serve
 ```
 
 ## Deployment
