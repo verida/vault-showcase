@@ -5,10 +5,10 @@ frontend:
       commands:
         - nvm install
         - nvm use
-        - npm ci
+        - yarn install
     build:
       commands:
-        - npm run build
+        - yarn build
   artifacts:
     baseDirectory: dist
     files:
