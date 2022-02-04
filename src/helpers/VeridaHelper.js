@@ -33,20 +33,9 @@ class VeridaHelper extends EventEmitter {
 
   async connectVault() {
     this.account = new VaultAccount({
-      defaultDatabaseServer: {
-        type: "VeridaDatabase",
-        endpointUri: VUE_APP_VERIDA_TESTNET_DEFAULT_SERVER,
-      },
-      defaultMessageServer: {
-        type: "VeridaMessage",
-        endpointUri: VUE_APP_VERIDA_TESTNET_DEFAULT_SERVER,
-      },
-      vaultConfig: {
-        request: {
-          logoUrl: VUE_APP_LOGO_URL,
-        }
-
-      },
+      request: {
+        logoUrl: VUE_APP_LOGO_URL,
+      }
     });
 
     this.context = await Network.connect({
