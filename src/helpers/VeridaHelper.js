@@ -1,4 +1,4 @@
-import { EnvironmentType, Network, Client } from "@verida/client-ts";
+import { EnvironmentType, Network } from "@verida/client-ts";
 import { VaultAccount, hasSession } from "@verida/account-web-vault";
 
 import { EventEmitter } from "events";
@@ -7,7 +7,6 @@ import { DATA_REQUEST, DATA_SEND, MESSAGING } from "../constants/inbox";
 const {
   VUE_APP_LOGO_URL,
   VUE_APP_CONTEXT_NAME,
-  VUE_APP_VERIDA_TESTNET_DEFAULT_SERVER,
 } = process.env;
 
 export const VERIDA_ENVIRONMENT = EnvironmentType.TESTNET;
@@ -33,9 +32,7 @@ class VeridaHelper extends EventEmitter {
 
   async connectVault() {
     this.account = new VaultAccount({
-      request: {
-        logoUrl: VUE_APP_LOGO_URL,
-      }
+      logoUrl: VUE_APP_LOGO_URL,
     });
 
     this.context = await Network.connect({
