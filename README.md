@@ -1,4 +1,4 @@
-# generic-demo
+# Vault-Examples
 
 This demo showcases how you can perform the following actions :
 
