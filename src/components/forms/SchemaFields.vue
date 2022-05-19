@@ -45,7 +45,7 @@
         v-else
         class="form-control"
         size="sm"
-        :type="attributes[key].type | typed"
+        :type="attributes[key].type"
         :value="data[key]"
         @input="(value) => format(key, value)"
         :name="attributes[key].title"
@@ -72,16 +72,14 @@ const { mapState: mapSystemState, mapMutations: mapSystemMutations } =
 
 export default {
   name: "SchemaFields",
-  filters: {
+  props: ["data", "attributes", "entity"],
+  mixins: [DateFormatMixin],
+  computed: {
     typed(str) {
       if (str === "string") return "text";
       if (str === "number") return "number";
       return "text";
     },
-  },
-  props: ["data", "attributes", "entity"],
-  mixins: [DateFormatMixin],
-  computed: {
     ...mapSystemState(["recipient"]),
   },
   methods: {

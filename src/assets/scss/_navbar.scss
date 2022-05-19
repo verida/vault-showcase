@@ -41,7 +41,7 @@
 
     &.show {
       img {
-        border: 2px $primary solid;
+        // border: 2px $primary solid;
       }
 
     }
@@ -85,12 +85,9 @@
       cursor: pointer;
       background: transparent;
       color: #000;
-
       &>* {
         margin: 0 0.5rem;
       }
-
-
     }
 
     &:hover {

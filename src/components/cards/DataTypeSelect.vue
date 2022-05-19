@@ -10,10 +10,11 @@
 </template>
 
 <script>
+import { defineComponent } from "vue";
 import { SCHEMAS } from "../../config/schemas";
 import veridaHelper from "../../helpers/VeridaHelper";
 
-export default {
+export default defineComponent({
   name: "DataTypeSelect",
   props: ["emitted"],
   data() {
@@ -44,5 +45,5 @@ export default {
       }
     },
   },
-};
+});
 </script>

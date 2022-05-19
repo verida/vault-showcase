@@ -1,4 +1,13 @@
-export function extract(data, collection) {
+
+interface IData {
+  title: string;
+  name: string;
+  subject: string;
+  firstName: string;
+  lastName: string
+}
+
+export function extract(data: IData, collection: string) {
   switch (collection) {
     case 'https://common.schemas.verida.io/shopping/coupon/v0.1.0/schema.json':
       return data.title

@@ -39,7 +39,6 @@ import { CircleLoader } from "@saeris/vue-spinners";
 
 import { createNamespacedHelpers } from "vuex";
 import veridaHelper from "../../helpers/VeridaHelper";
-import { getSchemaProperties } from "../../helpers/NameModifier";
 const { mapState: mapSystemState, mapMutations: mapSystemMutations } =
   createNamespacedHelpers("system");
 

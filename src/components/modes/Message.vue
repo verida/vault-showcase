@@ -74,33 +74,7 @@ export default {
         schema: this.schema,
         ...form,
       };
-
-      const store = await veridaHelper.context.openDatastore(this.schema);
-
-      // validate schema
-
-      const { isValid, errors } = await veridaHelper.validateSchema(
-        payload,
-        this.schema
-      );
-
       this.setProcessing(true);
-      // const saved = await store.save(payload);
-
-      // if (!saved) {
-      //   console.error(store.errors);
-      //   this.$bvToast.toast(
-      //     `An error occurred, when saving ${this.entity.title}. See console.`,
-      //     {
-      //       title: "Error",
-      //       autoHideDelay: 3000,
-      //       variant: "danger",
-      //     }
-      //   );
-      //   this.setProcessing(false);
-      //   return false;
-      // }
-      // const result = await store.get(saved.id);
       await this.sendInbox(payload, payload.name);
     },
 

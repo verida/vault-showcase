@@ -3,38 +3,13 @@
     <b-navbar-brand href="/">
       <img src="@/assets/img/verida-logo-title.svg" />
     </b-navbar-brand>
-    <div v-if="connected" class="user-menu-widget">
-      <span class="mx-2">{{ user.name }}</span>
-      <div class="m-dropdown">
-        <div
-          @click="toggleDropdown"
-          :class="['m-dropdown-top', isOpened && 'show']"
-        >
-          <img
-            height="40"
-            v-if="user.avatar"
-            alt="user-avatar"
-            :src="user.avatar"
-          />
-          <img v-else height="40" src="@/assets/img/avatar.svg" alt="i" />
-        </div>
-        <div v-show="isOpened" class="m-dropdown-logout">
-          <p>
-            {{ truncateDID(user.address) }}
-            <img
-              height="20"
-              @click="onCopy"
-              src="@/assets/img/copy.png"
-              alt="icon"
-            />
-          </p>
-          <button @click="disconnect">
-            <img height="20" src="@/assets/img/logout.svg" alt="icon" />
-            <span> Log out</span>
-          </button>
-        </div>
-      </div>
-    </div>
+    <vda-account
+      :logo="logo"
+      @onError="onError"
+      :contextName="contextName"
+      @onLogout="disconnect"
+      @onConnected="onSuccess"
+    />
   </b-navbar>
 </template>
 
@@ -55,30 +30,25 @@ export default {
   data() {
     return {
       isOpened: false,
-      // connected: false,
+      connected: true,
+      contextName: "Verida: New Account Component",
+      logo: "https://assets.verida.io/verida_login_request_logo_170x170.png",
     };
   },
   computed: {
-    ...mapSystemState(["processing", "user", "connected"]),
+    ...mapSystemState(["processing", "user"]),
   },
   methods: {
     ...mapSystemMutation(["initRecipient", "initUser", "setConnection"]),
-    onCopy() {
-      this.$clipboard(this.user.address);
-      this.$bvToast.toast(`Copied`, {
-        title: this.user.address,
-        autoHideDelay: 2000,
-        variant: "success",
-      });
+    onSuccess(response) {
+      console.log(response);
     },
+    onError() {},
     go(mode) {
       this.$router.push({
         name: "dashboard",
         params: { mode },
       });
-    },
-    toggleDropdown() {
-      this.isOpened = !this.isOpened;
     },
     async disconnect() {
       this.initUser(null);
@@ -86,9 +56,6 @@ export default {
       this.setConnection(false);
       await VeridaHelper.logout();
       this.$router.push({ name: "connect" });
-    },
-    truncateDID(did) {
-      return did.slice(0, 13);
     },
   },
 };

@@ -1,6 +1,7 @@
-import { DATA_SEND, DATA_REQUEST } from '@/constants/inbox'
+import { DATA_SEND, DATA_REQUEST } from '../constants/inbox'
 
 class InboxManager {
+  private _app: any
   constructor(app) {
     this._app = app
   }
@@ -39,7 +40,7 @@ class InboxManager {
    * @param {*} action
    * @param payload
    */
-  async handleAction(inboxEntry, action, payload = []) {
+  async handleAction(inboxEntry: any, action: any, payload = []) {
     const inbox = await this._app.inbox.getInbox()
 
     if (inboxEntry.data.status) {
