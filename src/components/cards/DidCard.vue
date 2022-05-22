@@ -1,37 +1,35 @@
 <template>
-  <b-card>
-    <b-card-text>
-      <b-form-textarea
+  <div class="d-flex justify-content-center">
+    <div>
+      <textarea
         v-model="did"
         placeholder="Please, Enter the User DID"
         spellcheck="false"
-        size="sm"
-        rows="1"
-        no-resize
+        class="form-control"
         aria-describedby="did-error"
-      />
-      <b-form-invalid-feedback id="did-error">
-        <!-- {{ errors[0] }} -->
-      </b-form-invalid-feedback>
-      <b-row align-h="center">
-        <b-col sm="auto">
-          <b-button variant="primary" class="mr-3" @click="() => click('send')">
+        rows="3"
+      ></textarea>
+      <p class="text-danger mt-2" id="did-error" role="alert">
+        {{ !did ? "No Did" : "" }}
+      </p>
+      <div class="row">
+        <div class="col">
+          <button class="mr-4 btn btn-primary" @click="() => click('send')">
             Send Data
-          </b-button>
-          <b-button
-            variant="secondary"
-            class="mr-3"
+          </button>
+          <button
+            class="mr-3 btn btn-secondary"
             @click="() => click('message')"
           >
             Send Message
-          </b-button>
-          <b-button variant="success" @click="() => click('request')">
+          </button>
+          <button class="ml-3 btn btn-success" @click="() => click('request')">
             Request Data
-          </b-button>
-        </b-col>
-      </b-row>
-    </b-card-text>
-  </b-card>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>

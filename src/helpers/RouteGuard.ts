@@ -2,7 +2,7 @@ import veridaHelper from './VeridaHelper';
 
 const redirect = async (to: any, next: any) => {
 	const { guest, authorized }: any = to.meta;
-	const connected = veridaHelper.hasSession();
+	const connected = veridaHelper.connected;
 
 	switch (true) {
 		case connected && guest:

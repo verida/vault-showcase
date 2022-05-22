@@ -1,48 +1,46 @@
 <template>
-  <b-card class="mt-3">
+  <div class="card mt-3 p-3 d-flex justify-content-center">
     <h4 class="my-2">Generic Message</h4>
     <form @submit.prevent="submit">
       <div class="my-2">
         <label>Subject</label>
-        <input required class="form-control my-1" size="sm" v-model="title" />
+        <input required class="form-control my-1" v-model="title" />
       </div>
       <div class="my-2">
         <label>Message</label>
         <textarea
           class="form-control my-1 word-break"
           v-model="message"
-          size="sm"
           required
           rows="3"
         />
       </div>
 
-      <b-button
-        class="my-3"
-        type="submit"
-        :disabled="processing"
-        variant="primary"
-      >
+      <button class="my-3 btn btn-primary" type="submit" :disabled="processing">
         Send
-      </b-button>
+      </button>
     </form>
     <div v-if="processing" class="card-shadow">
-      <circle-loader color="#2263c3" :size="100" class="card-spinner" />
+      <pulse-loader
+        color="#2263c3"
+        :loading="processing"
+        class="card-spinner"
+      />
     </div>
-  </b-card>
+  </div>
 </template>
 
 <script>
+import { defineComponent } from "vue";
 import { extract } from "@/helpers/NameModifier";
-import { CircleLoader } from "@saeris/vue-spinners";
-
+import PulseLoader from "vue-spinner/src/PulseLoader.vue";
 import { createNamespacedHelpers } from "vuex";
 import veridaHelper from "../../helpers/VeridaHelper";
 const { mapState: mapSystemState, mapMutations: mapSystemMutations } =
   createNamespacedHelpers("system");
 const coreMessageSchema =
   "https://core.schemas.verida.io/inbox/type/message/v0.1.0/schema.json";
-export default {
+export default defineComponent({
   name: "Message",
   data() {
     return {
@@ -53,7 +51,7 @@ export default {
     };
   },
   components: {
-    CircleLoader,
+    PulseLoader,
   },
   computed: {
     ...mapSystemState(["recipient", "processing"]),
@@ -90,27 +88,24 @@ export default {
 
         this.setProcessing(false);
 
-        this.$bvToast.toast(
-          `Created ${this.entity.title} is sent to ${this.recipient}`,
+        this.$toast.success(
+          `Created ${this.entity.title} is sent to ${this.recipient} Inbox sent`,
           {
-            title: "Inbox sent",
-            autoHideDelay: 3000,
-            variant: "success",
+            duration: 3000,
           }
         );
       } catch (e) {
         this.setProcessing(false);
         console.info(e);
-        this.$bvToast.toast(
-          `An error occurred, when sending ${this.entity.title}`,
+        console.log(e);
+        this.$toast.error(
+          `An error occurred, when sending ${this.entity.title} Inbox hasn't been sent`,
           {
-            title: "Inbox hasn't been sent",
-            autoHideDelay: 3000,
-            variant: "danger",
+            duration: 3000,
           }
         );
       }
     },
   },
-};
+});
 </script>

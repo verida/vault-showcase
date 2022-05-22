@@ -1,10 +1,9 @@
 <template>
-  <b-card class="mt-3">
-    <DataTypeSelect @change="select" />
+  <div class="mt-3 card p-2" style="width: 20rem">
+    <data-type-select @change="select" />
     <div v-if="entity" class="mt-4">
       <hr />
       <SchemaFields
-        @reset="init"
         ref="schema-fields"
         :entity="entity"
         :data="data"
@@ -12,28 +11,32 @@
       />
     </div>
     <div v-if="processing" class="card-shadow">
-      <CircleLoader color="#2263c3" :size="100" class="card-spinner" />
+      <pulse-loader
+        color="#2263c3"
+        :loading="processing"
+        class="card-spinner"
+      />
     </div>
-  </b-card>
+  </div>
 </template>
 
 <script>
-import { CircleLoader } from "@saeris/vue-spinners";
+import { defineComponent } from "vue";
+import PulseLoader from "vue-spinner/src/PulseLoader.vue";
 import DataTypeSelect from "../cards/DataTypeSelect";
 import SchemaFields from "../forms/SchemaFields";
-
 import { createNamespacedHelpers } from "vuex";
 import VeridaHelper from "../../helpers/VeridaHelper";
 import { SCHEMAS } from "../../config/schemas";
 
 const { mapState: mapSystemState } = createNamespacedHelpers("system");
 
-export default {
+export default defineComponent({
   name: "Request",
   components: {
     SchemaFields,
     DataTypeSelect,
-    CircleLoader,
+    PulseLoader,
   },
   data() {
     return {
@@ -56,17 +59,12 @@ export default {
           },
         };
       }
-      await this.$nextTick();
       this.init();
     },
     setFields(key, requiredFields, getProps) {
-      this.$set(this.data, key, "");
-      this.$set(this.attributes, key, getProps[key]);
-      this.$set(
-        this.attributes[key],
-        "required",
-        requiredFields.indexOf(key) !== -1
-      );
+      this.data[key] = "";
+      this.attributes[key] = getProps[key];
+      this.attributes[key]["required"] = requiredFields.indexOf(key) !== -1;
     },
     init() {
       this.data = {};
@@ -74,8 +72,8 @@ export default {
       this.entity.layouts.create.forEach((key) => {
         this.setFields(key, this.entity.required, this.entity.properties);
       });
-      this.$refs["schema-fields"].$refs.validator.reset();
+      // this.$refs["schema-fields"].$refs.validator.reset();
     },
   },
-};
+});
 </script>

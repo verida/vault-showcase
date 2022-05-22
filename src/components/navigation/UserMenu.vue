@@ -1,8 +1,8 @@
 <template>
-  <b-navbar toggleable="lg" type="dark" class="navbar-demo">
-    <b-navbar-brand href="/">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark navbar-demo">
+    <a href="/">
       <img src="@/assets/img/verida-logo-title.svg" />
-    </b-navbar-brand>
+    </a>
     <vda-account
       :logo="logo"
       @onError="onError"
@@ -10,40 +10,49 @@
       @onLogout="disconnect"
       @onConnected="onSuccess"
     />
-  </b-navbar>
+  </nav>
 </template>
 
 <script>
+import { defineComponent } from "vue";
 import { createNamespacedHelpers } from "vuex";
-import { BarLoader } from "@saeris/vue-spinners";
 import DidStatistics from "../cards/DidStatistics";
 import VeridaHelper from "../../helpers/VeridaHelper";
-const { mapState: mapSystemState, mapMutations: mapSystemMutation } =
+import { envKeys } from "@/config/env.config";
+const { mapState: mapSystemState, mapMutations: mapSystemMutations } =
   createNamespacedHelpers("system");
 
-export default {
+export default defineComponent({
   name: "UserMenu",
   components: {
     DidStatistics,
-    BarLoader,
   },
   data() {
     return {
-      isOpened: false,
-      connected: true,
-      contextName: "Verida: New Account Component",
-      logo: "https://assets.verida.io/verida_login_request_logo_170x170.png",
+      contextName: envKeys.VUE_APP_CONTEXT_NAME,
+      logo: envKeys.VUE_APP_LOGO_URL,
     };
   },
   computed: {
     ...mapSystemState(["processing", "user"]),
   },
   methods: {
-    ...mapSystemMutation(["initRecipient", "initUser", "setConnection"]),
-    onSuccess(response) {
-      console.log(response);
+    ...mapSystemMutations([
+      "setConnection",
+      "setReconnecting",
+      "setConnection",
+    ]),
+    ...mapSystemMutations(["initUser", "setConnection", "setReconnecting"]),
+
+    async onSuccess(context) {
+      this.setReconnecting(true);
+      await VeridaHelper.connectVault(context);
+      this.setReconnecting(false);
+      this.$router.push({ name: "home" });
     },
-    onError() {},
+    onError(error) {
+      this.error = error;
+    },
     go(mode) {
       this.$router.push({
         name: "dashboard",
@@ -51,12 +60,10 @@ export default {
       });
     },
     async disconnect() {
-      this.initUser(null);
-      this.initRecipient(null);
       this.setConnection(false);
       await VeridaHelper.logout();
       this.$router.push({ name: "connect" });
     },
   },
-};
+});
 </script>

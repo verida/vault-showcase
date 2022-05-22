@@ -1,71 +1,16 @@
-import { bindInbox } from '@/helpers/VeridaTransmitter';
-import { createNamespacedHelpers } from 'vuex';
-import { DATA_SEND } from '../constants/inbox';
-import VeridaHelper from '../helpers/VeridaHelper';
-import veridaHelper from '../helpers/VeridaHelper';
+import { createNamespacedHelpers } from "vuex";
+import { DATA_SEND } from "../constants/inbox";
+import veridaHelper from "../helpers/VeridaHelper";
 
-const { mapState: mapSystemState, mapMutations: mapSystemMutations } =
-	createNamespacedHelpers('system');
+const { mapMutations: mapSystemMutations } = createNamespacedHelpers("system");
 
 export default {
-	computed: {
-		...mapSystemState(['processing']),
-	},
+	computed: {},
 	methods: {
-		...mapSystemMutations([
-			'initUser',
-			'setList',
-			'setProcessing',
-			'initRecipient',
-			'setReconnecting',
-			'setConnection',
-		]),
-		async init() {
-			this.setReconnecting(true);
-			try {
-				await VeridaHelper.connectVault();
-				const profile = VeridaHelper.profile;
-				this.setConnection(true);
-				this.initUser({
-					address: VeridaHelper.did,
-					name: profile.name,
-					avatar: profile.avatar,
-				});
-			} catch (error) {
-				this.error = error;
-			} finally {
-				this.setReconnecting(false);
-			}
-		},
-		async disconnect() {
-			this.initRecipient(null);
-			await VeridaHelper.logout();
-			this.$router.push({ name: 'connect' });
-		},
-		connect() {
-			bindInbox(this.handleInbox);
-		},
-		async handleInbox(msg) {
-			const { data, type } = msg;
-			if (type === DATA_SEND) {
-				const { data: records } = data;
-				const response = _.isArray(records[0]) ? records[0] : records;
-				this.setProcessing(false);
-				this.setList(response);
-			}
-		},
-	},
-	async beforeMount() {
-		const activePath = this.$router.currentRoute.path;
-		const userLoginSession = VeridaHelper.hasSession();
-		if (activePath !== '/connect') {
-			if (userLoginSession) {
-				await this.init();
-			}
-		}
+		...mapSystemMutations(["initUser", "setList", "setProcessing"]),
 	},
 	created() {
-		veridaHelper.on('messageNotification', (inbox) => {
+		veridaHelper.on("messageNotification", (inbox) => {
 			const { data, type } = inbox;
 			if (type === DATA_SEND) {
 				const { data: records } = data;
@@ -73,10 +18,8 @@ export default {
 				this.setProcessing(false);
 				this.setList(response);
 			}
-			this.$bvToast.toast(`New message`, {
-				title: 'Inbox sent',
-				autoHideDelay: 3000,
-				variant: 'success',
+			this.$toast.success(`New message Inbox sent`, {
+				duration: 3000,
 			});
 		});
 	},

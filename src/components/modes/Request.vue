@@ -1,52 +1,58 @@
 <template>
-  <div>
-    <b-card class="mt-3">
-      <ValidationObserver ref="validator" mode="eager" v-slot="{ invalid }">
-        <ValidationProvider rules="required">
-          <DataTypeSelect @change="select" v-model="entity" />
-        </ValidationProvider>
-        <ValidationProvider rules="required">
-          <b-form-radio-group class="mt-3">
-            <b-form-radio v-model="params.userSelect" :value="false">
-              All data
-            </b-form-radio>
-            <b-form-radio v-model="params.userSelect" :value="true">
-              User select data
-            </b-form-radio>
-          </b-form-radio-group>
-        </ValidationProvider>
-        <b-button
-          class="mt-3"
-          variant="success"
-          @click="request"
-          :disabled="invalid"
-        >
-          Request
-        </b-button>
-      </ValidationObserver>
-      <div v-if="processing" class="card-shadow">
-        <CircleLoader color="#2263c3" :size="100" class="card-spinner" />
-        <b-button variant="light" @click="cancel">Cancel</b-button>
+  <div class="d-flex justify-content-center border-light">
+    <div class="mt-3">
+      <data-type-select @change="select" v-model="entity" />
+      <div class="mt-3">
+        <div class="form-check form-check-inline">
+          <input
+            class="form-check-input"
+            type="radio"
+            v-model="params.userSelect"
+            :value="false"
+          />
+          <label class="form-check-label" for="inlineRadio1"> All data</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input
+            class="form-check-input"
+            type="radio"
+            v-model="params.userSelect"
+            :value="true"
+          />
+          <label class="form-check-label" for="inlineRadio2">
+            User select data</label
+          >
+        </div>
       </div>
-    </b-card>
-    <b-table class="records mt-4" responsive striped hover :items="records" />
+
+      <button class="mt-3 btn btn-success" @click="request">Request</button>
+      <div v-if="processing" class="card-shadow">
+        <pulse-loader
+          color="#2263c3"
+          :loading="processing"
+          class="card-spinner"
+        />
+        <button class="btn" @click="cancel">Cancel</button>
+      </div>
+    </div>
+    <!-- <b-table class="records mt-4" responsive striped hover :items="records" /> -->
   </div>
 </template>
 
 <script>
+import { defineComponent } from "vue";
 import DataTypeSelect from "../cards/DataTypeSelect";
-import { CircleLoader } from "@saeris/vue-spinners";
-
+import PulseLoader from "vue-spinner/src/PulseLoader.vue";
 import { createNamespacedHelpers } from "vuex";
 import veridaHelper from "../../helpers/VeridaHelper";
 const { mapState: mapSystemState, mapMutations: mapSystemMutations } =
   createNamespacedHelpers("system");
 
-export default {
+export default defineComponent({
   name: "Send",
   components: {
     DataTypeSelect,
-    CircleLoader,
+    PulseLoader,
   },
   data() {
     return {
@@ -86,19 +92,17 @@ export default {
           message,
           data,
         });
-
-        this.$bvToast.toast(`data requested from ${this.recipient}`, {
-          title: "Inbox sent",
-          autoHideDelay: 3000,
-          variant: "success",
-        });
-      } catch (error) {
-        this.$bvToast.toast(
-          `An error occurred, when requesting ${this.entity}`,
+        this.$toast.success(
+          `data requested from ${this.recipient} Inbox sent`,
           {
-            title: "Inbox hasn't been sent",
-            autoHideDelay: 3000,
-            variant: "danger",
+            duration: 3000,
+          }
+        );
+      } catch (error) {
+        this.$toast.error(
+          `An error occurred, when requesting ${this.entity} Inbox hasn't been sent`,
+          {
+            duration: 3000,
           }
         );
       } finally {
@@ -117,5 +121,5 @@ export default {
       }
     },
   },
-};
+});
 </script>

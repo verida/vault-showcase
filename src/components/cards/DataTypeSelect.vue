@@ -1,11 +1,16 @@
 <template>
-  <div>
+  <div class="form-group">
     <label>Type of data to {{ mode }}</label>
-    <b-form-select v-model="selected" @change="(obj) => $emit('change', obj)">
+    <select
+      class="form-control"
+      id="data-type-id"
+      v-model="selected"
+      @change="handleSelected()"
+    >
       <option v-for="(option, idx) in options" :key="idx" :value="option">
         {{ option.text }}
       </option>
-    </b-form-select>
+    </select>
   </div>
 </template>
 
@@ -32,6 +37,9 @@ export default defineComponent({
     },
   },
   methods: {
+    handleSelected() {
+      this.$emit("change", this.selected);
+    },
     async init() {
       this.options = [];
       for (const i in SCHEMAS) {

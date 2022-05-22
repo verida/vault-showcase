@@ -2,7 +2,7 @@ import { DATA_SEND, DATA_REQUEST } from '../constants/inbox'
 
 class InboxManager {
   private _app: any
-  constructor(app) {
+  constructor(app: any) {
     this._app = app
   }
 
@@ -12,7 +12,7 @@ class InboxManager {
    *
    * @param {*} inboxEntry
    */
-  getActions(inboxEntry) {
+  getActions(inboxEntry: { type: any }) {
     const acceptOptions = [
       {
         name: 'accept',
@@ -72,7 +72,7 @@ class InboxManager {
           const appName = inboxEntry.sentBy.app
 
           const store = await this._app.openDatastore(dataRequest.requestSchema)
-          const response = {
+          const response: Record<any, any> = {
             data: null,
             replyId: inboxEntry._id
           }

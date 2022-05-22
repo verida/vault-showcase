@@ -1,42 +1,42 @@
 <template>
   <div class="main-layout">
     <user-menu />
-    <b-container>
-      <b-row align-h="center">
+    <div class="container">
+      <div>
         <div class="dashboard-card">
-          <div v-if="reconnecting">
-            <circle-loader color="#2263c3" :size="100" class="card-spinner" />
+          <div v-if="reconnecting" class="d-flex justify-content-center">
+            <pulse-loader
+              color="#2263c3"
+              :loading="reconnecting"
+              class="card-spinner"
+            />
             <span>Reconnecting....</span>
           </div>
           <router-view v-else />
         </div>
-      </b-row>
-    </b-container>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import { defineComponent } from "vue";
-import Navbar from "./components/navigation/Navbar";
 import UserMenu from "./components/navigation/UserMenu.vue";
-import { CircleLoader } from "@saeris/vue-spinners";
-// import ConnectionMixin from "@/mixins/connection";
+import PulseLoader from "vue-spinner/src/PulseLoader.vue";
+import ConnectionMixin from "@/mixins/connection";
 import { createNamespacedHelpers } from "vuex";
-const { mapState: mapSystemState } = createNamespacedHelpers("system");
+const { mapState: mapSystemState, mapMutations: mapSystemMutations } =
+  createNamespacedHelpers("system");
 
 export default defineComponent({
   name: "App",
-  // mixins: [ConnectionMixin],
+  mixins: [ConnectionMixin],
   computed: {
     ...mapSystemState(["reconnecting", "count"]),
   },
-  beforeMount() {
-    console.log(this.reconnecting);
-  },
   components: {
-    Navbar,
     UserMenu,
-    CircleLoader,
+    PulseLoader,
   },
 });
 </script>

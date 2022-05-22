@@ -32,6 +32,6 @@ const router = createRouter({
 	routes,
 });
 
-// router.beforeResolve(RouteGuard);
+router.beforeEach(RouteGuard as any);
 
 export default router;

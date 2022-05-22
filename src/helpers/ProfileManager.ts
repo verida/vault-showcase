@@ -14,7 +14,7 @@ class ProfileManager {
      *
      * @constructor
      */
-  constructor(app) {
+  constructor(app: any) {
     this._app = app
     this._store = null
   }
@@ -31,7 +31,7 @@ class ProfileManager {
      * console.log(emailDoc.key, emailDoc.value);
      * @return {object} Database record for this profile key. Object has keys [`key`, `value`, `_id`, `_rev`].
      */
-  async get(key: string, options: undefined, extended: undefined) {
+  async get(key: string, options?: undefined, extended?: undefined) {
     await this.init()
     try {
       const response = await this._store.get(key, options)
@@ -54,7 +54,7 @@ class ProfileManager {
      * @param {string} key Profile key to delete (ie: `email`)
      * @returns {boolean} Boolean indicating if the delete was successful
      */
-  async delete(key) {
+  async delete(key: any): Promise<unknown> {
     await this.init()
     return this._store.delete(key)
   }
@@ -65,7 +65,7 @@ class ProfileManager {
      * @param {object} [customFilter] Database query filter to restrict the results passed through to [PouchDB.find()](https://pouchdb.com/api.html#query_index)
      * @param {object} [options] Database options that will be passed through to [PouchDB.find()](https://pouchdb.com/api.html#query_index)
      */
-  async getMany(filter, options) {
+  async getMany(filter: any, options: any) {
     await this.init()
     return this._store.getMany(filter, options)
   }
@@ -87,7 +87,7 @@ class ProfileManager {
      * app.wallet.profile.set('email', 'john@doe.com');
      * @returns {boolean} Boolean indicating if the save was successful
      */
-  async set(doc, value) {
+  async set(doc: { _rev?: any; _id: any; value?: any; key?: string }, value: any) {
     await this.init()
 
     if (typeof doc === 'string') {
