@@ -21,7 +21,6 @@ import veridaHelper from "../../helpers/VeridaHelper";
 
 export default defineComponent({
   name: "DataTypeSelect",
-  props: ["emitted"],
   data() {
     return {
       selected: null,

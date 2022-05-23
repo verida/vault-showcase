@@ -1,64 +1,4 @@
 <template>
-  <!-- <ValidationObserver ref="validator" mode="eager" v-slot="{ invalid }">
-    <ValidationProvider
-      v-slot="{ errors }"
-      v-for="(item, key) in data"
-      :key="key"
-      :rules="{ required: attributes[key].required }"
-      :name="attributes[key].title"
-    >
-      <label>{{ attributes[key].title }}</label>
-      <div class="my-1" v-if="attributes[key].enum">
-        <b-form-radio-group v-model="data[key]">
-          <b-form-radio
-            v-for="item in attributes[key].enum"
-            :key="item"
-            :value="item"
-          >
-            {{ item }}
-          </b-form-radio>
-        </b-form-radio-group>
-      </div>
-      <datetime
-        v-else-if="
-          attributes[key].format && attributes[key].format.includes('date')
-        "
-        :auto="true"
-        :type="attributes[key].format.replace('-', '')"
-        input-class="form-control"
-        v-model="data[key]"
-      />
-      <b-form-textarea
-        v-else-if="
-          attributes[key].inputType === 'textarea' ||
-          attributes[key].title === 'Message'
-        "
-        class="form-control word-break"
-        spellcheck="false"
-        v-model="data[key]"
-        :name="attributes[key].title"
-        :state="!data[key] ? null : !errors[0]"
-        size="sm"
-        rows="3"
-      />
-      <b-form-input
-        v-else
-        class="form-control"
-        size="sm"
-        :type="attributes[key].type"
-        :value="data[key]"
-        @input="(value) => format(key, value)"
-        :name="attributes[key].title"
-        :state="!data[key] ? null : !errors[0]"
-      />
-      <b-form-invalid-feedback>
-        {{ errors[0] }}
-      </b-form-invalid-feedback>
-    </ValidationProvider>
-    <b-button @click="submit" :disabled="invalid" variant="primary">
-      Send
-    </b-button>
-  </ValidationObserver> -->
   <form @submit.prevent="submit">
     <div v-for="(item, key) in data" :key="key">
       <div class="form-group">
@@ -73,6 +13,7 @@
               :value="item"
               class="form-check-input"
               type="radio"
+              required
               v-model="data[key]"
             />
             <label class="form-check-label" for="inlineRadio1">
@@ -80,15 +21,15 @@
             >
           </div>
         </div>
-        <date-picker
+        <input
           v-else-if="
             attributes[key].format && attributes[key].format.includes('date')
           "
           :auto="true"
-          :type="attributes[key].format.replace('-', '')"
-          input-class="form-control"
+          type="date"
+          required
           v-model="data[key]"
-          :format="formatDateTime"
+          class="form-control"
         />
         <div
           v-else-if="
@@ -102,6 +43,7 @@
             v-model="data[key]"
             :name="attributes[key].title"
             rows="3"
+            required
           />
         </div>
         <div v-else>
@@ -109,6 +51,7 @@
             class="form-control"
             :type="attributes[key].type"
             v-model="data[key]"
+            required
             :name="attributes[key].title"
           />
         </div>
@@ -142,17 +85,6 @@ export default defineComponent({
   methods: {
     ...mapSystemMutations(["setProcessing"]),
     async submit() {
-      if (this.data.dateOfBirth) {
-        this.data.dateOfBirth = this.formatDateTime(this.data);
-        const date = new Date(this.data.dateOfBirth);
-        console.log(date);
-      }
-
-      console.log(this.data);
-      const me = true;
-      if (me) {
-        return "hello";
-      }
       const payload = {
         name: extract(this.data, this.entity.$id),
         ...this.data,
@@ -170,7 +102,6 @@ export default defineComponent({
         payload,
         this.entity.$id
       );
-      console.log(isValid, errors);
       this.setProcessing(true);
 
       // quick hack to format dates as expected for JSON validation

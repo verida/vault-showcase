@@ -1,8 +1,7 @@
 <template>
   <div class="mt-3 card p-2" style="width: 20rem">
     <data-type-select @change="select" />
-    <div v-if="entity" class="mt-4">
-      <hr />
+    <div v-if="entity">
       <SchemaFields
         ref="schema-fields"
         :entity="entity"
@@ -28,7 +27,6 @@ import SchemaFields from "../forms/SchemaFields";
 import { createNamespacedHelpers } from "vuex";
 import VeridaHelper from "../../helpers/VeridaHelper";
 import { SCHEMAS } from "../../config/schemas";
-
 const { mapState: mapSystemState } = createNamespacedHelpers("system");
 
 export default defineComponent({
@@ -50,6 +48,9 @@ export default defineComponent({
   },
   methods: {
     async select({ schema }) {
+      if (!schema) {
+        return;
+      }
       this.entity = await VeridaHelper.retrieveSchema(schema);
       if (this.entity.$id == SCHEMAS[3]) {
         this.entity = {
@@ -72,7 +73,6 @@ export default defineComponent({
       this.entity.layouts.create.forEach((key) => {
         this.setFields(key, this.entity.required, this.entity.properties);
       });
-      // this.$refs["schema-fields"].$refs.validator.reset();
     },
   },
 });

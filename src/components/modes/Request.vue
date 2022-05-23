@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex justify-content-center border-light">
+  <div class="card mt-3 p-3 d-flex justify-content-center">
     <div class="mt-3">
       <data-type-select @change="select" v-model="entity" />
       <div class="mt-3">
@@ -35,7 +35,18 @@
         <button class="btn" @click="cancel">Cancel</button>
       </div>
     </div>
-    <!-- <b-table class="records mt-4" responsive striped hover :items="records" /> -->
+    <table class="table mt-4">
+      <thead v-for="title in tableHeader" :key="title">
+        <tr>
+          <th>{{ title }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="item in records" :key="item">
+          <td>{{ item }}</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </template>
 
@@ -58,7 +69,8 @@ export default defineComponent({
     return {
       entity: null,
       properties: null,
-      records: null,
+      tableHeader: [],
+      records: [],
       schema: null,
       params: {
         requestSchema: null,
@@ -72,11 +84,13 @@ export default defineComponent({
   methods: {
     ...mapSystemMutations(["setProcessing"]),
     async select({ schema }) {
-      this.schema = await veridaHelper.retrieveSchema(schema);
-      this.records = null;
-      this.entity = this.schema.title;
-      this.properties = this.schema.properties;
-      this.params.requestSchema = this.schema["$id"];
+      if (schema) {
+        this.schema = await veridaHelper.retrieveSchema(schema);
+        this.records = null;
+        this.entity = this.schema.title;
+        this.properties = this.schema.properties;
+        this.params.requestSchema = this.schema["$id"];
+      }
     },
     async request() {
       this.setProcessing(true);
@@ -116,8 +130,13 @@ export default defineComponent({
   watch: {
     list() {
       if (this.list) {
+        console.log(this.list);
         const keys = this.schema.layouts.view;
-        this.records = this.list.map((obj) => _.pick(obj, keys));
+        const tableData = this.list.map((obj) => _.pick(obj, keys));
+        this.records = _.values(_.pick(tableData[0], keys));
+        this.tableHeader = _.keys(_.pick(this.list[0], keys));
+        console.log(this.tableHeader);
+        console.log(this.records);
       }
     },
   },
