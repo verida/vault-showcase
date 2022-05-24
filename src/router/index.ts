@@ -1,5 +1,7 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import Landing from "../views/Landing.vue";
+import Dashboard from '../views/Dashboard.vue'
+import ShowcaseHome from '../views/Home.vue'
 
 import { RouteGuard } from "../helpers/RouteGuard";
 
@@ -7,13 +9,13 @@ const routes: Array<RouteRecordRaw> = [
 	{
 		path: "/",
 		name: "home",
-		component: () => import(/* webpackChunkName: "user-home" */ '../views/Home.vue'),
+		component: ShowcaseHome,
 		meta: { authorized: true },
 	},
 	{
 		path: "/dashboard/:mode",
 		name: "dashboard",
-		component: () => import(/* webpackChunkName: "dashboard" */ '../views/Dashboard.vue'),
+		component: Dashboard,
 		meta: { authorized: true },
 	},
 	{
