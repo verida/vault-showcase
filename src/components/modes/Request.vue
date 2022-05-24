@@ -35,18 +35,20 @@
         <button class="btn" @click="cancel">Cancel</button>
       </div>
     </div>
-    <table class="table mt-4">
-      <thead v-for="title in tableHeader" :key="title">
-        <tr>
-          <th>{{ title }}</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="item in records" :key="item">
-          <td>{{ item }}</td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="table-responsive">
+      <table class="table mt-4 table-striped">
+        <thead class="table-info">
+          <tr>
+            <th v-for="title in tableHeader" :key="title">{{ title }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td v-for="item in records" :key="item">{{ item }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </template>
 

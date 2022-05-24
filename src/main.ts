@@ -6,16 +6,10 @@ import Clipboard from "vue-clipboard2";
 import Account from "@verida/vue-account";
 import Datepicker from '@vuepic/vue-datepicker';
 
-
-
-
 import App from "./App.vue";
 import router from "./router";
 import store from "./store";
 
-
-import "bootstrap/dist/css/bootstrap.css";
-import "bootstrap-vue/dist/bootstrap-vue.css";
 import "bootstrap";
 import "vue-toast-notification/dist/theme-sugar.css";
 import '@vuepic/vue-datepicker/dist/main.css'

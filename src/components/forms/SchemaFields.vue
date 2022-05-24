@@ -96,12 +96,6 @@ export default defineComponent({
 
       const store = await veridaHelper.context.openDatastore(this.entity.$id);
 
-      // validate schema
-
-      const { isValid, errors } = await veridaHelper.validateSchema(
-        payload,
-        this.entity.$id
-      );
       this.setProcessing(true);
 
       // quick hack to format dates as expected for JSON validation
