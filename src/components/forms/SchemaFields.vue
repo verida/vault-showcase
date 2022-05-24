@@ -67,6 +67,7 @@ import DateFormatMixin from "@/mixins/date-format";
 import { extract } from "@/helpers/NameModifier";
 import { createNamespacedHelpers } from "vuex";
 import veridaHelper from "../../helpers/VeridaHelper";
+import { DATA_SEND } from "@/constants/inbox";
 const { mapState: mapSystemState, mapMutations: mapSystemMutations } =
   createNamespacedHelpers("system");
 
@@ -140,13 +141,13 @@ export default defineComponent({
       const text = `Sending you ${this.entity.title} called "${name}"`;
 
       try {
-        await veridaHelper.sendInbox({
+        await veridaHelper.sendInboxData({
           message: message,
           did: this.recipient,
           subject: text,
+          type: DATA_SEND,
         });
 
-        // this.$emit("reset");
         this.setProcessing(false);
         this.$toast.success(
           `Created ${this.entity.title} is sent to ${this.recipient} Inbox sent`,

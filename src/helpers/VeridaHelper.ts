@@ -1,9 +1,9 @@
 
 import { EventEmitter } from "events";
-import { DATA_REQUEST, DATA_SEND, MESSAGING } from "../constants/inbox";
+import { DATA_REQUEST } from "../constants/inbox";
 import { envKeys } from '../config/env.config';
 
-interface MessageParams { message: string, did: string, subject: string, data?: any }
+interface MessageParams { message: string, did: string, subject: string, data?: any, type: string }
 
 class VeridaHelper extends EventEmitter {
 	context: any = null;
@@ -48,8 +48,7 @@ class VeridaHelper extends EventEmitter {
 		};
 	}
 
-	async sendInboxMessage({ message, did, subject }: MessageParams) {
-		const type = MESSAGING;
+	async sendInboxData({ message, did, subject, type }: MessageParams) {
 
 		const data = {
 			data: [message],
@@ -60,23 +59,9 @@ class VeridaHelper extends EventEmitter {
 		};
 
 		const messaging = await this.context.getMessaging();
+
 		await messaging.send(did, type, data, subject, config);
-		return true;
-	}
 
-	async sendInbox({ message, did, subject }: MessageParams) {
-		const type = DATA_SEND;
-
-		const data = {
-			data: [message],
-		};
-
-		const config = {
-			recipientContextName: "Verida: Vault",
-		};
-
-		const messaging = await this.context.getMessaging();
-		await messaging.send(did, type, data, subject, config);
 		return true;
 	}
 

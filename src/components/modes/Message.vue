@@ -36,6 +36,7 @@ import { extract } from "@/helpers/NameModifier";
 import PulseLoader from "vue-spinner/src/PulseLoader.vue";
 import { createNamespacedHelpers } from "vuex";
 import veridaHelper from "../../helpers/VeridaHelper";
+import { MESSAGING } from "@/constants/inbox";
 const { mapState: mapSystemState, mapMutations: mapSystemMutations } =
   createNamespacedHelpers("system");
 const coreMessageSchema =
@@ -80,10 +81,11 @@ export default defineComponent({
       const text = `Sending you ${this.entity.title} called "${name}"`;
 
       try {
-        await veridaHelper.sendInboxMessage({
+        await veridaHelper.sendInboxData({
           message: message,
           did: this.recipient,
           subject: text,
+          type: MESSAGING,
         });
 
         this.setProcessing(false);
