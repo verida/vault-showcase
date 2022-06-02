@@ -98,6 +98,7 @@ export default defineComponent({
       this.setProcessing(true);
       try {
         const message = `Verida: Generic Demo is requesting access to "${this.entity}" records`;
+
         const data = {
           ...this.params,
           filter: {},
@@ -108,6 +109,7 @@ export default defineComponent({
           message,
           data,
         });
+
         this.$toast.success(
           `data requested from ${this.recipient} Inbox sent`,
           {
@@ -132,14 +134,10 @@ export default defineComponent({
   watch: {
     list() {
       if (this.list) {
-        console.log(this.list);
         const keys = this.schema.layouts.view;
         const tableData = this.list.map((obj) => _.pick(obj, keys));
         this.records = _.values(_.pick(tableData[0], keys));
-        this.tableHeader = _.keys(_.pick(this.list[0], keys));
-        console.log(this.tableHeader);
-        console.log(this.records);
-      }
+        this.tableHeader = _.keys(_.pick(this.list[0], keys));      }
     },
   },
 });

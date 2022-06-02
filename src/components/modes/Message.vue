@@ -99,7 +99,6 @@ export default defineComponent({
       } catch (e) {
         this.setProcessing(false);
         console.info(e);
-        console.log(e);
         this.$toast.error(
           `An error occurred, when sending ${this.entity.title} Inbox hasn't been sent`,
           {

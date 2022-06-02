@@ -10,13 +10,13 @@
             :key="item"
           >
             <input
-              :value="item"
               class="form-check-input"
               type="radio"
-              required
+              :value="item"
               v-model="data[key]"
+              :id="data[key]"
             />
-            <label class="form-check-label" for="inlineRadio1">
+            <label class="form-check-label" :for="data[item]">
               {{ item }}</label
             >
           </div>
@@ -86,6 +86,15 @@ export default defineComponent({
   methods: {
     ...mapSystemMutations(["setProcessing"]),
     async submit() {
+      if (
+        this.attributes?.result?.title === "Result" &&
+        this.data.result === ""
+      ) {
+        this.$toast.error(`Please choose result`, {
+          duration: 3000,
+        });
+        return;
+      }
       const payload = {
         name: extract(this.data, this.entity.$id),
         ...this.data,
