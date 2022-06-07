@@ -3,62 +3,18 @@
     <video autoplay muted class="landing" loop>
       <source src="@/assets/video/landing.mp4" type="video/mp4" />
     </video>
-    <div class="mt-5 landing__connect p-5">
-      <img src="@/assets/img/verida_logo.svg" alt="verida-logo" />
-      <h3>Connect Now</h3>
-      <p>Use the button below to connect with Verida Vault</p>
-      <button class="landing__btn" @click="connect" :disabled="processing">
-        <img
-          src="@/assets/img/connect_with_verida_dark.png"
-          v-if="!processing"
-        />
-        <CircleLoader color="#fff" :size="100" v-else />
-      </button>
-    </div>
   </div>
 </template>
 
 <script>
-import { createNamespacedHelpers } from "vuex";
-import { CircleLoader } from "@saeris/vue-spinners";
-import VeridaHelper from "../helpers/VeridaHelper";
+import { defineComponent } from "vue";
 
-const { mapMutations: mapSystemMutations } = createNamespacedHelpers("system");
-
-export default {
+export default defineComponent({
   name: "Landing",
-  components: {
-    CircleLoader,
-  },
+  components: {},
   data() {
-    return {
-      processing: false,
-      error: null,
-    };
+    return {};
   },
-  methods: {
-    ...mapSystemMutations(["initUser", "setConnection"]),
-    async connect() {
-      this.processing = true;
-      try {
-        await VeridaHelper.connectVault();
-        const profile = VeridaHelper.profile;
-        if (VeridaHelper.connected) {
-          console.log("login in");
-          this.setConnection(true);
-          this.initUser({
-            address: VeridaHelper.did,
-            name: profile.name,
-            avatar: profile.avatar,
-          });
-          this.$router.push({ name: "home" });
-        }
-      } catch (error) {
-        this.error = error;
-      } finally {
-        this.processing = false;
-      }
-    },
-  },
-};
+  methods: {},
+});
 </script>

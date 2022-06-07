@@ -1,21 +1,26 @@
 <template>
-  <div>
+  <div class="form-group">
     <label>Type of data to {{ mode }}</label>
-    <b-form-select v-model="selected" @change="(obj) => $emit('change', obj)">
+    <select
+      class="form-control"
+      id="data-type-id"
+      v-model="selected"
+      @change="handleSelected()"
+    >
       <option v-for="(option, idx) in options" :key="idx" :value="option">
         {{ option.text }}
       </option>
-    </b-form-select>
+    </select>
   </div>
 </template>
 
 <script>
+import { defineComponent } from "vue";
 import { SCHEMAS } from "../../config/schemas";
 import veridaHelper from "../../helpers/VeridaHelper";
 
-export default {
+export default defineComponent({
   name: "DataTypeSelect",
-  props: ["emitted"],
   data() {
     return {
       selected: null,
@@ -31,6 +36,9 @@ export default {
     },
   },
   methods: {
+    handleSelected() {
+      this.$emit("change", this.selected);
+    },
     async init() {
       this.options = [];
       for (const i in SCHEMAS) {
@@ -44,5 +52,5 @@ export default {
       }
     },
   },
-};
+});
 </script>

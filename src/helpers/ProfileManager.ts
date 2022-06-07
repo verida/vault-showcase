@@ -3,6 +3,8 @@
  * Public profile for a user.
  */
 class ProfileManager {
+  _app: any
+  _store: any
   /**
      * Create a new user profile.
      *
@@ -12,7 +14,7 @@ class ProfileManager {
      *
      * @constructor
      */
-  constructor (app) {
+  constructor(app: any) {
     this._app = app
     this._store = null
   }
@@ -29,7 +31,7 @@ class ProfileManager {
      * console.log(emailDoc.key, emailDoc.value);
      * @return {object} Database record for this profile key. Object has keys [`key`, `value`, `_id`, `_rev`].
      */
-  async get (key, options, extended) {
+  async get(key: string, options?: undefined, extended?: undefined) {
     await this.init()
     try {
       const response = await this._store.get(key, options)
@@ -38,7 +40,7 @@ class ProfileManager {
       }
 
       return response
-    } catch (err) {
+    } catch (err: any) {
       if (err.error === 'not_found') {
         return null
       }
@@ -52,7 +54,7 @@ class ProfileManager {
      * @param {string} key Profile key to delete (ie: `email`)
      * @returns {boolean} Boolean indicating if the delete was successful
      */
-  async delete (key) {
+  async delete(key: any): Promise<unknown> {
     await this.init()
     return this._store.delete(key)
   }
@@ -63,7 +65,7 @@ class ProfileManager {
      * @param {object} [customFilter] Database query filter to restrict the results passed through to [PouchDB.find()](https://pouchdb.com/api.html#query_index)
      * @param {object} [options] Database options that will be passed through to [PouchDB.find()](https://pouchdb.com/api.html#query_index)
      */
-  async getMany (filter, options) {
+  async getMany(filter: any, options: any) {
     await this.init()
     return this._store.getMany(filter, options)
   }
@@ -85,7 +87,7 @@ class ProfileManager {
      * app.wallet.profile.set('email', 'john@doe.com');
      * @returns {boolean} Boolean indicating if the save was successful
      */
-  async set (doc, value) {
+  async set(doc: { _rev?: any; _id: any; value?: any; key?: string }, value: any) {
     await this.init()
 
     if (typeof doc === 'string') {
@@ -108,7 +110,7 @@ class ProfileManager {
     return this._store.save(doc)
   }
 
-  async init () {
+  async init() {
     if (this._store) {
       return
     }
@@ -126,7 +128,7 @@ class ProfileManager {
     await this.get('')
   }
 
-  async getDatastore () {
+  async getDatastore() {
     await this.init()
     return this._store
   }

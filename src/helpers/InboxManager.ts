@@ -1,7 +1,8 @@
-import { DATA_SEND, DATA_REQUEST } from '@/constants/inbox'
+import { DATA_SEND, DATA_REQUEST } from '../constants/inbox'
 
 class InboxManager {
-  constructor(app) {
+  private _app: any
+  constructor(app: any) {
     this._app = app
   }
 
@@ -11,7 +12,7 @@ class InboxManager {
    *
    * @param {*} inboxEntry
    */
-  getActions(inboxEntry) {
+  getActions(inboxEntry: { type: any }) {
     const acceptOptions = [
       {
         name: 'accept',
@@ -39,7 +40,7 @@ class InboxManager {
    * @param {*} action
    * @param payload
    */
-  async handleAction(inboxEntry, action, payload = []) {
+  async handleAction(inboxEntry: any, action: any, payload = []) {
     const inbox = await this._app.inbox.getInbox()
 
     if (inboxEntry.data.status) {
@@ -71,7 +72,7 @@ class InboxManager {
           const appName = inboxEntry.sentBy.app
 
           const store = await this._app.openDatastore(dataRequest.requestSchema)
-          const response = {
+          const response: Record<any, any> = {
             data: null,
             replyId: inboxEntry._id
           }

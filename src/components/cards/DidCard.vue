@@ -1,64 +1,45 @@
 <template>
-  <b-card>
-    <b-card-text>
-      <ValidationObserver ref="validator" mode="eager" v-slot="{ invalid }">
-        <ValidationProvider
-          v-slot="{ errors }"
-          rules="required|did"
-          name="User DID"
-        >
-          <b-form-textarea
-            v-model="did"
-            placeholder="Please, Enter the User DID"
-            spellcheck="false"
-            size="sm"
-            rows="1"
-            no-resize
-            aria-describedby="did-error"
-          />
-          <b-form-invalid-feedback id="did-error">
-            {{ errors[0] }}
-          </b-form-invalid-feedback>
-        </ValidationProvider>
-        <b-row align-h="center">
-          <b-col sm="auto">
-            <b-button
-              variant="primary"
-              :disabled="invalid"
-              class="mr-3"
-              @click="() => click('send')"
-            >
-              Send Data
-            </b-button>
-            <b-button
-              variant="secondary"
-              :disabled="invalid"
-              class="mr-3"
-              @click="() => click('message')"
-            >
-              Send Message
-            </b-button>
-            <b-button
-              variant="success"
-              :disabled="invalid"
-              @click="() => click('request')"
-            >
-              Request Data
-            </b-button>
-          </b-col>
-        </b-row>
-      </ValidationObserver>
-    </b-card-text>
-  </b-card>
+  <div class="d-flex justify-content-center">
+    <div>
+      <textarea
+        v-model="did"
+        placeholder="Please, Enter the User DID"
+        spellcheck="false"
+        class="form-control"
+        aria-describedby="did-error"
+        rows="3"
+      ></textarea>
+      <p class="text-danger mt-2" id="did-error" role="alert">
+        {{ !did ? "No Did" : "" }}
+      </p>
+      <div class="row">
+        <div class="col">
+          <button class="mr-4 btn btn-primary" @click="() => click('send')">
+            Send Data
+          </button>
+          <button
+            class="mr-3 btn btn-secondary"
+            @click="() => click('message')"
+          >
+            Send Message
+          </button>
+          <button class="ml-3 btn btn-success" @click="() => click('request')">
+            Request Data
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
+import { defineComponent } from "vue";
 import { createNamespacedHelpers } from "vuex";
 import veridaHelper from "../../helpers/VeridaHelper";
 const { mapState: mapSystemState, mapMutations: mapSystemMutations } =
   createNamespacedHelpers("system");
 
-export default {
+export default defineComponent({
   name: "DidCard",
   data() {
     return {
@@ -81,5 +62,5 @@ export default {
       });
     },
   },
-};
+});
 </script>

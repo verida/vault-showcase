@@ -1,4 +1,3 @@
-
 @import "~bootstrap/scss/functions";
 @import "~bootstrap/scss/variables";
 @import "~bootstrap/scss/mixins";
@@ -38,7 +37,11 @@
 @import "~bootstrap/scss/print";
 
 
-@import '~bootstrap-vue/src/index';
+// @import '~bootstrap-vue/src/index';
+
+
+
+
 
 @import 'pages/landing';
 @import 'fonts';
