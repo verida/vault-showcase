@@ -46,7 +46,7 @@ export default defineComponent({
 
     async onSuccess(context) {
       this.setReconnecting(true);
-      await VeridaHelper.connectVault(context);
+      VeridaHelper.connectVault(context);
       this.setReconnecting(false);
       this.$router.push({ name: "home" });
     },

@@ -14,11 +14,12 @@ class VeridaHelper extends EventEmitter {
 
 	async connectVault(context?: any) {
 		this.context = context
+
 		if (this.context) {
 			this.connected = true;
 		}
+
 		this.did = await context.getAccount().did();
-		await this.messageListener();
 	}
 
 	async createDIDJWT(data: any) {
@@ -66,10 +67,13 @@ class VeridaHelper extends EventEmitter {
 	}
 
 	async messageListener() {
+
 		this.msgInstance = await this.context.getMessaging();
+
 		const cb = async (inboxEntry: any[]) => {
 			this.emit("messageNotification", inboxEntry);
 		};
+
 		await this.msgInstance.onMessage(cb);
 	}
 
@@ -94,8 +98,11 @@ class VeridaHelper extends EventEmitter {
 			recipientContextName: "Verida: Vault",
 		};
 
-		const messaging = await this.context.getMessaging();
-		return await messaging.send(did, type, data, message, config);
+		this.msgInstance = await this.context.getMessaging();
+
+		await this.messageListener();
+
+		return await this.msgInstance.send(did, type, data, message, config);
 	}
 	async retrieveSchema(url: string) {
 		const schemas = await this.context.getClient().getSchema(url);
