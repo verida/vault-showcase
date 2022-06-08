@@ -2615,6 +2615,19 @@ aes-js@3.0.0:
   resolved "https://registry.yarnpkg.com/aes-js/-/aes-js-3.0.0.tgz#e21df10ad6c2053295bcbb8dab40b09dbea87e4d"
   integrity sha512-H7wUZRn8WpTq9jocdxQ2c8x2sKo9ZVmzfRE13GiNJXfp7NcKYEdvl3vspKjXox6RIG2VtaRe4JFvxG4rqp2Zuw==
 
+ag-grid-community@^27.3.0, ag-grid-community@~27.3.0:
+  version "27.3.0"
+  resolved "https://registry.yarnpkg.com/ag-grid-community/-/ag-grid-community-27.3.0.tgz#b1e94a58026aaf2f0cd7920e35833325b5e762c7"
+  integrity sha512-R5oZMXEHXnOLrmhn91J8lR0bv6IAnRcU6maO+wKLMJxffRWaAYFAuw1jt7bdmcKCv8c65F6LEBx4ykSOALa9vA==
+
+ag-grid-vue3@^27.3.0:
+  version "27.3.0"
+  resolved "https://registry.yarnpkg.com/ag-grid-vue3/-/ag-grid-vue3-27.3.0.tgz#423493c63b3f13398bdd9f77d950218dc8eaa4eb"
+  integrity sha512-hZ49uJ839Wun3TJbgZLhPDJd+AkkpHIMB97GFgVU5HBBYAeyYLat6D8ePXmU7usCp99Bz1/iaulvMSEgqGV4hw==
+  dependencies:
+    ag-grid-community "~27.3.0"
+    vue "^3.0.0"
+
 ajv-errors@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/ajv-errors/-/ajv-errors-1.0.1.tgz#f35986aceb91afadec4102fbd85014950cefa64d"

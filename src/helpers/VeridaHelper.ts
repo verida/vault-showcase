@@ -113,3 +113,7 @@ class VeridaHelper extends EventEmitter {
 const veridaHelper = new VeridaHelper();
 
 export default veridaHelper;
+
+
+console.log(['heade', 'tail'].map(item => ({ key: item, label: item })));
+

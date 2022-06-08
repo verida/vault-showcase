@@ -16,6 +16,7 @@ import '@vuepic/vue-datepicker/dist/main.css'
 import "./assets/scss/index.scss";
 
 
+
 defineRule("did", (value: string) => {
 	if (/^did:(vda):[a-zA-Z0-9]*$/.test(value)) {
 		return true;
