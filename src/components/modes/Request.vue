@@ -5,11 +5,11 @@
     <div>
       <div class="form-check form-check-inline">
         <input type="radio" v-model="dataType" value="user-data" />
-        <label class="form-check-label" for="user-data"> User data</label>
+        <label class="form-check-label mx-1" for="user-data"> User data</label>
       </div>
       <div class="form-check form-check-inline">
         <input type="radio" v-model="dataType" value="social-data" />
-        <label class="form-check-label" for="social-data">
+        <label class="form-check-label mx-1" for="social-data">
           Social Media Data</label
         >
       </div>
@@ -56,7 +56,7 @@
               class="form-check-input"
               type="radio"
               v-model="socialDataSchema"
-              :value="schemaType.post"
+              :value="schemaType.posts"
             />
             <label class="form-check-label" for="inlineRadio1"> Posts</label>
           </div>
@@ -80,6 +80,7 @@
             <input
               class="form-check-input"
               type="radio"
+              checked
               v-model="params.userSelect"
               :value="false"
             />
@@ -127,6 +128,7 @@ import "ag-grid-community/dist/styles/ag-theme-alpine.css";
 import { AgGridVue } from "ag-grid-vue3";
 import { createNamespacedHelpers } from "vuex";
 import veridaHelper from "../../helpers/VeridaHelper";
+import { socialDataSchema } from "@/config/schemas";
 const { mapState: mapSystemState, mapMutations: mapSystemMutations } =
   createNamespacedHelpers("system");
 
@@ -147,16 +149,12 @@ export default defineComponent({
       records: [],
       dataType: "social-data",
       schema: null,
-      socialDataSchema: "",
+      socialDataSchema: socialDataSchema.posts,
       params: {
         requestSchema: null,
         userSelect: null,
       },
-      schemaType: {
-        post: "https://common.schemas.verida.io/social/following/v0.1.0/schema.json",
-        following:
-          "https://common.schemas.verida.io/social/post/v0.1.0/schema.json",
-      },
+      schemaType: socialDataSchema,
       selectedSocial: "all",
       isLoading: false,
     };
@@ -201,14 +199,12 @@ export default defineComponent({
           data.filter.sourceApplication = this.selectedSocial;
         }
       }
-      console.log(data);
       try {
         await veridaHelper.requestData({
           did: this.recipient,
           message,
           data,
         });
-
         this.$toast.success(
           `data requested from ${this.recipient} Inbox sent`,
           {
@@ -233,13 +229,9 @@ export default defineComponent({
   watch: {
     list() {
       if (this.list) {
-        console.log("messaging events", this.list);
-
         const keys = this.schema.layouts.view;
 
         this.records = _.without(this.list, keys);
-
-        this.tableHeader = _.keys(_.pick(this.list[0], keys));
 
         const testHeader = _.keys(_.pick(this.list[0], keys));
 
