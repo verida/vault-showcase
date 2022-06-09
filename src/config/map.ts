@@ -5,14 +5,12 @@ export const schemas = {
     view: [
       'fullName',
       'dateOfBirth',
-      'patientId',
       'testTimestamp',
       'result'
     ],
     create: [
       'fullName',
       'dateOfBirth',
-      'patientId',
       'testTimestamp',
       'result'
     ]
