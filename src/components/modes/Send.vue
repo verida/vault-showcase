@@ -60,8 +60,6 @@ export default defineComponent({
           },
         };
       }
-
-      console.log(this.entity);
       this.init();
     },
     setFields(key, requiredFields, getProps) {
