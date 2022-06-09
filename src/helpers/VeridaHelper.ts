@@ -120,3 +120,6 @@ class VeridaHelper extends EventEmitter {
 const veridaHelper = new VeridaHelper();
 
 export default veridaHelper;
+
+
+

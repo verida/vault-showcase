@@ -1,8 +1,8 @@
 <template>
   <div class="form-group">
-    <label>Type of data to {{ mode }}</label>
+    <label class="my-1">Type of data to {{ mode }}</label>
     <select
-      class="form-control"
+      class="form-control my-2"
       id="data-type-id"
       v-model="selected"
       @change="handleSelected()"
