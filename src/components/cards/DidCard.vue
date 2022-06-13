@@ -12,18 +12,31 @@
       <p class="text-danger mt-2" id="did-error" role="alert">
         {{ !did ? "No Did" : "" }}
       </p>
-      <div class="row">
-        <div class="col">
-          <button class="mr-4 btn btn-primary" @click="() => click('send')">
+      <div class="">
+        <div class="m-1">
+          <button
+            style="width: 100%"
+            class="btn btn-primary"
+            @click="() => click('send')"
+          >
             Send Data
           </button>
+        </div>
+        <div class="m-1">
           <button
-            class="mr-3 btn btn-secondary"
+            style="width: 100%"
+            class="btn btn-secondary"
             @click="() => click('message')"
           >
             Send Message
           </button>
-          <button class="ml-3 btn btn-success" @click="() => click('request')">
+        </div>
+        <div class="m-1">
+          <button
+            style="width: 100%"
+            class="btn btn-success"
+            @click="() => click('request')"
+          >
             Request Data
           </button>
         </div>
