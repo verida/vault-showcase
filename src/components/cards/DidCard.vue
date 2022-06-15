@@ -7,7 +7,8 @@
         spellcheck="false"
         class="form-control"
         aria-describedby="did-error"
-        rows="3"
+        rows="4"
+        cols="50"
       ></textarea>
       <p class="text-danger mt-2" id="did-error" role="alert">
         {{ !did ? "No Did" : "" }}
