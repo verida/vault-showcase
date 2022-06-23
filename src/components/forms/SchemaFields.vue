@@ -126,14 +126,9 @@ export default defineComponent({
       const saved = await store.save(payload);
 
       if (!saved) {
-        console.error(store.errors);
-        this.$toast.success(
-          `An error occurred, when saving ${this.entity.title}. See console.`,
-          {
-            duration: 3000,
-          }
-        );
-
+        this.$toast.error(`${store.errors && store.errors[0].message}`, {
+          duration: 3000,
+        });
         this.setProcessing(false);
         return false;
       }
