@@ -106,7 +106,9 @@
           :loading="processing"
           class="card-spinner"
         />
-        <button class="btn" @click="cancel">Cancel</button>
+        <button class="btn" :disabled="processing" @click="cancel">
+          Cancel
+        </button>
       </div>
     </div>
     <ag-grid-vue
