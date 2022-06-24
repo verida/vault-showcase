@@ -25,11 +25,10 @@
           v-else-if="
             attributes[key].format && attributes[key].format.includes('date')
           "
-          :auto="true"
           type="date"
-          required
           v-model="data[key]"
           class="form-control"
+          max="9999-12-31"
         />
         <div
           v-else-if="
@@ -91,6 +90,12 @@ export default defineComponent({
         this.data.result === ""
       ) {
         this.$toast.error(`Please choose result`, {
+          duration: 3000,
+        });
+        return;
+      }
+      if (!this.data.dateOfBirth) {
+        this.$toast.error(`Please enter date of birth`, {
           duration: 3000,
         });
         return;
@@ -176,3 +181,10 @@ export default defineComponent({
   },
 });
 </script>
+
+
+<style scoped>
+.date-input {
+  width: 100%;
+}
+</style>
