@@ -25,11 +25,10 @@
           v-else-if="
             attributes[key].format && attributes[key].format.includes('date')
           "
-          :auto="true"
           type="date"
-          required
           v-model="data[key]"
           class="form-control"
+          max="9999-12-31"
         />
         <div
           v-else-if="
@@ -95,6 +94,12 @@ export default defineComponent({
         });
         return;
       }
+      if (!this.data.dateOfBirth) {
+        this.$toast.error(`Please enter date of birth`, {
+          duration: 3000,
+        });
+        return;
+      }
       const payload = {
         name: extract(this.data, this.entity.$id),
         ...this.data,
@@ -126,14 +131,9 @@ export default defineComponent({
       const saved = await store.save(payload);
 
       if (!saved) {
-        console.error(store.errors);
-        this.$toast.success(
-          `An error occurred, when saving ${this.entity.title}. See console.`,
-          {
-            duration: 3000,
-          }
-        );
-
+        this.$toast.error(`${store.errors && store.errors[0].message}`, {
+          duration: 3000,
+        });
         this.setProcessing(false);
         return false;
       }
@@ -181,3 +181,10 @@ export default defineComponent({
   },
 });
 </script>
+
+
+<style scoped>
+.date-input {
+  width: 100%;
+}
+</style>

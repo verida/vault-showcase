@@ -5,8 +5,9 @@
     </a>
     <vda-account
       :logo="logo"
-      @onError="onError"
+      :openUrl="openUrl"
       :contextName="contextName"
+      @onError="onError"
       @onLogout="disconnect"
       @onConnected="onSuccess"
     />
@@ -31,6 +32,7 @@ export default defineComponent({
     return {
       contextName: envKeys.VUE_APP_CONTEXT_NAME,
       logo: envKeys.VUE_APP_LOGO_URL,
+      openUrl: window.origin,
     };
   },
   computed: {
