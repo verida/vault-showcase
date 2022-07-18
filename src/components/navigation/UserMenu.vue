@@ -44,7 +44,7 @@ export default defineComponent({
       "setReconnecting",
       "setConnection",
     ]),
-    ...mapSystemMutations(["initUser", "setConnection", "setReconnecting"]),
+    ...mapSystemMutations(["setConnection", "setReconnecting"]),
 
     async onSuccess(context) {
       this.setReconnecting(true);
