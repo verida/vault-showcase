@@ -36,16 +36,16 @@ export const buildSchema = (attributes: any) => {
                         phoneRegExp,
                         "Phone number is not valid (e.g +234 081xxxx)"
                     )
-                    .min(11, "to short")
-                    .max(11, "to long"),
+                    .min(11, "Phone number too short")
+                    .max(11, "Phone number too long"),
             };
         } else if (attributes[prop].title.toLowerCase() === "did") {
             schemaObject = {
                 ...schemaObject,
                 [prop]: yup
                     .string()
-                    .min(50, "did length not valid")
-                    .max(50, "did length not valid"),
+                    .min(50, "DID length not valid")
+                    .max(50, "DID length not valid"),
             };
         } else if (attributes[prop].format === "email") {
             schemaObject = {
