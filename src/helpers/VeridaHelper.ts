@@ -22,7 +22,7 @@ class VeridaHelper extends EventEmitter {
 		this.did = await context.getAccount().did();
 	}
 
-	async createDIDJWT(data: any) {
+	async createDIDJWT(data: any) {  
 		const contextName = envKeys.VUE_APP_CONTEXT_NAME;
 		const jwtDID = await this.context
 			.getAccount()
