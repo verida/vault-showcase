@@ -204,6 +204,7 @@ export default defineComponent({
           message,
           data,
         });
+        veridaHelper.did = this.recipient;
         this.$toast.success(
           `data requested from ${this.recipient} Inbox sent`,
           {

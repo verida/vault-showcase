@@ -89,6 +89,7 @@ export default defineComponent({
         });
 
         this.setProcessing(false);
+        veridaHelper.did = this.recipient;
 
         this.$toast.success(
           `Created ${this.entity.title} is sent to ${this.recipient} Inbox sent`,

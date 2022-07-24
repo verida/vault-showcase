@@ -1,71 +1,84 @@
 <template>
-  <form @submit.prevent="submit">
-    <div v-for="(item, key) in data" :key="key">
-      <div class="form-group">
-        <label>{{ attributes[key].title }}</label>
-        <div v-if="attributes[key].enum">
-          <div
-            class="form-check form-check-inline"
-            v-for="item in attributes[key].enum"
-            :key="item"
-          >
-            <input
-              class="form-check-input"
-              type="radio"
-              :value="item"
-              v-model="data[key]"
-              :id="data[key]"
-            />
-            <label class="form-check-label" :for="data[item]">
-              {{ item }}</label
+  <div>
+    <VeeForm v-slot="{ handleSubmit }" :validation-schema="schema" as="div">
+      <form @submit="handleSubmit($event, onSubmit)">
+        <div v-for="(item, key) in data" :key="key">
+          <div class="form-group">
+            <label>{{ attributes[key].title }}</label>
+            <div v-if="attributes[key].enum">
+              <div>
+                <Field :name="key" as="select" class="form-control">
+                  <option value="">Select type</option>
+                  <option
+                    v-for="type in ['Positive', 'Negative']"
+                    :key="type"
+                    :value="type"
+                  >
+                    {{ type }}
+                  </option>
+                </Field>
+                <ErrorMessage class="danger-text" :name="key" />
+              </div>
+            </div>
+            <div
+              v-if="
+                attributes[key].format &&
+                attributes[key].format.includes('date')
+              "
             >
+              <Field
+                type="date"
+                v-model="data[key]"
+                class="form-control"
+                :name="key"
+                :max="maxDate"
+              />
+              <ErrorMessage :name="key" class="danger-text" />
+            </div>
+
+            <div
+              v-else-if="
+                attributes[key].inputType === 'textarea' ||
+                attributes[key].title === 'Message'
+              "
+            >
+              <Field
+                class="form-control word-break"
+                spellcheck="false"
+                v-model="data[key]"
+                :name="key"
+                rows="3"
+                type="radio"
+              />
+              <ErrorMessage :name="key" class="danger-text" />
+            </div>
+            <div v-else>
+              <div v-if="!attributes[key].enum">
+                <Field
+                  class="form-control"
+                  :type="attributes[key].type"
+                  v-model="data[key]"
+                  :name="key"
+                />
+                <ErrorMessage :name="key" class="danger-text" />
+              </div>
+            </div>
           </div>
         </div>
-        <input
-          v-else-if="
-            attributes[key].format && attributes[key].format.includes('date')
-          "
-          type="date"
-          v-model="data[key]"
-          class="form-control"
-          max="9999-12-31"
-        />
-        <div
-          v-else-if="
-            attributes[key].inputType === 'textarea' ||
-            attributes[key].title === 'Message'
-          "
-        >
-          <textarea
-            class="form-control word-break"
-            spellcheck="false"
-            v-model="data[key]"
-            :name="attributes[key].title"
-            rows="3"
-            required
-          />
-        </div>
-        <div v-else>
-          <input
-            class="form-control"
-            :type="attributes[key].type"
-            v-model="data[key]"
-            required
-            :name="attributes[key].title"
-          />
-        </div>
-      </div>
-    </div>
-    <button type="submit" class="btn btn-primary">Send</button>
-  </form>
+        <button type="submit" class="btn btn-primary">Send</button>
+      </form>
+    </VeeForm>
+  </div>
 </template>
 
 <script>
 import { defineComponent } from "vue";
-import DateFormatMixin from "@/mixins/date-format";
+import { Form as VeeForm, Field, ErrorMessage } from "vee-validate";
+import * as yup from "yup";
 import { extract } from "@/helpers/NameModifier";
 import { createNamespacedHelpers } from "vuex";
 import veridaHelper from "../../helpers/VeridaHelper";
+import { buildSchema } from "../../helpers/FormValidators";
 import { DATA_SEND } from "@/constants/inbox";
 const { mapState: mapSystemState, mapMutations: mapSystemMutations } =
   createNamespacedHelpers("system");
@@ -73,7 +86,7 @@ const { mapState: mapSystemState, mapMutations: mapSystemMutations } =
 export default defineComponent({
   name: "SchemaFields",
   props: ["data", "attributes", "entity"],
-  mixins: [DateFormatMixin],
+  components: { VeeForm, Field, ErrorMessage },
   computed: {
     typed(str) {
       if (str === "string") return "text";
@@ -82,27 +95,26 @@ export default defineComponent({
     },
     ...mapSystemState(["recipient"]),
   },
+  mounted() {
+    this.schema = yup.object(buildSchema(this.attributes));
+  },
+  data() {
+    return {
+      maxDate: "",
+      schema: {},
+    };
+  },
+  watch: {
+    attributes(attr, _) {
+      this.schema = yup.object(buildSchema(attr));
+    },
+  },
   methods: {
     ...mapSystemMutations(["setProcessing"]),
-    async submit() {
-      if (
-        this.attributes?.result?.title === "Result" &&
-        this.data.result === ""
-      ) {
-        this.$toast.error(`Please choose result`, {
-          duration: 3000,
-        });
-        return;
-      }
-      if (!this.data.dateOfBirth) {
-        this.$toast.error(`Please enter date of birth`, {
-          duration: 3000,
-        });
-        return;
-      }
+    async onSubmit(values) {
       const payload = {
-        name: extract(this.data, this.entity.$id),
-        ...this.data,
+        name: extract(values, this.entity.$id),
+        ...values,
       };
       if (this.entity.properties.didJwtVc) {
         payload.didJwtVc = await this.createCredential(payload);
@@ -140,14 +152,14 @@ export default defineComponent({
 
       const result = await store.get(saved.id);
 
-      await this.sendInbox(result, payload.name);
+      await this.sendInbox(result);
     },
     format(key, value) {
-      this.data[key] =
+      values[key] =
         this.attributes[key].type === "number" ? Number(value) : value;
     },
-    async sendInbox(message, name) {
-      const text = `Sending you ${this.entity.title} called "${name}"`;
+    async sendInbox(message) {
+      const text = `Sending you ${this.entity.title}`;
 
       try {
         await veridaHelper.sendInboxData({
@@ -158,6 +170,7 @@ export default defineComponent({
         });
 
         this.setProcessing(false);
+        veridaHelper.did = this.recipient;
         this.$toast.success(
           `Created ${this.entity.title} is sent to ${this.recipient} Inbox sent`,
           {
@@ -186,5 +199,9 @@ export default defineComponent({
 <style scoped>
 .date-input {
   width: 100%;
+}
+
+.danger-text {
+  color: red;
 }
 </style>
