@@ -8,6 +8,15 @@ This demo showcases how you can perform the following actions :
 
 - Request Data
 
+
+1. Schema for this send and request data
+
+- [Coupon](https://common.schemas.verida.io/health/pathology/tests/covid19/pcr/v0.1.0/schema.json)
+
+- [Contact](https://common.schemas.verida.io/social/contact/v0.1.0/schema.json)
+
+- [Covid](https://common.schemas.verida.io/shopping/coupon/v0.1.0/schema.json)
+
 ## Project setup
 
 ## Install
