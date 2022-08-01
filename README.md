@@ -1,6 +1,6 @@
 # Vault-Examples
 
-This demo showcases how you can perform the following actions :
+This demo showcases how you can perform the following actions:
 
 - Send Data
 
@@ -9,13 +9,13 @@ This demo showcases how you can perform the following actions :
 - Request Data
 
 
-1. Schema for this send and request data
+The following schemas are used by the 'Send Data' and 'Request Data' actions:
 
-- [Coupon](https://common.schemas.verida.io/health/pathology/tests/covid19/pcr/v0.1.0/schema.json)
+- [COVID19 (PCR) Test](https://common.schemas.verida.io/health/pathology/tests/covid19/pcr/v0.1.0/schema.json)
 
 - [Contact](https://common.schemas.verida.io/social/contact/v0.1.0/schema.json)
 
-- [Covid](https://common.schemas.verida.io/shopping/coupon/v0.1.0/schema.json)
+- [Coupon](https://common.schemas.verida.io/shopping/coupon/v0.1.0/schema.json)
 
 ## Project setup
 
