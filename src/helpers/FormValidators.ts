@@ -23,7 +23,7 @@ export const buildSchema = (attributes: any) => {
         ) {
             schemaObject = {
                 ...schemaObject,
-                [prop]: yup.date().transform(parseDateString).max(today).required(),
+                [prop]: yup.date().transform(parseDateString).max(today).required().label('Date of Birth')
             };
         } else if (attributes[prop].title.toLowerCase() === "mobile") {
             const phoneRegExp =
