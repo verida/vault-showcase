@@ -212,12 +212,9 @@ export default defineComponent({
           }
         );
       } catch (error) {
-        this.$toast.error(
-          `An error occurred, when requesting ${this.entity} Inbox hasn't been sent`,
-          {
-            duration: 3000,
-          }
-        );
+        this.$toast.error(`${error?.message || `An error occurred`}`, {
+          duration: 3000,
+        });
       } finally {
         this.setProcessing(false);
       }
