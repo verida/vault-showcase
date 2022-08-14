@@ -23,7 +23,7 @@ export const buildSchema = (attributes: any) => {
         ) {
             schemaObject = {
                 ...schemaObject,
-                [prop]: yup.date().transform(parseDateString).max(today).required().label('Date of Birth')
+                [prop]: yup.date().transform(parseDateString).max(today, `Date of Birth field must be at an earlier date than "${today.toLocaleDateString()}"`).required()
             };
         } else if (attributes[prop].title.toLowerCase() === "mobile") {
             const phoneRegExp =
