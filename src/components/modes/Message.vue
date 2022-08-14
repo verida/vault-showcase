@@ -99,13 +99,9 @@ export default defineComponent({
         );
       } catch (e) {
         this.setProcessing(false);
-        console.info(e);
-        this.$toast.error(
-          `An error occurred, when sending ${this.entity.title} Inbox hasn't been sent`,
-          {
-            duration: 3000,
-          }
-        );
+        this.$toast.error(`${e?.message || `An error occurred`}`, {
+          duration: 3000,
+        });
       }
     },
   },
