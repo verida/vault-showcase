@@ -126,12 +126,12 @@ import "ag-grid-community/dist/styles/ag-grid.css";
 import "ag-grid-community/dist/styles/ag-theme-alpine.css";
 import { AgGridVue } from "ag-grid-vue3";
 import { createNamespacedHelpers } from "vuex";
-import veridaHelper from "../../helpers/VeridaHelper";
+import veridaHelper from "@/helpers/VeridaHelper";
 import { socialDataSchema } from "@/config/schemas";
+import { veridaMessagingTypes } from "@/constants/inbox";
+import { config } from "@/config/config";
 const { mapState: mapSystemState, mapMutations: mapSystemMutations } =
   createNamespacedHelpers("system");
-
-const { VUE_APP_CONTEXT_NAME } = process.env;
 
 export default defineComponent({
   name: "Send",
@@ -181,13 +181,13 @@ export default defineComponent({
       let message;
 
       if (this.dataType === "user-data") {
-        message = `${VUE_APP_CONTEXT_NAME} is requesting access to "${this.entity}" records`;
+        message = `${config.veridaContextName} is requesting access to "${this.entity}" records`;
         data = {
           ...this.params,
           filter: {},
         };
       } else {
-        message = `${VUE_APP_CONTEXT_NAME} is requesting access to "${this.selectedSocial}" social media records`;
+        message = `${config.veridaContextName} is requesting access to "${this.selectedSocial}" social media records`;
         this.schema = await veridaHelper.retrieveSchema(this.socialDataSchema);
         data = {
           requestSchema: this.socialDataSchema,
@@ -199,10 +199,12 @@ export default defineComponent({
         }
       }
       try {
-        await veridaHelper.requestData({
-          did: this.recipient,
-          message,
+        await veridaHelper.messaging({
           data,
+          message,
+          type: veridaMessagingTypes.dataRequest,
+          did: this.recipient,
+          subject: this.selectedSocial,
         });
         veridaHelper.did = this.recipient;
         this.$toast.success(
