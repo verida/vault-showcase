@@ -1,7 +1,7 @@
 import { EventEmitter } from "events";
 import { Context, Messaging } from "@verida/client-ts";
-import { config } from "@/config/config";
-import { veridaMessagingTypes } from "@/constants/inbox";
+import { config } from "@/config";
+import { veridaMessagingTypes } from "@/constants";
 
 type MessagingTypes =
   | "inbox/type/dataRequest"

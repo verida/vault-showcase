@@ -3,7 +3,7 @@
 </template>
 <script>
 import { defineComponent } from "vue";
-import DidCard from "../components/cards/DidCard";
+import DidCard from "@/components/cards/DidCard";
 
 export default defineComponent({
   name: "Home",

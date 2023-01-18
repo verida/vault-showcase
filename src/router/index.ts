@@ -1,9 +1,9 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
-import Landing from "../views/Landing.vue";
-import Dashboard from '../views/Dashboard.vue'
-import ShowcaseHome from '../views/Home.vue'
+import Landing from "@/views/Landing.vue";
+import Dashboard from '@/views/Dashboard.vue'
+import ShowcaseHome from '@/views/Home.vue'
 
-import { RouteGuard } from "../helpers/RouteGuard";
+import { RouteGuard } from "@/helpers/RouteGuard";
 
 const routes: Array<RouteRecordRaw> = [
 	{
@@ -31,6 +31,6 @@ const router = createRouter({
 	routes,
 });
 
-router.beforeEach(RouteGuard as any);
+router.beforeEach(RouteGuard);
 
 export default router;

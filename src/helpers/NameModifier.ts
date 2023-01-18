@@ -1,25 +1,25 @@
+import { supportedSchemas } from "@/config";
 
 interface IData {
   title: string;
   name: string;
   subject: string;
   firstName: string;
-  lastName: string
+  lastName: string;
 }
 
 export function extract(data: IData, collection: string) {
   switch (collection) {
-    case 'https://common.schemas.verida.io/shopping/coupon/v0.1.0/schema.json':
-      return data.title
-    case 'https://common.schemas.verida.io/health/pathology/tests/covid19/pcr/v0.1.0/schema.json':
-      return data.name
-    case 'https://common.schemas.verida.io/social/contact/v0.1.0/schema.json': {
-      const { firstName, lastName } = data
-      return `${firstName} ${lastName}`
+    case supportedSchemas.shoppingCoupon:
+      return data.title;
+    case supportedSchemas.covid19PCRTest:
+      return data.name;
+    case supportedSchemas.contact: {
+      const { firstName, lastName } = data;
+      return `${firstName} ${lastName}`;
     }
-    case 'https://core.schemas.verida.io/inbox/type/message/v0.1.0/schema.json': {
-      return data.subject
+    case supportedSchemas.inboxMessage: {
+      return data.subject;
     }
   }
 }
-

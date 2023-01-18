@@ -21,7 +21,7 @@
 
 <script>
 import { defineComponent } from "vue";
-import UserMenu from "./components/navigation/UserMenu.vue";
+import UserMenu from "@/components/navigation/UserMenu.vue";
 import PulseLoader from "vue-spinner/src/PulseLoader.vue";
 import ConnectionMixin from "@/mixins/connection";
 import { createNamespacedHelpers } from "vuex";

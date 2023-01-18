@@ -6,9 +6,9 @@
 </template>
 
 <script>
-import Send from "../components/modes/Send";
-import Request from "../components/modes/Request";
-import Message from "../components/modes/Message.vue";
+import Send from "@/components/modes/Send";
+import Request from "@/components/modes/Request";
+import Message from "@/components/modes/Message.vue";
 
 export default {
   name: "Dashboard",

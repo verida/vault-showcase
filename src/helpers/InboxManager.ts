@@ -1,4 +1,4 @@
-import { DATA_SEND, DATA_REQUEST } from '../constants/inbox'
+import { veridaMessagingTypes} from '../constants/inbox'
 
 class InboxManager {
   private _app: any
@@ -25,8 +25,8 @@ class InboxManager {
     ]
 
     switch (inboxEntry.type) {
-      case DATA_SEND:
-      case DATA_REQUEST:
+      case veridaMessagingTypes.dataSend:
+      case veridaMessagingTypes.dataRequest:
         return acceptOptions
       default:
         return []
@@ -53,7 +53,7 @@ class InboxManager {
     await inbox.save(inboxEntry)
 
     switch (inboxEntry.type) {
-      case DATA_SEND:
+      case veridaMessagingTypes.dataSend:
         // save the data
         if (action === 'accept') {
           const dataSend = inboxEntry.data.data
@@ -64,7 +64,7 @@ class InboxManager {
           }
         }
         break
-      case DATA_REQUEST:
+      case veridaMessagingTypes.dataRequest:
         // This is a request for a group of data (ie: All my health notes)
         if (action === 'accept') {
           const dataRequest = inboxEntry.data
@@ -84,7 +84,7 @@ class InboxManager {
             response.data = [foundData]
           }
 
-          const [type, msg] = [DATA_SEND, 'Send you the requested data']
+          const [type, msg] = [veridaMessagingTypes.dataSend, 'Send you the requested data']
           await this._app.outbox.send(did, type, response, msg, {
             appName: appName
           })

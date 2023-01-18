@@ -120,16 +120,15 @@
 
 <script>
 import { defineComponent } from "vue";
-import DataTypeSelect from "../cards/DataTypeSelect";
+import DataTypeSelect from "@/components/cards/DataTypeSelect";
 import PulseLoader from "vue-spinner/src/PulseLoader.vue";
 import "ag-grid-community/dist/styles/ag-grid.css";
 import "ag-grid-community/dist/styles/ag-theme-alpine.css";
 import { AgGridVue } from "ag-grid-vue3";
 import { createNamespacedHelpers } from "vuex";
 import veridaHelper from "@/helpers/VeridaHelper";
-import { socialDataSchema } from "@/config/schemas";
-import { veridaMessagingTypes } from "@/constants/inbox";
-import { config } from "@/config/config";
+import { NOTIFICARTION_DURATION_TIMEOUT , veridaMessagingTypes} from "@/constants";
+import { config, supportedSchemas } from "@/config";
 const { mapState: mapSystemState, mapMutations: mapSystemMutations } =
   createNamespacedHelpers("system");
 
@@ -148,18 +147,21 @@ export default defineComponent({
       records: [],
       dataType: "social-data",
       schema: null,
-      socialDataSchema: socialDataSchema.posts,
+      socialDataSchema: supportedSchemas.posts,
       params: {
         requestSchema: null,
         userSelect: null,
       },
-      schemaType: socialDataSchema,
+      schemaType: {
+        following: supportedSchemas.following,
+        posts: supportedSchemas.posts,
+      },
       selectedSocial: "all",
       isLoading: false,
     };
   },
   mounted() {
-    this.socialDataSchema = this.schemaType.post;
+    this.socialDataSchema = this.schemaType.posts;
   },
   computed: {
     ...mapSystemState(["recipient", "list", "processing"]),
@@ -210,14 +212,14 @@ export default defineComponent({
         this.$toast.success(
           `data requested from ${this.recipient} Inbox sent`,
           {
-            duration: 3000,
+            duration: NOTIFICARTION_DURATION_TIMEOUT,
           }
         );
       } catch (error) {
         this.$toast.error(
           `An error occurred, when requesting ${this.entity} Inbox hasn't been sent`,
           {
-            duration: 3000,
+            duration: NOTIFICARTION_DURATION_TIMEOUT,
           }
         );
       } finally {

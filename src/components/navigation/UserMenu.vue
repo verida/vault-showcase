@@ -17,9 +17,9 @@
 <script>
 import { defineComponent } from "vue";
 import { createNamespacedHelpers } from "vuex";
-import DidStatistics from "../cards/DidStatistics";
-import VeridaHelper from "../../helpers/VeridaHelper";
-import { envKeys } from "@/config/env.config";
+import DidStatistics from "@/components/cards/DidStatistics.vue";
+import VeridaHelper from "@/helpers/VeridaHelper";
+import { config } from "@/config";
 const { mapState: mapSystemState, mapMutations: mapSystemMutations } =
   createNamespacedHelpers("system");
 
@@ -30,8 +30,8 @@ export default defineComponent({
   },
   data() {
     return {
-      contextName: envKeys.VUE_APP_CONTEXT_NAME,
-      logo: envKeys.VUE_APP_LOGO_URL,
+      contextName: config.veridaContextName,
+      logo: config.veridaConnectLogo,
       openUrl: window.origin,
     };
   },

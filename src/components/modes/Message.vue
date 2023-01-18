@@ -36,7 +36,7 @@ import { extract } from "@/helpers/NameModifier";
 import PulseLoader from "vue-spinner/src/PulseLoader.vue";
 import { createNamespacedHelpers } from "vuex";
 import veridaHelper from "@/helpers/VeridaHelper";
-import { veridaMessagingTypes } from "@/constants/inbox";
+import { veridaMessagingTypes } from "@/constants";
 const { mapState: mapSystemState, mapMutations: mapSystemMutations } =
   createNamespacedHelpers("system");
 const coreMessageSchema =
