@@ -127,7 +127,10 @@ import "ag-grid-community/dist/styles/ag-theme-alpine.css";
 import { AgGridVue } from "ag-grid-vue3";
 import { createNamespacedHelpers } from "vuex";
 import veridaHelper from "@/helpers/VeridaHelper";
-import { NOTIFICARTION_DURATION_TIMEOUT , veridaMessagingTypes} from "@/constants";
+import {
+  NOTIFICARTION_DURATION_TIMEOUT,
+  veridaMessagingTypes,
+} from "@/constants";
 import { config, supportedSchemas } from "@/config";
 const { mapState: mapSystemState, mapMutations: mapSystemMutations } =
   createNamespacedHelpers("system");
@@ -158,6 +161,8 @@ export default defineComponent({
       },
       selectedSocial: "all",
       isLoading: false,
+      messageSubject: "",
+      messageData: null,
     };
   },
   mounted() {
@@ -180,18 +185,17 @@ export default defineComponent({
     async request() {
       this.setProcessing(true);
       let data;
-      let message;
 
       if (this.dataType === "user-data") {
-        message = `${config.veridaContextName} is requesting access to "${this.entity}" records`;
-        data = {
+        this.messageSubject = `${config.veridaContextName} is requesting access to "${this.entity}" records`;
+        this.messageData = {
           ...this.params,
           filter: {},
         };
       } else {
-        message = `${config.veridaContextName} is requesting access to "${this.selectedSocial}" social media records`;
+        this.messageSubject = `${config.veridaContextName} is requesting access to "${this.selectedSocial}" social media records`;
         this.schema = await veridaHelper.retrieveSchema(this.socialDataSchema);
-        data = {
+        this.messageData = {
           requestSchema: this.socialDataSchema,
           filter: {},
           userSelect: false,
@@ -202,11 +206,10 @@ export default defineComponent({
       }
       try {
         await veridaHelper.messaging({
-          data,
-          message,
+          data: this.messageData,
           type: veridaMessagingTypes.dataRequest,
           did: this.recipient,
-          subject: this.selectedSocial,
+          subject: this.messageSubject,
         });
         veridaHelper.did = this.recipient;
         this.$toast.success(

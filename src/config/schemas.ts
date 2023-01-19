@@ -13,5 +13,5 @@ export const supportedSchemas = {
 export const allSchemasForMessaging = [
   supportedSchemas.contact,
   supportedSchemas.covid19PCRTest,
-  supportedSchemas.contact,
+  supportedSchemas.shoppingCoupon,
 ];

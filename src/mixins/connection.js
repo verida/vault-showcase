@@ -1,6 +1,9 @@
 import { createNamespacedHelpers } from "vuex";
 import veridaHelper from "@/helpers/VeridaHelper";
-import { veridaMessagingTypes } from "@/constants";
+import {
+  veridaMessagingTypes,
+  NOTIFICARTION_DURATION_TIMEOUT,
+} from "@/constants";
 
 const { mapMutations: mapSystemMutations } = createNamespacedHelpers("system");
 
