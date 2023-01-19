@@ -79,7 +79,7 @@ import { extract } from "@/helpers/NameModifier";
 import { createNamespacedHelpers } from "vuex";
 import veridaHelper from "@/helpers/VeridaHelper";
 import { buildSchema } from "@/helpers/FormValidators";
-import { veridaMessagingTypes } from "@/constants";
+import { NOTIFICARTION_DURATION_TIMEOUT, veridaMessagingTypes } from "@/constants";
 const { mapState: mapSystemState, mapMutations: mapSystemMutations } =
   createNamespacedHelpers("system");
 
