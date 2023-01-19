@@ -128,7 +128,7 @@ import { AgGridVue } from "ag-grid-vue3";
 import { createNamespacedHelpers } from "vuex";
 import veridaHelper from "@/helpers/VeridaHelper";
 import {
-  NOTIFICARTION_DURATION_TIMEOUT,
+  NOTIFICATION_DURATION_TIMEOUT,
   veridaMessagingTypes,
 } from "@/constants";
 import { config, supportedSchemas } from "@/config";
@@ -215,14 +215,14 @@ export default defineComponent({
         this.$toast.success(
           `data requested from ${this.recipient} Inbox sent`,
           {
-            duration: NOTIFICARTION_DURATION_TIMEOUT,
+            duration: NOTIFICATION_DURATION_TIMEOUT,
           }
         );
       } catch (error) {
         this.$toast.error(
           `An error occurred, when requesting ${this.entity} Inbox hasn't been sent`,
           {
-            duration: NOTIFICARTION_DURATION_TIMEOUT,
+            duration: NOTIFICATION_DURATION_TIMEOUT,
           }
         );
       } finally {

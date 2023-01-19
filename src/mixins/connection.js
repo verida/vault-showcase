@@ -2,7 +2,7 @@ import { createNamespacedHelpers } from "vuex";
 import veridaHelper from "@/helpers/VeridaHelper";
 import {
   veridaMessagingTypes,
-  NOTIFICARTION_DURATION_TIMEOUT,
+  NOTIFICATION_DURATION_TIMEOUT,
 } from "@/constants";
 
 const { mapMutations: mapSystemMutations } = createNamespacedHelpers("system");
@@ -22,7 +22,7 @@ export default {
         this.setList(response);
       }
       this.$toast.success(`New message Inbox sent`, {
-        duration: NOTIFICARTION_DURATION_TIMEOUT,
+        duration: NOTIFICATION_DURATION_TIMEOUT,
       });
     });
   },

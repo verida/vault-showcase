@@ -36,7 +36,10 @@ import { extract } from "@/helpers/NameModifier";
 import PulseLoader from "vue-spinner/src/PulseLoader.vue";
 import { createNamespacedHelpers } from "vuex";
 import veridaHelper from "@/helpers/VeridaHelper";
-import { NOTIFICARTION_DURATION_TIMEOUT, veridaMessagingTypes } from "@/constants";
+import {
+  NOTIFICATION_DURATION_TIMEOUT,
+  veridaMessagingTypes,
+} from "@/constants";
 const { mapState: mapSystemState, mapMutations: mapSystemMutations } =
   createNamespacedHelpers("system");
 const coreMessageSchema =
@@ -94,7 +97,7 @@ export default defineComponent({
         this.$toast.success(
           `Created ${this.entity.title} is sent to ${this.recipient} Inbox sent`,
           {
-            duration: NOTIFICARTION_DURATION_TIMEOUT,
+            duration: NOTIFICATION_DURATION_TIMEOUT,
           }
         );
       } catch (e) {
@@ -102,7 +105,7 @@ export default defineComponent({
         this.$toast.error(
           `An error occurred, when sending ${this.entity.title} Inbox hasn't been sent`,
           {
-            duration: NOTIFICARTION_DURATION_TIMEOUT,
+            duration: NOTIFICATION_DURATION_TIMEOUT,
           }
         );
       }

@@ -38,7 +38,7 @@ class VeridaHelper extends EventEmitter {
 
   public getContext(): Context {
     if (!this.context) {
-      throw new Error("");
+      throw new Error("App not connected: no verida connect context ");
     }
 
     return this.context;
