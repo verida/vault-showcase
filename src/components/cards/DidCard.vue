@@ -49,7 +49,7 @@
 <script>
 import { defineComponent } from "vue";
 import { createNamespacedHelpers } from "vuex";
-import veridaHelper from "../../helpers/VeridaHelper";
+import veridaHelper from "@/helpers/VeridaHelper";
 const { mapState: mapSystemState, mapMutations: mapSystemMutations } =
   createNamespacedHelpers("system");
 

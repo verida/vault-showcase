@@ -35,8 +35,11 @@ import { defineComponent } from "vue";
 import { extract } from "@/helpers/NameModifier";
 import PulseLoader from "vue-spinner/src/PulseLoader.vue";
 import { createNamespacedHelpers } from "vuex";
-import veridaHelper from "../../helpers/VeridaHelper";
-import { MESSAGING } from "@/constants/inbox";
+import veridaHelper from "@/helpers/VeridaHelper";
+import {
+  NOTIFICATION_DURATION_TIMEOUT,
+  veridaMessagingTypes,
+} from "@/constants";
 const { mapState: mapSystemState, mapMutations: mapSystemMutations } =
   createNamespacedHelpers("system");
 const coreMessageSchema =
@@ -74,18 +77,18 @@ export default defineComponent({
         ...form,
       };
       this.setProcessing(true);
-      await this.sendInbox(payload, payload.name);
+      await this.sendMessage(payload, payload.name);
     },
 
-    async sendInbox(message, name) {
-      const text = `Sending you ${this.entity.title} called "${name}"`;
+    async sendMessage(message, name) {
+      const messageSubject = `Sending you ${this.entity.title} called "${name}"`;
 
       try {
-        await veridaHelper.sendInboxData({
-          message: message,
+        await veridaHelper.messaging({
+          data: message,
           did: this.recipient,
-          subject: text,
-          type: MESSAGING,
+          subject: messageSubject,
+          type: veridaMessagingTypes.messaging,
         });
 
         this.setProcessing(false);
@@ -94,14 +97,17 @@ export default defineComponent({
         this.$toast.success(
           `Created ${this.entity.title} is sent to ${this.recipient} Inbox sent`,
           {
-            duration: 3000,
+            duration: NOTIFICATION_DURATION_TIMEOUT,
           }
         );
       } catch (e) {
         this.setProcessing(false);
-        this.$toast.error(`${e?.message || `An error occurred`}`, {
-          duration: 3000,
-        });
+        this.$toast.error(
+          `An error occurred, when sending ${this.entity.title} Inbox hasn't been sent`,
+          {
+            duration: NOTIFICATION_DURATION_TIMEOUT,
+          }
+        );
       }
     },
   },

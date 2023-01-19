@@ -16,8 +16,8 @@
 
 <script>
 import { defineComponent } from "vue";
-import { SCHEMAS } from "../../config/schemas";
-import veridaHelper from "../../helpers/VeridaHelper";
+import { allSchemasForMessaging } from "@/config";
+import veridaHelper from "@/helpers/VeridaHelper";
 
 export default defineComponent({
   name: "DataTypeSelect",
@@ -41,11 +41,11 @@ export default defineComponent({
     },
     async init() {
       this.options = [];
-      for (const i in SCHEMAS) {
-        const document = await veridaHelper.retrieveSchema(SCHEMAS[i]);
+      for (const i in allSchemasForMessaging) {
+        const document = await veridaHelper.retrieveSchema(allSchemasForMessaging[i]);
         this.options.push({
           text: document.title,
-          path: SCHEMAS[i],
+          path: allSchemasForMessaging[i],
           schema: document.$id,
           properties: document.properties,
         });

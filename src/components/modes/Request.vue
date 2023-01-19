@@ -120,18 +120,20 @@
 
 <script>
 import { defineComponent } from "vue";
-import DataTypeSelect from "../cards/DataTypeSelect";
+import DataTypeSelect from "@/components/cards/DataTypeSelect";
 import PulseLoader from "vue-spinner/src/PulseLoader.vue";
 import "ag-grid-community/dist/styles/ag-grid.css";
 import "ag-grid-community/dist/styles/ag-theme-alpine.css";
 import { AgGridVue } from "ag-grid-vue3";
 import { createNamespacedHelpers } from "vuex";
-import veridaHelper from "../../helpers/VeridaHelper";
-import { socialDataSchema } from "@/config/schemas";
+import veridaHelper from "@/helpers/VeridaHelper";
+import {
+  NOTIFICATION_DURATION_TIMEOUT,
+  veridaMessagingTypes,
+} from "@/constants";
+import { config, supportedSchemas } from "@/config";
 const { mapState: mapSystemState, mapMutations: mapSystemMutations } =
   createNamespacedHelpers("system");
-
-const { VUE_APP_CONTEXT_NAME } = process.env;
 
 export default defineComponent({
   name: "Send",
@@ -148,18 +150,23 @@ export default defineComponent({
       records: [],
       dataType: "social-data",
       schema: null,
-      socialDataSchema: socialDataSchema.posts,
+      socialDataSchema: supportedSchemas.posts,
       params: {
         requestSchema: null,
         userSelect: null,
       },
-      schemaType: socialDataSchema,
+      schemaType: {
+        following: supportedSchemas.following,
+        posts: supportedSchemas.posts,
+      },
       selectedSocial: "all",
       isLoading: false,
+      messageSubject: "",
+      messageData: null,
     };
   },
   mounted() {
-    this.socialDataSchema = this.schemaType.post;
+    this.socialDataSchema = this.schemaType.posts;
   },
   computed: {
     ...mapSystemState(["recipient", "list", "processing"]),
@@ -178,18 +185,17 @@ export default defineComponent({
     async request() {
       this.setProcessing(true);
       let data;
-      let message;
 
       if (this.dataType === "user-data") {
-        message = `${VUE_APP_CONTEXT_NAME} is requesting access to "${this.entity}" records`;
-        data = {
+        this.messageSubject = `${config.veridaContextName} is requesting access to "${this.entity}" records`;
+        this.messageData = {
           ...this.params,
           filter: {},
         };
       } else {
-        message = `${VUE_APP_CONTEXT_NAME} is requesting access to "${this.selectedSocial}" social media records`;
+        this.messageSubject = `${config.veridaContextName} is requesting access to "${this.selectedSocial}" social media records`;
         this.schema = await veridaHelper.retrieveSchema(this.socialDataSchema);
-        data = {
+        this.messageData = {
           requestSchema: this.socialDataSchema,
           filter: {},
           userSelect: false,
@@ -199,22 +205,26 @@ export default defineComponent({
         }
       }
       try {
-        await veridaHelper.requestData({
+        await veridaHelper.messaging({
+          data: this.messageData,
+          type: veridaMessagingTypes.dataRequest,
           did: this.recipient,
-          message,
-          data,
+          subject: this.messageSubject,
         });
         veridaHelper.did = this.recipient;
         this.$toast.success(
           `data requested from ${this.recipient} Inbox sent`,
           {
-            duration: 3000,
+            duration: NOTIFICATION_DURATION_TIMEOUT,
           }
         );
       } catch (error) {
-        this.$toast.error(`${error?.message || `An error occurred`}`, {
-          duration: 3000,
-        });
+        this.$toast.error(
+          `An error occurred, when requesting ${this.entity} Inbox hasn't been sent`,
+          {
+            duration: NOTIFICATION_DURATION_TIMEOUT,
+          }
+        );
       } finally {
         this.setProcessing(false);
       }

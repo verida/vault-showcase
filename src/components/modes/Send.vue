@@ -22,11 +22,11 @@
 <script>
 import { defineComponent } from "vue";
 import PulseLoader from "vue-spinner/src/PulseLoader.vue";
-import DataTypeSelect from "../cards/DataTypeSelect";
-import SchemaFields from "../forms/SchemaFields";
+import DataTypeSelect from "@/components/cards/DataTypeSelect";
+import SchemaFields from "@/components/forms/SchemaFields";
 import { createNamespacedHelpers } from "vuex";
-import VeridaHelper from "../../helpers/VeridaHelper";
-import { SCHEMAS } from "../../config/schemas";
+import VeridaHelper from "@/helpers/VeridaHelper";
+import { allSchemasForMessaging } from "@/config";
 const { mapState: mapSystemState } = createNamespacedHelpers("system");
 
 export default defineComponent({
@@ -52,7 +52,7 @@ export default defineComponent({
         return;
       }
       this.entity = await VeridaHelper.retrieveSchema(schema);
-      if (this.entity.$id == SCHEMAS[3]) {
+      if (this.entity.$id == allSchemasForMessaging[3]) {
         this.entity = {
           ...this.entity,
           layouts: {

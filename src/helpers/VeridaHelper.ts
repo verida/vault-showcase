@@ -1,125 +1,144 @@
-
 import { EventEmitter } from "events";
-import { DATA_REQUEST } from "../constants/inbox";
-import { envKeys } from '../config/env.config';
+import { Context, Messaging } from "@verida/client-ts";
+import { config } from "@/config";
+import { veridaMessagingTypes } from "@/constants";
 
-interface MessageParams { message: string, did: string, subject: string, data?: any, type: string }
+type MessagingTypes =
+  | "inbox/type/dataRequest"
+  | "inbox/type/message"
+  | "inbox/type/dataSend";
+interface MessageParams {
+  did: string;
+  subject: string;
+  data?: any;
+  type: MessagingTypes;
+}
 
 class VeridaHelper extends EventEmitter {
-	context: any = null;
-	did = "";
-	connected = false;
-	msgInstance: any = {};
-	messages: any = []
+  public context: Context | undefined;
+  public did: string;
+  public connected: boolean;
+  private _msgInstance: Messaging | undefined;
+  public messages: any = [];
 
-	async connectVault(context?: any) {
-		this.context = context
+  constructor() {
+    super();
+    this.did = "";
+    this.connected = false;
+  }
 
-		if (this.context) {
-			this.connected = true;
-		}
+  public async connectVault(context: Context) {
+    this.context = context;
+    if (this.context) {
+      this.connected = true;
+    }
 
-		this.did = await context.getAccount().did();
-	}
+    this.did = await context.getAccount().did();
+  }
 
-	async createDIDJWT(data: any) {  
-		const contextName = envKeys.VUE_APP_CONTEXT_NAME;
-		const jwtDID = await this.context
-			.getAccount()
-			.createDidJwt(contextName, data);
+  public getContext(): Context {
+    if (!this.context) {
+      throw new Error("App not connected: no verida connect context ");
+    }
 
-		return jwtDID;
-	}
+    return this.context;
+  }
 
-	async validateSchema(data: any, schemaUrl: string) {
-		const schemas = await this.context.getClient().getSchema(schemaUrl);
-		const isValid = await schemas.validate(data);
-		const errors = schemas.errors;
+  public async createDIDJWT(data: any) {
+    const contextName = config.veridaContextName;
+    const jwtDID = await this.getContext()
+      .getAccount()
+      .createDidJwt(contextName, data);
 
-		if (!isValid) {
-			return {
-				isValid,
-				errors,
-			};
-		}
+    return jwtDID;
+  }
 
-		return {
-			isValid,
-			errors: [],
-		};
-	}
+  public async validateSchema(data: any, schemaUrl: string) {
+    const schemas = await this.getContext().getClient().getSchema(schemaUrl);
+    const isValid = await schemas.validate(data);
+    const errors = schemas.errors;
 
-	async sendInboxData({ message, did, subject, type }: MessageParams) {
+    if (!isValid) {
+      return {
+        isValid,
+        errors,
+      };
+    }
 
-		const data = {
-			data: [message],
-		};
+    return {
+      isValid,
+      errors: [],
+    };
+  }
+  private async initialiseMessagingInstance(): Promise<Messaging> {
+    if (this._msgInstance) {
+      return this._msgInstance;
+    }
 
-		const config = {
-			recipientContextName: "Verida: Vault",
-		};
+    this._msgInstance = await this.getContext().getMessaging();
 
-		const messaging = await this.context.getMessaging();
+    return this._msgInstance;
+  }
 
-		await messaging.send(did, type, data, subject, config);
+  private async messageListener() {
+    const messaging = await this.initialiseMessagingInstance();
 
-		return true;
-	}
+    const messagelistnerCallback = async (inboxEntry: any[]) => {
+      this.emit("messageNotification", inboxEntry);
+    };
 
-	async messageListener() {
+    await messaging.onMessage(messagelistnerCallback);
+  }
 
-		this.msgInstance = await this.context.getMessaging();
+  async getMessages() {
+    const filter = {
+      type: veridaMessagingTypes.dataRequest,
+    };
+    const options = {
+      limit: 20,
+      skip: 0,
+      sort: [{ sentAt: "desc" }],
+    };
+    const messaging = await this.initialiseMessagingInstance();
+    const messages = messaging.getMessages(filter, options);
+    this.emit("messageNotification", messages);
+    return this.messages;
+  }
 
-		const cb = async (inboxEntry: any[]) => {
-			this.emit("messageNotification", inboxEntry);
-		};
+  public async messaging({
+    did,
+    data,
+    type,
+    subject,
+  }: MessageParams): Promise<boolean> {
+    const config = {
+      did,
+      recipientContextName: "Verida: Vault",
+    };
 
-		await this.msgInstance.onMessage(cb);
-	}
+    const messagingInstance = await this.initialiseMessagingInstance();
 
-	async getMessages() {
-		const filter = {
-			type: DATA_REQUEST,
-		};
-		const options = {
-			limit: 20,
-			skip: 0,
-			sort: [{ sentAt: "desc" }],
-		};
-		const messages = await this.msgInstance.getMessages(filter, options);
-		this.emit("messageNotification", messages);
-		return this.messages;
-	}
+    await this.messageListener();
 
-	async requestData({ message, did, data }: MessageParams) {
-		const type = DATA_REQUEST;
+    await messagingInstance.send(did, type, data, subject, config);
 
-		const config = {
-			recipientContextName: "Verida: Vault",
-		};
+    return true;
+  }
 
-		this.msgInstance = await this.context.getMessaging();
+  public async retrieveSchema(url: string) {
+    const schemas = await this.getContext().getClient().getSchema(url);
+    const json = await schemas.getSpecification();
+    return json;
+  }
 
-		await this.messageListener();
-
-		return await this.msgInstance.send(did, type, data, message, config);
-	}
-	async retrieveSchema(url: string) {
-		const schemas = await this.context.getClient().getSchema(url);
-		const json = await schemas.getSpecification();
-		return json;
-	}
-
-	async logout(): Promise<void> {
-		this.context = null;
-		this.did = "";
-		this.connected = false;
-	}
+  public async logout(): Promise<void> {
+    this.context = undefined;
+    this.did = "";
+    this._msgInstance = undefined;
+    this.connected = false;
+  }
 }
 
 const veridaHelper = new VeridaHelper();
 
 export default veridaHelper;
-
-
-

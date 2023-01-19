@@ -77,9 +77,9 @@ import { Form as VeeForm, Field, ErrorMessage } from "vee-validate";
 import * as yup from "yup";
 import { extract } from "@/helpers/NameModifier";
 import { createNamespacedHelpers } from "vuex";
-import veridaHelper from "../../helpers/VeridaHelper";
-import { buildSchema } from "../../helpers/FormValidators";
-import { DATA_SEND } from "@/constants/inbox";
+import veridaHelper from "@/helpers/VeridaHelper";
+import { buildSchema } from "@/helpers/FormValidators";
+import { NOTIFICATION_DURATION_TIMEOUT, veridaMessagingTypes } from "@/constants";
 const { mapState: mapSystemState, mapMutations: mapSystemMutations } =
   createNamespacedHelpers("system");
 
@@ -144,7 +144,7 @@ export default defineComponent({
 
       if (!saved) {
         this.$toast.error(`${store.errors && store.errors[0].message}`, {
-          duration: 3000,
+          duration: NOTIFICATION_DURATION_TIMEOUT,
         });
         this.setProcessing(false);
         return false;
@@ -152,21 +152,21 @@ export default defineComponent({
 
       const result = await store.get(saved.id);
 
-      await this.sendInbox(result);
+      await this.sendMessage(result);
     },
     format(key, value) {
       values[key] =
         this.attributes[key].type === "number" ? Number(value) : value;
     },
-    async sendInbox(message) {
-      const text = `Sending you ${this.entity.title}`;
+    async sendMessage(message) {
+      const messageSubject = `Sending you ${this.entity.title}`;
 
       try {
-        await veridaHelper.sendInboxData({
-          message: message,
+        await veridaHelper.messaging({
+          data: message,
           did: this.recipient,
-          subject: text,
-          type: DATA_SEND,
+          subject: messageSubject,
+          type: veridaMessagingTypes.dataSend,
         });
 
         this.setProcessing(false);
@@ -174,14 +174,17 @@ export default defineComponent({
         this.$toast.success(
           `Created ${this.entity.title} is sent to ${this.recipient} Inbox sent`,
           {
-            duration: 3000,
+            duration: NOTIFICATION_DURATION_TIMEOUT,
           }
         );
       } catch (e) {
         this.setProcessing(false);
-        this.$toast.error(`${e?.message || `An error occurred`}`, {
-          duration: 3000,
-        });
+        this.$toast.error(
+          `An error occurred, when sending ${this.entity.title} Inbox hasn't been sent`,
+          {
+            duration: NOTIFICATION_DURATION_TIMEOUT,
+          }
+        );
       }
     },
     async createCredential(data) {
@@ -190,7 +193,6 @@ export default defineComponent({
   },
 });
 </script>
-
 
 <style scoped>
 .date-input {
