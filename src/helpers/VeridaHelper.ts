@@ -1,5 +1,5 @@
 import { EventEmitter } from "events";
-import { Context, Messaging } from "@verida/client-ts";
+import { IContext, IMessaging } from "@verida/types"
 import { config } from "@/config";
 import { veridaMessagingTypes } from "@/constants";
 
@@ -15,10 +15,10 @@ interface MessageParams {
 }
 
 class VeridaHelper extends EventEmitter {
-  public context: Context | undefined;
+  public context: IContext | undefined;
   public did: string;
   public connected: boolean;
-  private _msgInstance: Messaging | undefined;
+  private _msgInstance: IMessaging | undefined;
   public messages: any = [];
 
   constructor() {
@@ -27,7 +27,7 @@ class VeridaHelper extends EventEmitter {
     this.connected = false;
   }
 
-  public async connectVault(context: Context) {
+  public async connectVault(context: IContext) {
     this.context = context;
     if (this.context) {
       this.connected = true;
@@ -36,7 +36,7 @@ class VeridaHelper extends EventEmitter {
     this.did = await context.getAccount().did();
   }
 
-  public getContext(): Context {
+  public getContext(): IContext {
     if (!this.context) {
       throw new Error("App not connected: no verida connect context ");
     }
@@ -48,7 +48,7 @@ class VeridaHelper extends EventEmitter {
     const contextName = config.veridaContextName;
     const jwtDID = await this.getContext()
       .getAccount()
-      .createDidJwt(contextName, data);
+      .createDidJwt(contextName, data, {});
 
     return jwtDID;
   }
@@ -70,12 +70,12 @@ class VeridaHelper extends EventEmitter {
       errors: [],
     };
   }
-  private async initialiseMessagingInstance(): Promise<Messaging> {
+  private async initialiseMessagingInstance(): Promise<IMessaging> {
     if (this._msgInstance) {
       return this._msgInstance;
     }
 
-    this._msgInstance = await this.getContext().getMessaging();
+    this._msgInstance = await this.getContext().getMessaging({});
 
     return this._msgInstance;
   }
